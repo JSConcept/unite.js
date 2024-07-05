@@ -1,6 +1,6 @@
 /** @format */
 
-import Timer from "./axTime.mjs";
+import Timer from "../performance/time.mjs";
 
 //
 export class DynamicHandler {
@@ -84,7 +84,7 @@ const _bound_ = Symbol("bound");
 
 //
 const styleElement = document.createElement("style");
-document.querySelector("head").appendChild(styleElement);
+document.head.appendChild(styleElement);
 
 //
 export default class AxQuery {

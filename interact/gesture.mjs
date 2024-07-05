@@ -1,7 +1,7 @@
 /** @format */
 
 // @ts-ignore
-import Timer from "./axTime.mjs";
+import Timer from "../performance/time.mjs";
 // @ts-ignore
 
 import { grabForDrag } from "./pointer-api.mjs";
@@ -145,7 +145,7 @@ export default class AxGesture {
     // @ts-ignore
     limitResize(real, virt, status, holder, container) {
         // @ts-ignore
-        const [widthDiff, heightDiff] = this.#getSizeDiff(holder, container, [this.propGet("--resize-x") || 0, this.propGet("--resize-y") || 0]);
+        const [widthDiff, heightDiff] = this.#getSizeDiff(holder, container, virt) || [0, 0];
 
         // if centered
         real[0] = clamp(0, virt[0], widthDiff);
