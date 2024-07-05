@@ -35,7 +35,7 @@ const heightOf = Symbol("@height");
 //
 export default class AxGesture {
     #holder = null;
-    #getSizeDiff = (holder, container, holder, container) => {};
+    #getSizeDiff = (holder, container, shifting) => {};
     #dragStatus = {};
     #resizeStatus = {};
     #resizeMute = false;
@@ -43,23 +43,34 @@ export default class AxGesture {
 
     //
     constructor(holder) {
-        this.#holder = holder;
-        this.#getSizeDiff = (holder, container, shifting = [0, 0]) => {
-            // increase some FPS (but needs to resolve `offsetWidth` problem of main box)
-            const widthDiff = container.offsetWidth - holder[widthOf];//(holder.clientWidth - shifting[0]);
-            const heightDiff = container.offsetHeight - holder[heightOf];  //(holder.clientHeight - shifting[1]);
-            return [widthDiff, heightDiff];
+        if (!holder) {
+            throw Error("Element is null...");
         }
 
         //
-        this.#observer = new ResizeObserver((entries)=>{
+        this.#holder = holder;
+
+        //
+        this.#getSizeDiff = (holder, container, shifting = [0, 0]) => {
+            // increase some FPS (but needs to resolve `offsetWidth` problem of main box)
+            const widthDiff = container.offsetWidth - holder[widthOf]; //(holder.clientWidth - shifting[0]);
+            const heightDiff = container.offsetHeight - holder[heightOf]; //(holder.clientHeight - shifting[1]);
+            return [widthDiff, heightDiff];
+        };
+
+        //
+        this.#observer = new ResizeObserver((entries) => {
             if (this.#resizeMute) return;
             for (const entry of entries) {
                 if (entry.borderBoxSize) {
                     const borderBoxSize = entry.borderBoxSize[0];
                     if (borderBoxSize) {
-                        this.#holder[widthOf] = borderBoxSize.inlineSize - (this.propGet("--resize-x")||0);
-                        this.#holder[heightOf] = borderBoxSize.blockSize - (this.propGet("--resize-y")||0);
+                        this.#holder[widthOf] =
+                            borderBoxSize.inlineSize -
+                            (this.propGet("--resize-x") || 0);
+                        this.#holder[heightOf] =
+                            borderBoxSize.blockSize -
+                            (this.propGet("--resize-y") || 0);
                     }
                 }
             }
@@ -68,7 +79,7 @@ export default class AxGesture {
         //
         this.#holder[widthOf] = this.#holder.clientWidth;
         this.#holder[heightOf] = this.#holder.clientHeight;
-        this.#observer.observe(this.#holder, {box: "border-box"});
+        this.#observer.observe(this.#holder, { box: "border-box" });
     }
 
     //
@@ -78,7 +89,7 @@ export default class AxGesture {
             const swipes = new Map([]);
 
             //
-            options?.handler?.addEventListener("pointerdown", ev => {
+            options?.handler?.addEventListener("pointerdown", (ev) => {
                 if (ev.target == options?.handler) {
                     swipes.set(ev.pointerId, {
                         target: ev.target,
@@ -93,7 +104,7 @@ export default class AxGesture {
             });
 
             //
-            const registerMove = ev => {
+            const registerMove = (ev) => {
                 if (swipes.has(ev.pointerId)) {
                     const swipe = swipes.get(ev.pointerId);
                     Object.assign(swipe, {
@@ -111,10 +122,13 @@ export default class AxGesture {
             };
 
             //
-            const completeSwipe = pointerId => {
+            const completeSwipe = (pointerId) => {
                 if (swipes.has(pointerId)) {
                     const swipe = swipes.get(pointerId);
-                    const diffP = [swipe.start[0] - swipe.current[0], swipe.start[1] - swipe.current[1]];
+                    const diffP = [
+                        swipe.start[0] - swipe.current[0],
+                        swipe.start[1] - swipe.current[1],
+                    ];
                     const diffT = performance.now() - swipe.startTime;
 
                     //
@@ -123,27 +137,55 @@ export default class AxGesture {
 
                     //
                     if (swipe.speed > (options.threshold || 0.5)) {
-                        const swipeAngle = Math.atan2(swipe.current[1] - swipe.start[1], swipe.current[0] - swipe.start[0]);
+                        const swipeAngle = Math.atan2(
+                            swipe.current[1] - swipe.start[1],
+                            swipe.current[0] - swipe.start[0]
+                        );
                         swipe.swipeAngle = swipeAngle;
                         swipe.direction = "name";
 
                         //
-                        if (Math.abs(compAngle(swipe.swipeAngle * (180 / Math.PI), 0)) <= 20) {
+                        if (
+                            Math.abs(
+                                compAngle(swipe.swipeAngle * (180 / Math.PI), 0)
+                            ) <= 20
+                        ) {
                             //AR.get(el.getAttribute("data-swipe-action-left"))?.(el);
                             swipe.direction = "left";
                         }
 
-                        if (Math.abs(compAngle(swipe.swipeAngle * (180 / Math.PI), 180)) <= 20) {
+                        if (
+                            Math.abs(
+                                compAngle(
+                                    swipe.swipeAngle * (180 / Math.PI),
+                                    180
+                                )
+                            ) <= 20
+                        ) {
                             //AR.get(el.getAttribute("data-swipe-action-right"))?.(el);
                             swipe.direction = "right";
                         }
 
-                        if (Math.abs(compAngle(swipe.swipeAngle * (180 / Math.PI), 270)) <= 20) {
+                        if (
+                            Math.abs(
+                                compAngle(
+                                    swipe.swipeAngle * (180 / Math.PI),
+                                    270
+                                )
+                            ) <= 20
+                        ) {
                             //AR.get(el.getAttribute("data-swipe-action-up"))?.(el);
                             swipe.direction = "up";
                         }
 
-                        if (Math.abs(compAngle(swipe.swipeAngle * (180 / Math.PI), 90)) <= 20) {
+                        if (
+                            Math.abs(
+                                compAngle(
+                                    swipe.swipeAngle * (180 / Math.PI),
+                                    90
+                                )
+                            ) <= 20
+                        ) {
                             //AR.get(el.getAttribute("data-swipe-action-down"))?.(el);
                             swipe.direction = "down";
                         }
@@ -155,25 +197,50 @@ export default class AxGesture {
             };
 
             //
-            document.addEventListener("pointermove", registerMove, {capture: true});
-            document.addEventListener("pointerup", ev => completeSwipe(ev.pointerId), {capture: true});
-            document.addEventListener("pointercancel", ev => completeSwipe(ev.pointerId), {capture: true});
+            document.addEventListener("pointermove", registerMove, {
+                capture: true,
+            });
+            document.addEventListener(
+                "pointerup",
+                (ev) => completeSwipe(ev.pointerId),
+                { capture: true }
+            );
+            document.addEventListener(
+                "pointercancel",
+                (ev) => completeSwipe(ev.pointerId),
+                { capture: true }
+            );
         }
     }
 
     //
     limitResize(real, virtual, status, holder, container) {
-        const [widthDiff, heightDiff] = this.#getSizeDiff(holder, container, real) || [0, 0];
+        const [widthDiff, heightDiff] = this.#getSizeDiff(
+            holder,
+            container,
+            real
+        ) || [0, 0];
 
         // if relative of un-resized to edge corner max-size
         // discount of dragging offset!
-        real[0] = clamp(0, virtual[0], widthDiff  - (this.propGet("--drag-x") || 0));
-        real[1] = clamp(0, virtual[1], heightDiff - (this.propGet("--drag-y") || 0));
+        real[0] = clamp(
+            0,
+            virtual[0],
+            widthDiff - (this.propGet("--drag-x") || 0)
+        );
+        real[1] = clamp(
+            0,
+            virtual[1],
+            heightDiff - (this.propGet("--drag-y") || 0)
+        );
     }
 
     //
     limitDrag(real, virtual, holder, container) {
-        const [widthDiff, heightDiff] = this.#getSizeDiff(holder, container) || [0, 0];
+        const [widthDiff, heightDiff] = this.#getSizeDiff(
+            holder,
+            container
+        ) || [0, 0];
 
         // if centered
         real[0] = clamp(-widthDiff * 0.5, virtual[0], widthDiff * 0.5);
@@ -195,41 +262,53 @@ export default class AxGesture {
         this.#resizeStatus = status;
 
         //
-        handler.addEventListener("pointerdown", ev =>  {
+        handler.addEventListener("pointerdown", (ev) => {
             grabForDrag(this.#holder, ev, {
                 propertyName: "resize",
-                shifting: [this.propGet("--resize-x") || 0, this.propGet("--resize-y") || 0],
+                shifting: [
+                    this.propGet("--resize-x") || 0,
+                    this.propGet("--resize-y") || 0,
+                ],
             });
         });
 
         //
         this.#holder.addEventListener(
             "m-dragstart",
-            ev => {
+            (ev) => {
                 this.#resizeMute = true;
             },
-            {capture: true, passive: false}
+            { capture: true, passive: false }
         );
 
         //
         this.#holder.addEventListener(
             "m-dragging",
-            ev => {
+            (ev) => {
                 const dt = ev.detail;
-                if (this.#holder && dt.pointer.id == status.pointerId && dt.holding.element.deref() == this.#holder) {
-                    this.limitResize(dt.holding.modified, dt.holding.shifting, this.#holder, this.#holder.parentNode);
+                if (
+                    this.#holder &&
+                    dt.pointer.id == status.pointerId &&
+                    dt.holding.element.deref() == this.#holder
+                ) {
+                    this.limitResize(
+                        dt.holding.modified,
+                        dt.holding.shifting,
+                        this.#holder,
+                        this.#holder.parentNode
+                    );
                 }
             },
-            {capture: true, passive: false}
+            { capture: true, passive: false }
         );
-        
+
         //
         this.#holder.addEventListener(
             "m-dragend",
-            ev => {
+            (ev) => {
                 this.#resizeMute = false;
             },
-            {capture: true, passive: false}
+            { capture: true, passive: false }
         );
     }
 
@@ -244,23 +323,35 @@ export default class AxGesture {
         this.#dragStatus = status;
 
         //
-        handler.addEventListener("pointerdown", ev =>  {
+        handler.addEventListener("pointerdown", (ev) => {
             grabForDrag(this.#holder, ev, {
                 propertyName: "drag",
-                shifting: [this.propGet("--drag-x") || 0, this.propGet("--drag-y") || 0],
+                shifting: [
+                    this.propGet("--drag-x") || 0,
+                    this.propGet("--drag-y") || 0,
+                ],
             });
         });
 
         //
         this.#holder.addEventListener(
             "m-dragging",
-            ev => {
+            (ev) => {
                 const dt = ev.detail;
-                if (this.#holder && dt.pointer.id == status.pointerId && dt.holding.element.deref() == this.#holder) {
-                    this.limitDrag(dt.holding.modified, dt.holding.shifting, this.#holder, this.#holder.parentNode);
+                if (
+                    this.#holder &&
+                    dt.pointer.id == status.pointerId &&
+                    dt.holding.element.deref() == this.#holder
+                ) {
+                    this.limitDrag(
+                        dt.holding.modified,
+                        dt.holding.shifting,
+                        this.#holder,
+                        this.#holder.parentNode
+                    );
                 }
             },
-            {capture: true, passive: false}
+            { capture: true, passive: false }
         );
     }
 
@@ -281,8 +372,10 @@ export default class AxGesture {
     //
     longPress(
         options = {},
-        fx = ev => {
-            ev.target.dispatchEvent(new CustomEvent("long-press", {detail: ev}));
+        fx = (ev) => {
+            ev.target.dispatchEvent(
+                new CustomEvent("long-press", { detail: ev })
+            );
         }
     ) {
         const handler = options.handler || this.#holder;
@@ -305,7 +398,13 @@ export default class AxGesture {
 
         //
         const inPlace = () => {
-            return Math.hypot(...action.lastCoord.map((n, i) => (action?.pageCoord?.[i] || 0) - n)) <= (options?.maxOffsetRadius ?? 10);
+            return (
+                Math.hypot(
+                    ...action.lastCoord.map(
+                        (n, i) => (action?.pageCoord?.[i] || 0) - n
+                    )
+                ) <= (options?.maxOffsetRadius ?? 10)
+            );
         };
 
         //
@@ -322,22 +421,22 @@ export default class AxGesture {
         };
 
         //
-        const forMove = [null, {capture: true}];
-        const forCanc = [null, {capture: true}];
+        const forMove = [null, { capture: true }];
+        const forCanc = [null, { capture: true }];
 
         //
         const registerCoord = [
-            ev => {
+            (ev) => {
                 if (ev.pointerId == action.pointerId) {
                     action.lastCoord[0] = ev.pageX;
                     action.lastCoord[1] = ev.pageY;
                 }
             },
-            {capture: true, passive: true},
+            { capture: true, passive: true },
         ];
 
         //
-        const triggerOrCancel = ev => {
+        const triggerOrCancel = (ev) => {
             if (ev.pointerId == action.pointerId) {
                 action.lastCoord[0] = ev.pageX;
                 action.lastCoord[1] = ev.pageY;
@@ -356,7 +455,7 @@ export default class AxGesture {
         };
 
         //
-        const cancelWhenMove = ev => {
+        const cancelWhenMove = (ev) => {
             if (ev.pointerId == action.pointerId) {
                 action.lastCoord[0] = ev.pageX;
                 action.lastCoord[1] = ev.pageY;
@@ -379,8 +478,11 @@ export default class AxGesture {
         //
         handler.addEventListener(
             "pointerdown",
-            ev => {
-                if (action.pointerId < 0 && (options.anyPointer || ev.pointerType == "touch")) {
+            (ev) => {
+                if (
+                    action.pointerId < 0 &&
+                    (options.anyPointer || ev.pointerType == "touch")
+                ) {
                     ev.preventDefault();
                     ev.stopPropagation();
 
@@ -388,13 +490,16 @@ export default class AxGesture {
                     action.pageCoord = [ev.pageX, ev.pageY];
                     action.lastCoord = [ev.pageX, ev.pageY];
                     action.pointerId = ev.pointerId;
-                    
+
                     //
                     const cancelPromiseWithResolve = Promise.withResolvers();
                     action.cancelPromise = cancelPromiseWithResolve.promise;
                     action.cancelRv = () => {
                         document.removeEventListener("pointerup", ...forCanc);
-                        document.removeEventListener("pointercancel", ...forCanc);
+                        document.removeEventListener(
+                            "pointercancel",
+                            ...forCanc
+                        );
                         document.removeEventListener("pointermove", ...forMove);
 
                         //
@@ -406,7 +511,7 @@ export default class AxGesture {
                         action.cancelRv = null;
                         action.cancelPromise = null;
                         action.pointerId = -1;
-                        
+
                         //
                         cancelPromiseWithResolve.resolve();
                     };
@@ -418,8 +523,22 @@ export default class AxGesture {
                     } else {
                         //
                         Promise.any([
-                            tpm((resolve, $rj) => (action.timer = setTimeout(prepare(resolve, action, ev), options?.minHoldTime ?? 300)), 1000 * 5).then(() => (action.ready = true)),
-                            tpm((resolve, $rj) => (action.imTimer = setTimeout(immediate(resolve, action, ev), options?.maxHoldTime ?? 600)), 1000),
+                            tpm(
+                                (resolve, $rj) =>
+                                    (action.timer = setTimeout(
+                                        prepare(resolve, action, ev),
+                                        options?.minHoldTime ?? 300
+                                    )),
+                                1000 * 5
+                            ).then(() => (action.ready = true)),
+                            tpm(
+                                (resolve, $rj) =>
+                                    (action.imTimer = setTimeout(
+                                        immediate(resolve, action, ev),
+                                        options?.maxHoldTime ?? 600
+                                    )),
+                                1000
+                            ),
                             action.cancelPromise,
                         ])
                             .catch(console.warn.bind(console))
@@ -432,7 +551,7 @@ export default class AxGesture {
                     document.addEventListener("pointermove", ...forMove);
                 }
             },
-            {passive: false, capture: false}
+            { passive: false, capture: false }
         );
 
         //

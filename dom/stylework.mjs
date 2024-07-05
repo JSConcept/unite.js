@@ -82,15 +82,6 @@ export const WavyShapedCircle = (applicant = null)=>{
     }
 }
 
-
-//
-const getCorrectOrientation = ()=>{
-    let orientationType = screen.orientation.type;
-    if (matchMedia("(orientation: portrait)" ).matches) { orientationType = orientationType.replace("landscape", "portrait"); } else
-    if (matchMedia("(orientation: landscape)").matches) { orientationType = orientationType.replace("portrait", "landscape"); };
-    return orientationType;
-}
-
 //
 const properties = [
     { name: "--clip-ampl", syntax: "<number>", inherits: true, initialValue: "0" },
