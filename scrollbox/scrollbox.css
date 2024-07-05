@@ -1,0 +1,148 @@
+@layer scrollbox {
+
+    @property --percent {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+    }
+    
+    @property --thumbSize {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+    }
+    
+    @property --percentInPx {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+    }
+    
+    @property --scroll-left {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+    }
+    
+    @property --scroll-top {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+    }
+
+    @keyframes scroll-percent {
+        0% {
+            --percent: 0.0;
+        }
+
+        100% {
+            --percent: 1.0;
+        }
+    }
+
+    :host(x-scrollbox) {
+        display: block;
+        position: relative;
+        overflow: scroll;
+        isolation: isolate;
+        inset: 0px;
+
+        contain: content;
+        container-type: size;
+
+        scroll-timeline: --scroll-y block, --scroll-x inline;
+        scrollbar-gutter: stable both-edges;
+        scrollbar-width: none;
+        
+        --sb-color: #101010;
+
+        & :where(.scrollbar-x, .scrollbar-y) {
+            user-select: none;
+            pointer-events: none;
+        
+            position: fixed;
+            display: block;
+            inset: 0px;
+
+            user-select: none;
+
+            --percent: 0.0;
+
+            animation-name: scroll-percent;
+            animation-timing-function: linear;
+            animation-duration: 1ms;
+
+            will-change: --percent;
+
+            touch-action: none;
+
+            & :where(.thumb) {
+                pointer-events: auto;
+                pointer-events: bounding-box;
+            
+                position: static;
+                display: block;
+
+                border-radius: 0.125rem;
+                
+                background-color: #101010;
+                background-color: var(--sb-color, #101010);
+
+                user-select: none;
+                touch-action: none;
+
+                cursor: grab;
+
+                &:active {
+                    cursor: grabbing;
+                }
+            }
+        }
+        
+        & :is(.scrollbar-y) {
+            inset-inline-start: auto;
+            inset-inline-end: 0px;
+            inset-block-start: 0px;
+            inset-block-end: auto;
+
+            inset-block-start: calc(0px + var(--scroll-top) * 1px);
+            inset-inline-end: calc(0px - var(--scroll-left) * 1px);
+
+            animation-timeline: --scroll-y;
+
+            block-size: calc(100cqb - 1rem);
+            inline-size: 1rem;
+
+            & :where(.thumb) {
+                inline-size: 100%;
+                block-size: calc(var(--thumbSize) * 1px);
+
+                translate: 0px calc(var(--percent) * var(--percentInPx) * 1px);
+            }
+        }
+        
+        & :is(.scrollbar-x) {
+            inset-block-start: auto;
+            inset-block-end: 0px;
+            inset-inline-start: 0px;
+            inset-inline-end: auto;
+
+            inset-block-end: calc(0px - var(--scroll-top) * 1px);
+            inset-inline-start: calc(0px + var(--scroll-left) * 1px);
+
+            animation-timeline: --scroll-x;
+
+            inline-size: calc(100cqi - 1rem);
+            block-size: 1rem;
+
+            & :where(.thumb) {
+                block-size: 100%;
+                inline-size: calc(var(--thumbSize) * 1px);
+
+                translate: calc(var(--percent) * var(--percentInPx) * 1px) 0px;
+            }
+        }
+
+    }
+
+}
