@@ -1,8 +1,7 @@
 // @ts-nocheck
-function uuidv4() {
-    return crypto?.randomUUID ? crypto?.randomUUID() : "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c => (+c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))).toString(16));
-}
+import {UUIDv4} from "../utils/utils";
 
+//
 export default class AxTime {
     #lastTime = 0;
     static looping = new Map([]);
@@ -36,7 +35,7 @@ export default class AxTime {
 
     //
     static async rafLoop(fn, ctx = document) {
-        const tmp = uuidv4(); // break GC holding loop
+        const tmp = UUIDv4(); // break GC holding loop
         try {
             AxTime.looping.set(tmp, fn);
         } catch (e) {
@@ -74,7 +73,7 @@ export default class AxTime {
     cached(fn, interval = 100) {
         let lastVal = null;
         return (...args) => {
-            return this.available(interval) ? (lastVal = fn(...args)) : lastVal;
+            return (this.available(interval) || lastVal == null) ? (lastVal = fn(...args)) : lastVal;
         };
     }
 

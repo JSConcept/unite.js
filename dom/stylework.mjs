@@ -1,6 +1,9 @@
 // @ts-nocheck
 
 //
+import {getCorrectOrientation} from "../utils/utils";
+
+//
 const styleElement = document.createElement("style");
 document.querySelector("head")?.appendChild?.(styleElement);
 

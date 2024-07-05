@@ -426,3 +426,6 @@ export default class AxQuery {
         return new Proxy(this.ROOT, new DynamicHandler(s, i));
     }
 }
+
+//
+export const AQDefault = new AxQuery(document);

@@ -1,5 +1,6 @@
 // @ts-nocheck
-export const longpress = (node, threshold = 60) => {
+
+export const longPress = (node, threshold = 60) => {
     const handle_mousedown = (ev) => {
         const pointerId = ev.pointerId;
         let start = Date.now();
