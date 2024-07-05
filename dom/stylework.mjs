@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 //
 const styleElement = document.createElement("style");

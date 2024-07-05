@@ -1,10 +1,5 @@
-/** @format */
-
-// @ts-ignore
-import Timer from "../performance/time.mjs";
-// @ts-ignore
-
-import { grabForDrag } from "./pointer-api.mjs";
+// @ts-nocheck
+import {grabForDrag} from "./pointer-api.mjs";
 
 //
 const clamp = (min, val, max) => {
@@ -12,7 +7,6 @@ const clamp = (min, val, max) => {
 };
 
 //
-// @ts-ignore
 const tpm = (callback = (p0, p1) => {}, timeout = 1000) => {
     return new Promise((resolve, reject) => {
         // Set up the timeout
@@ -34,9 +28,9 @@ const tpm = (callback = (p0, p1) => {}, timeout = 1000) => {
     });
 };
 
+//
 export default class AxGesture {
     #holder = null;
-    // @ts-ignore
     #getSizeDiff = (holder, container, holder, container) => {};
     #dragStatus = {};
     #resizeStatus = {};
@@ -44,11 +38,11 @@ export default class AxGesture {
     //
     constructor(holder) {
         this.#holder = holder;
-        this.#getSizeDiff = Timer.cached((holder, container, shifting = [0, 0]) => {
+        this.#getSizeDiff = (holder, container, shifting = [0, 0]) => {
             const widthDiff = container.offsetWidth - (holder.clientWidth - shifting[0]);
             const heightDiff = container.offsetHeight - (holder.clientHeight - shifting[1]);
             return [widthDiff, heightDiff];
-        }, 100);
+        }
     }
 
     //
@@ -135,36 +129,37 @@ export default class AxGesture {
             };
 
             //
-            document.addEventListener("pointermove", registerMove, { capture: true });
-            document.addEventListener("pointerup", ev => comleteSwipe(ev.pointerId), { capture: true });
-            document.addEventListener("pointercancel", ev => comleteSwipe(ev.pointerId), { capture: true });
+            document.addEventListener("pointermove", registerMove, {capture: true});
+            document.addEventListener("pointerup", ev => comleteSwipe(ev.pointerId), {capture: true});
+            document.addEventListener("pointercancel", ev => comleteSwipe(ev.pointerId), {capture: true});
         }
     }
 
     //
-    // @ts-ignore
     limitResize(real, virt, status, holder, container) {
-        // @ts-ignore
-        const [widthDiff, heightDiff] = this.#getSizeDiff(holder, container, virt) || [0, 0];
+        const [widthDiff, heightDiff] = this.#getSizeDiff(holder, container, real) || [0, 0];
 
-        // if centered
-        real[0] = clamp(0, virt[0], widthDiff);
-        real[1] = clamp(0, virt[1], heightDiff);
+        // if relative of un-resized to edge corner max-size
+        // discount of dragging offset!
+        real[0] = clamp(0, virt[0], widthDiff  - (this.propGet("--drag-x") || 0));
+        real[1] = clamp(0, virt[1], heightDiff - (this.propGet("--drag-y") || 0));
     }
 
     //
     limitDrag(real, virt, holder, container) {
-        // @ts-ignore
         const [widthDiff, heightDiff] = this.#getSizeDiff(holder, container) || [0, 0];
 
         // if centered
         real[0] = clamp(-widthDiff * 0.5, virt[0], widthDiff * 0.5);
         real[1] = clamp(-heightDiff * 0.5, virt[1], heightDiff * 0.5);
+
+        // if origin in top-left
+        //real[0] = clamp(0, virt[0], widthDiff);
+        //real[1] = clamp(0, virt[1], heightDiff);
     }
 
     //
     resizable(options) {
-        // @ts-ignore
         const handler = options.handler ?? this.#holder;
         const status = {
             pointerId: -1,
@@ -173,31 +168,27 @@ export default class AxGesture {
         //
         this.#resizeStatus = status;
 
-        // @ts-ignore
+        //
         grabForDrag(this.#holder, ev, {
             propertyName: "resize",
-            // @ts-ignore
-            shifting: [parseFloat(this.#holder.style.getPropertyValue("--resize-x")) || 0, parseFloat(this.#holder.style.getPropertyValue("--resize-y")) || 0],
+            shifting: [this.propGet("--resize-x") || 0, this.propGet("--resize-y") || 0],
         });
 
-        // @ts-ignore
+        //
         this.#holder.addEventListener(
             "m-dragging",
             ev => {
                 const dt = ev.detail;
                 if (this.#holder && dt.pointer.id == status.pointerId && dt.holding.element.deref() == this.#holder) {
-                    // @ts-ignore
                     this.limitResize(dt.holding.modified, dt.holding.shifting, this.#holder, this.#holder.parentNode);
                 }
             },
-            { capture: true, passive: false }
+            {capture: true, passive: false}
         );
     }
 
     //
     draggable(options) {
-        // @ts-ignore
-        // @ts-ignore
         const handler = options.handler ?? this.#holder;
         const status = {
             pointerId: -1,
@@ -206,30 +197,27 @@ export default class AxGesture {
         //
         this.#dragStatus = status;
 
-        // @ts-ignore
+        //
         grabForDrag(this.#holder, ev, {
             propertyName: "drag",
-            // @ts-ignore
-            shifting: [parseFloat(this.#holder.style.getPropertyValue("--drag-x")) || 0, parseFloat(this.#holder.style.getPropertyValue("--drag-y")) || 0],
+            shifting: [this.propGet("--drag-x") || 0, this.propGet("--drag-y") || 0],
         });
 
-        // @ts-ignore
+        //
         this.#holder.addEventListener(
             "m-dragging",
             ev => {
                 const dt = ev.detail;
                 if (this.#holder && dt.pointer.id == status.pointerId && dt.holding.element.deref() == this.#holder) {
-                    // @ts-ignore
                     this.limitDrag(dt.holding.modified, dt.holding.shifting, this.#holder, this.#holder.parentNode);
                 }
             },
-            { capture: true, passive: false }
+            {capture: true, passive: false}
         );
     }
 
     //
     propGet(name) {
-        // @ts-ignore
         const prop = this.#holder.style.getPropertyValue(name);
         const num = prop != null && prop != "" ? parseFloat(prop) || 0 : null;
         return num || null;
@@ -237,9 +225,7 @@ export default class AxGesture {
 
     //
     propFloat(name, val) {
-        // @ts-ignore
         if (parseFloat(this.#holder.style.getPropertyValue(name)) != val) {
-            // @ts-ignore
             this.#holder.style.setProperty(name, val, "");
         }
     }
@@ -248,7 +234,7 @@ export default class AxGesture {
     longpress(
         options = {},
         fx = ev => {
-            ev.target.dispatchEvent(new CustomEvent("long-press", { detail: ev }));
+            ev.target.dispatchEvent(new CustomEvent("long-press", {detail: ev}));
         }
     ) {
         const handler = options.handler || this.#holder;
@@ -288,8 +274,8 @@ export default class AxGesture {
         };
 
         //
-        const forMove = [null, { capture: true }];
-        const forCanc = [null, { capture: true }];
+        const forMove = [null, {capture: true}];
+        const forCanc = [null, {capture: true}];
 
         //
         const registerCoord = [
@@ -299,7 +285,7 @@ export default class AxGesture {
                     action.lastCoord[1] = ev.pageY;
                 }
             },
-            { capture: true, passive: true },
+            {capture: true, passive: true},
         ];
 
         //
@@ -339,9 +325,7 @@ export default class AxGesture {
         };
 
         //
-        // @ts-ignore
         forCanc[0] = triggerOrCancel;
-        // @ts-ignore
         forMove[0] = cancelWhenMove;
 
         //
@@ -356,32 +340,28 @@ export default class AxGesture {
                     action.pageCoord = [ev.pageX, ev.pageY];
                     action.lastCoord = [ev.pageX, ev.pageY];
                     action.pointerId = ev.pointerId;
-                    // @ts-ignore
-                    action.cancelPromise = new Promise(rv => {
-                        action.cancelRv = () => {
-                            //
-                            // @ts-ignore
-                            document.removeEventListener("pointerup", ...forCanc);
-                            // @ts-ignore
-                            document.removeEventListener("pointercancel", ...forCanc);
-                            // @ts-ignore
-                            document.removeEventListener("pointermove", ...forMove);
+                    
+                    //
+                    const cancelPromiseWithResolve = Promise.withResolvers();
+                    action.cancelPromise = cancelPromiseWithResolve.promise;
+                    action.cancelRv = () => {
+                        document.removeEventListener("pointerup", ...forCanc);
+                        document.removeEventListener("pointercancel", ...forCanc);
+                        document.removeEventListener("pointermove", ...forMove);
 
-                            //
-                            // @ts-ignore
-                            clearTimeout(action.timer);
-                            // @ts-ignore
-                            clearTimeout(action.imTimer);
-                            action.ready = false;
-                            action.timer = null;
-                            action.imTimer = null;
-                            action.cancelRv = null;
-                            action.cancelPromise = null;
-                            action.pointerId = -1;
-                            // @ts-ignore
-                            rv();
-                        };
-                    });
+                        //
+                        clearTimeout(action.timer);
+                        clearTimeout(action.imTimer);
+                        action.ready = false;
+                        action.timer = null;
+                        action.imTimer = null;
+                        action.cancelRv = null;
+                        action.cancelPromise = null;
+                        action.pointerId = -1;
+                        
+                        //
+                        cancelPromiseWithResolve.resolve();
+                    };
 
                     //
                     if (ev.pointerType == "mouse" && options.mouseImmediate) {
@@ -390,13 +370,7 @@ export default class AxGesture {
                     } else {
                         //
                         Promise.any([
-                            // @ts-ignore
-                            // @ts-ignore
-                            // @ts-ignore
                             tpm((resolve, $rj) => (action.timer = setTimeout(prepare(resolve, action, ev), options?.minHoldTime ?? 300)), 1000 * 5).then(() => (action.ready = true)),
-                            // @ts-ignore
-                            // @ts-ignore
-                            // @ts-ignore
                             tpm((resolve, $rj) => (action.imTimer = setTimeout(immediate(resolve, action, ev), options?.maxHoldTime ?? 600)), 1000),
                             action.cancelPromise,
                         ])
@@ -405,23 +379,18 @@ export default class AxGesture {
                     }
 
                     //
-                    // @ts-ignore
                     document.addEventListener("pointerup", ...forCanc);
-                    // @ts-ignore
                     document.addEventListener("pointercancel", ...forCanc);
-                    // @ts-ignore
                     document.addEventListener("pointermove", ...forMove);
                 }
             },
-            { passive: false, capture: false }
+            {passive: false, capture: false}
         );
 
         //
-        // @ts-ignore
+
         document.addEventListener("pointerup", ...registerCoord);
-        // @ts-ignore
         document.addEventListener("pointercancel", ...registerCoord);
-        // @ts-ignore
         document.addEventListener("pointermove", ...registerCoord);
     }
 }

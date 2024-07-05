@@ -1,9 +1,9 @@
-/** @format */
-
+// @ts-nocheck
 const $get = Symbol("get");
 const $set = Symbol("set");
 const $initialize = Symbol("initialize");
 
+//
 class AxPersistency {
     #names = new Map([]);
     #namespace = "psx";
@@ -50,21 +50,17 @@ class AxPersistency {
         return {
             set: value => {
                 unit[name] = value;
-                // @ts-ignore
                 Array.from(subs.values()).forEach(cb => cb(value));
             },
             update: fx => {
                 const value = fx(unit[name]);
                 unit[name] = value;
-                // @ts-ignore
                 Array.from(subs.values()).forEach(cb => cb(value));
             },
             unsubscribe: fx => {
-                // @ts-ignore
                 subs.delete(fx);
             },
             subscribe: fx => {
-                // @ts-ignore
                 subs.add(fx);
             },
         };
@@ -80,22 +76,22 @@ class AxPersistency {
         return {
             get: () => {
                 const value = unit[name];
-                // @ts-ignore
+                
                 Array.from(subs.values()).forEach(cb => cb(value));
                 return value;
             },
             update: fx => {
                 const value = fx(unit[name]);
                 unit[name] = value;
-                // @ts-ignore
+                
                 Array.from(subs.values()).forEach(cb => cb(value));
             },
             unsubscribe: fx => {
-                // @ts-ignore
+                
                 subs.delete(fx);
             },
             subscribe: fx => {
-                // @ts-ignore
+                
                 subs.add(fx);
             },
         };
@@ -113,7 +109,6 @@ class AxPersistency {
 
         //
         const res = localStorage.getItem(this.#namespace + ":" + name) ?? initial;
-        // @ts-ignore
         return typeof res == "function" ? res.bind(ctx) : res;
     }
 
@@ -187,7 +182,7 @@ const proxy = new Proxy(
         construct(target, args) {
             return new target(...args);
         },
-        // @ts-ignore
+        
         apply(target, args) {
             return {};
         },

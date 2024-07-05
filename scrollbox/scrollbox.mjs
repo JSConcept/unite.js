@@ -1,13 +1,10 @@
-/** @format */
-
-// @ts-ignore
+// @ts-nocheck
 import styles from "./scrollbox.css?inline";
-// @ts-ignore
 import html from "./scrollbox.html?raw";
 
 //
 class ScrollBar {
-    constructor({ holder, scrollbar }, axis = 0) {
+    constructor({holder, scrollbar}, axis = 0) {
         this.scrollbar = scrollbar;
         this.holder = holder;
 
@@ -25,10 +22,8 @@ class ScrollBar {
             //
             const percentInPx = this.scrollbar[["offsetWidth", "offsetHeight"][axis]] - thumbSize;
 
-            // @ts-ignore
+            //
             this.scrollbar.style.setProperty("--thumbSize", thumbSize, "");
-
-            // @ts-ignore
             this.scrollbar.style.setProperty("--percentInPx", percentInPx, "");
 
             //
@@ -68,7 +63,7 @@ class ScrollBar {
             if (this.status.pointerId == ev.pointerId) {
                 const previous = this.holder[["scrollLeft", "scrollTop"][axis]];
 
-                // @ts-ignore
+
                 const coord = ev[["pageX", "pageY"][axis]];
 
                 //
@@ -106,7 +101,7 @@ class ScrollBar {
             if (entries) {
                 onChanges();
             }
-        }).observe(this.holder, { box: "content-box" });
+        }).observe(this.holder, {box: "content-box"});
 
         //
         addEventListener("resize", onChanges);
@@ -129,7 +124,7 @@ class ScrollBox extends HTMLElement {
     //
     constructor() {
         super();
-        const shadowRoot = this.attachShadow({ mode: "open" });
+        const shadowRoot = this.attachShadow({mode: "open"});
         const parser = new DOMParser();
         const dom = parser.parseFromString(html, "text/html");
 
@@ -163,9 +158,7 @@ class ScrollBox extends HTMLElement {
         //
         if (this.dataset.scrollTop || this.dataset.scrollLeft) {
             this.scrollTo({
-                // @ts-ignore
                 top: this.dataset.scrollTop || 0,
-                // @ts-ignore
                 left: this.dataset.scrollLeft || 0,
                 behavior: "instant",
             });
@@ -184,12 +177,10 @@ class ScrollBox extends HTMLElement {
     }
 
     //
-    // @ts-ignore
     attributeChangedCallback(name, oldValue, newValue) {
         //
         if (name == this.dataset.scrollTop) {
             this.scrollTo({
-                // @ts-ignore
                 top: this.dataset.scrollTop || 0,
                 left: this.scrollLeft || 0,
                 behavior: "instant",
@@ -211,7 +202,6 @@ class ScrollBox extends HTMLElement {
         if (name == this.dataset.scrollLeft) {
             this.scrollTo({
                 top: this.scrollTop || 0,
-                // @ts-ignore
                 left: this.dataset.scrollLeft || 0,
                 behavior: "instant",
             });

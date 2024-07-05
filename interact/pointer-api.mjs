@@ -1,4 +1,4 @@
-/** @format */
+// @ts-nocheck
 
 class PointerEdge {
     constructor(pointer) {
@@ -64,42 +64,33 @@ document.addEventListener(
 
         //
         const exists = pointerMap.has(ev.pointerId) ? pointerMap.get(ev.pointerId) : np;
-        // @ts-ignore
         np.movement[0] = np.current[0] - exists.current[0];
-        // @ts-ignore
         np.movement[1] = np.current[1] - exists.current[1];
 
         //
-        // @ts-ignore
         if (!exists.holding) {
-            // @ts-ignore
             exists.holding = [];
         }
 
         //
-        // @ts-ignore
         exists.holding.map(hm => {
             hm.shifting = [...(hm.modified || hm.shifting)];
         });
 
         //
-        // @ts-ignore
         if (!exists.edges) {
-            // @ts-ignore
             exists.edges = new PointerEdge(exists);
         }
 
         //
-        // @ts-ignore
         Object.assign(exists, np);
 
         //
         if (!pointerMap.has(ev.pointerId)) {
-            // @ts-ignore
             pointerMap.set(ev.pointerId, exists);
         }
     },
-    { capture: true }
+    {capture: true}
 );
 
 //
@@ -115,20 +106,15 @@ document.addEventListener(
 
         //
         const exists = pointerMap.has(ev.pointerId) ? pointerMap.get(ev.pointerId) : np;
-        // @ts-ignore
         np.movement[0] = np.current[0] - exists.current[0];
-        // @ts-ignore
         np.movement[1] = np.current[1] - exists.current[1];
 
         //
-        // @ts-ignore
         if (!exists.holding) {
-            // @ts-ignore
             exists.holding = [];
         }
 
         //
-        // @ts-ignore
         if (exists.holding.length > 0) {
             ev.stopImmediatePropagation();
             ev.stopPropagation();
@@ -136,24 +122,19 @@ document.addEventListener(
         }
 
         //
-        // @ts-ignore
         if (!exists.edges) {
-            // @ts-ignore
             exists.edges = new PointerEdge(exists);
         }
 
         //
-        // @ts-ignore
         Object.assign(exists, np);
 
         //
         if (!pointerMap.has(ev.pointerId)) {
-            // @ts-ignore
             pointerMap.set(ev.pointerId, exists);
         }
 
         //
-        // @ts-ignore
         exists.holding.map(hm => {
             hm.shifting[0] += np.movement[0];
             hm.shifting[1] += np.movement[1];
@@ -178,18 +159,16 @@ document.addEventListener(
 
         //
         ["left", "top", "right", "bottom"].map(side => {
-            // @ts-ignore
             if (exists.edges.results[side] != exists.edges[side]) {
                 const nev = new CustomEvent(
-                    // @ts-ignore
                     (exists.edges[side] ? "m-contact-" : "m-leave-") + side,
-                    { detail: exists }
+                    {detail: exists}
                 );
                 document?.dispatchEvent?.(nev);
             }
         });
     },
-    { capture: true }
+    {capture: true}
 );
 
 //
@@ -206,8 +185,8 @@ export const releasePointer = ev => {
         };
 
         //
-        const emt = [preventClick, { once: true }];
-        const doc = [preventClick, { once: true, capture: true }];
+        const emt = [preventClick, {once: true}];
+        const doc = [preventClick, {once: true, capture: true}];
 
         //
         if (exists.holding.length > 0) {
@@ -216,27 +195,21 @@ export const releasePointer = ev => {
             ev.preventDefault();
 
             //
-            // @ts-ignore
             document.addEventListener("click", ...doc);
-            // @ts-ignore
             document.addEventListener("contextmenu", ...doc);
 
             //
             setTimeout(() => {
-                // @ts-ignore
                 document.removeEventListener("click", ...doc);
-                // @ts-ignore
                 document.removeEventListener("contextmenu", ...doc);
             }, 100);
         }
 
         //
         exists.holding.map(hm => {
-            // @ts-ignore
             const em = hm.element.deref();
 
             //
-            // @ts-ignore
             if (Math.hypot(...hm.shifting) > 10 && em) {
                 em?.addEventListener?.("click", ...emt);
                 em?.addEventListener?.("contextmenu", ...emt);
@@ -265,33 +238,27 @@ export const releasePointer = ev => {
 };
 
 //
-document.addEventListener("pointercancel", releasePointer, { capture: true });
-document.addEventListener("pointerup", releasePointer, { capture: true });
+document.addEventListener("pointercancel", releasePointer, {capture: true});
+document.addEventListener("pointerup", releasePointer, {capture: true});
 
 //
 export const grabForDrag = (
     element,
-    ev = { pointerId: 0 },
+    ev = {pointerId: 0},
     {
         shifting = [0, 0],
-        // @ts-ignore
         propertyName = "drag", // use dragging events for use limits
     } = {}
 ) => {
     const exists = pointerMap.get(ev.pointerId);
     if (exists) {
-        // @ts-ignore
         exists.event = ev;
 
         //
-        // @ts-ignore
         const hm = exists.holding.find(hm => hm.element.deref() == element) || {};
-        // @ts-ignore
         exists.holding.push(
-            // @ts-ignore
             Object.assign(hm, {
                 element: new WeakRef(element),
-                // @ts-ignore
                 shifting: [...(hm?.modified || hm?.shifting || shifting || [])],
             })
         );

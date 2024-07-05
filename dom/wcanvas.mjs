@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 //
 const provide = async (path = "") => {

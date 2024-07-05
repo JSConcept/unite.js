@@ -1,4 +1,4 @@
-/** @format */
+// @ts-nocheck
 
 export default class State {
     static $story = new Array();
@@ -13,7 +13,7 @@ export default class State {
         //
         const prevState = this.$story.at(this.$story.length - 1) ?? null;
         const state = [obj, "", href];
-        // @ts-ignore
+        
         history.pushState(...state);
         this.$story.push(state);
 

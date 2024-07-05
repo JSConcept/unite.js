@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** @format */
 
 import Timer from "../performance/time.mjs";
@@ -63,7 +64,7 @@ const registerMove = e => {
         x: e.pageX - (screen.get(e.pointerId)?.x ?? e.pageX),
         y: e.pageY - (screen.get(e.pointerId)?.y ?? e.pageY),
     });
-    screen.set(e.pointerId, { x: e.pageX, y: e.pageY });
+    screen.set(e.pointerId, {x: e.pageX, y: e.pageY});
 };
 
 //
@@ -73,10 +74,10 @@ const removePointer = e => {
 };
 
 //
-document.addEventListener("pointerdown", registerMove, { capture: true, passive: true });
-document.addEventListener("pointermove", registerMove, { capture: true, passive: true });
-document.addEventListener("pointerup", removePointer, { capture: true, passive: true });
-document.addEventListener("pointercancel", removePointer, { capture: true, passive: true });
+document.addEventListener("pointerdown", registerMove, {capture: true, passive: true});
+document.addEventListener("pointermove", registerMove, {capture: true, passive: true});
+document.addEventListener("pointerup", removePointer, {capture: true, passive: true});
+document.addEventListener("pointercancel", removePointer, {capture: true, passive: true});
 
 //
 const _changed_ = Symbol("changed");
@@ -133,53 +134,53 @@ export default class AxQuery {
         const attributeObserver =
             typeof MutationObserver != "undefined"
                 ? new MutationObserver(async (mutationList, observer) => {
-                      if (!this.#muted) {
-                          mutationList.forEach(async mut => {
-                              const allowed = ["style"].indexOf(mut.attributeName) < 0;
-                              const value = mut.target.getAttribute(mut.attributeName);
-                              if (!mut?.attributeName?.startsWith("aq-") && value != mut?.oldValue && !mut.target[_changed_]) {
-                                  // TODO: de-apply events (i.e. unselected)
-                                  for (const [selector, fns] of attribListener.entries()) {
-                                      if (allowed && mut.target.matches(selector)) {
-                                          fns.map(F => F([mut.target], selector, mut.attributeName));
-                                      }
-                                  }
-                              }
-                          });
-                      }
-                  })
+                    if (!this.#muted) {
+                        mutationList.forEach(async mut => {
+                            const allowed = ["style"].indexOf(mut.attributeName) < 0;
+                            const value = mut.target.getAttribute(mut.attributeName);
+                            if (!mut?.attributeName?.startsWith("aq-") && value != mut?.oldValue && !mut.target[_changed_]) {
+                                // TODO: de-apply events (i.e. unselected)
+                                for (const [selector, fns] of attribListener.entries()) {
+                                    if (allowed && mut.target.matches(selector)) {
+                                        fns.map(F => F([mut.target], selector, mut.attributeName));
+                                    }
+                                }
+                            }
+                        });
+                    }
+                })
                 : null;
 
         //
         const nodeObserver =
             typeof MutationObserver != "undefined"
                 ? new MutationObserver(async (mutationList, observer) => {
-                      if (!this.#muted) {
-                          for (const [selector, fns] of domListener.entries()) {
-                              mutationList.forEach(async mut => {
-                                  //
-                                  let elems =
-                                      mut.childList?.filter(e => {
-                                          //return elements.indexOf(e) > -1;
-                                          return e.matches(selector);
-                                      }) || [];
+                    if (!this.#muted) {
+                        for (const [selector, fns] of domListener.entries()) {
+                            mutationList.forEach(async mut => {
+                                //
+                                let elems =
+                                    mut.childList?.filter(e => {
+                                        //return elements.indexOf(e) > -1;
+                                        return e.matches(selector);
+                                    }) || [];
 
-                                  //
-                                  if (mut.target.matches(selector) && elems.indexOf(mut.target) < 0) {
-                                      elems.push(mut.target);
-                                  }
+                                //
+                                if (mut.target.matches(selector) && elems.indexOf(mut.target) < 0) {
+                                    elems.push(mut.target);
+                                }
 
-                                  //
-                                  elems = [...new Set(elems)];
-                                  fns.map(F => F(elems, selector));
-                              });
-                          }
-                      }
-                  })
+                                //
+                                elems = [...new Set(elems)];
+                                fns.map(F => F(elems, selector));
+                            });
+                        }
+                    }
+                })
                 : null;
 
         //
-        nodeObserver?.observe?.((this.ROOT = ROOT), { childList: true, subtree: true });
+        nodeObserver?.observe?.((this.ROOT = ROOT), {childList: true, subtree: true});
 
         //
         this.defer.then(() => {
@@ -261,7 +262,7 @@ export default class AxQuery {
             //await Timer.raf;
             e[_changed_] = true;
             e[_bound_] = true;
-            this.#attributeObserver.observe(e, { attributes: true });
+            this.#attributeObserver.observe(e, {attributes: true});
             e[_changed_] = false;
 
             //
@@ -275,7 +276,7 @@ export default class AxQuery {
                     }
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
-                { passive: true, capture: false }
+                {passive: true, capture: false}
             );
 
             //
@@ -287,7 +288,7 @@ export default class AxQuery {
                     e.classList.remove(`aq-active-${evt.pointerId}`);
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
-                { passive: true, capture: true }
+                {passive: true, capture: true}
             );
 
             //
@@ -299,7 +300,7 @@ export default class AxQuery {
                     e.classList.remove(`aq-active-${evt.pointerId}`);
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
-                { passive: true, capture: false }
+                {passive: true, capture: false}
             );
 
             //
@@ -313,7 +314,7 @@ export default class AxQuery {
                     }
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
-                { passive: true, capture: false }
+                {passive: true, capture: false}
             );
 
             //
@@ -324,7 +325,7 @@ export default class AxQuery {
                     e.classList.remove(`aq-active-${evt.pointerId}`);
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
-                { passive: true, capture: true }
+                {passive: true, capture: true}
             );
         }
     }
@@ -427,7 +428,7 @@ export default class AxQuery {
                     args[1](e);
                 }
             },
-            { ...(args?.[2] ?? {}), capture: args?.[2]?.capture ?? false, once: args?.[2]?.once ?? false, passive: args?.[2]?.passive ?? false }
+            {...(args?.[2] ?? {}), capture: args?.[2]?.capture ?? false, once: args?.[2]?.once ?? false, passive: args?.[2]?.passive ?? false}
         );
         return dynamic;
     }
@@ -455,7 +456,7 @@ export default class AxQuery {
                     }
                 }
             },
-            { ...(args?.[2] ?? {}), capture: args?.[2]?.capture ?? true, once: args?.[2]?.once ?? false, passive: args?.[2]?.passive ?? false }
+            {...(args?.[2] ?? {}), capture: args?.[2]?.capture ?? true, once: args?.[2]?.once ?? false, passive: args?.[2]?.passive ?? false}
         );
         return dynamic;
     }
@@ -530,7 +531,7 @@ export default class AxQuery {
         };
         return new Promise(async x => {
             if (!(await resolveOf(x))) {
-                document.addEventListener("readystatechange", e => resolveOf(x), { once: false, passive: true });
+                document.addEventListener("readystatechange", e => resolveOf(x), {once: false, passive: true});
             }
         });
     }
@@ -538,7 +539,7 @@ export default class AxQuery {
     //
     static setStyleRule(selector, sheet) {
         const styleRules = styleElement.sheet;
-        let ruleId = Array.from(styleRules?.cssRules || []).findIndex(({ selectorText }) => selector == selectorText);
+        let ruleId = Array.from(styleRules?.cssRules || []).findIndex(({selectorText}) => selector == selectorText);
         if (ruleId <= -1) {
             ruleId = styleRules.insertRule(`${selector} {}`);
         }
