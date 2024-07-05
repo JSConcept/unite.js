@@ -1,6 +1,7 @@
 // @ts-nocheck
 /** @format */
 
+//
 import Timer from "../performance/time.mjs";
 
 //
@@ -55,37 +56,8 @@ export class DynamicHandler {
 }
 
 //
-const movement = new Map([]);
-const screen = new Map([]);
-
-//
-const registerMove = e => {
-    movement.set(e.pointerId, {
-        x: e.pageX - (screen.get(e.pointerId)?.x ?? e.pageX),
-        y: e.pageY - (screen.get(e.pointerId)?.y ?? e.pageY),
-    });
-    screen.set(e.pointerId, {x: e.pageX, y: e.pageY});
-};
-
-//
-const removePointer = e => {
-    movement.delete(e.pointerId);
-    screen.delete(e.pointerId);
-};
-
-//
-document.addEventListener("pointerdown", registerMove, {capture: true, passive: true});
-document.addEventListener("pointermove", registerMove, {capture: true, passive: true});
-document.addEventListener("pointerup", removePointer, {capture: true, passive: true});
-document.addEventListener("pointercancel", removePointer, {capture: true, passive: true});
-
-//
 const _changed_ = Symbol("changed");
-const _bound_ = Symbol("bound");
-
-//
-const styleElement = document.createElement("style");
-document.head.appendChild(styleElement);
+const _observed_ = Symbol("bound");
 
 //
 export default class AxQuery {
@@ -94,35 +66,22 @@ export default class AxQuery {
     #attribListener = new Map([]);
     #eventListener = new WeakMap([]);
     #domListener = new Map([]);
-
-    //
-    movementX(pointerId = 0) {
-        return movement.get(pointerId)?.x || 0;
-    }
-    movementY(pointerId = 0) {
-        return movement.get(pointerId)?.y || 0;
-    }
-
-    //
-    static movementX(pointerId = 0) {
-        return movement.get(pointerId)?.x || 0;
-    }
-    static movementY(pointerId = 0) {
-        return movement.get(pointerId)?.y || 0;
-    }
-
-    //
-    get pixelRatio() {
-        return devicePixelRatio || 1;
-    }
-
-    //
-    static get pixelRatio() {
-        return devicePixelRatio || 1;
-    }
-
-    //
     #muted = false;
+
+    //
+    #mutedAction(action) {
+        this.#muted = true;
+        const r = action?.();
+        this.#muted = false;
+        return r;
+    }
+
+    //
+    #mutFn(fn) {
+        return (...args) => {
+            return this.#mutedAction(()=>fn(...args));
+        };
+    }
 
     //
     constructor(ROOT = typeof document != "undefined" ? document?.body ?? document : null) {
@@ -209,23 +168,21 @@ export default class AxQuery {
     #reflectAttribInStyle(selector, elements, attribs) {
         for (const [key, unit] of attribs.entries()) {
             elements.map(async (e, I) => {
-                if (!e[_changed_]) {
+                if (!e[_changed_] && e != null) {
                     //await Timer.raf;
                     const K = await (typeof key == "function" ? key(e, I) : key);
                     const k = `${K}`; //(K.startsWith("aq-") ? `--${K}` : `--aq-${K}`);
                     const v = typeof unit == "function" ? await unit?.(e?.getAttribute?.(K), e) : `${e?.getAttribute?.(K)}${unit ?? ""}`;
 
                     //
-                    //await Timer.raf;
                     e[_changed_] = true;
-                    if (e?.matches?.(selector)) {
-                        if (e?.style?.getPropertyValue?.(k) !== v) {
-                            e?.style?.setProperty?.(k, v, "");
-                        }
+                    if (e.matches(selector)) {
+                        const val = e.style.getPropertyValue(k) == null;
+                        if (val != v || val == null) { e.style.setProperty(k, v, ""); }
                     } else {
-                        e?.style?.removeProperty?.(k);
+                        e.style.removeProperty(k);
                     }
-                    e[_changed_] = false;
+                    delete e[_changed_];
                 }
             });
         }
@@ -239,7 +196,7 @@ export default class AxQuery {
 
             //
             let list = this.#eventListener.has(e) ? this.#eventListener.get(e) : new Set([]);
-            if (mb) {
+            if (mb && !list.has(args)) {
                 if (!this.#eventListener.has(e)) {
                     this.#eventListener.set(e, list);
                 }
@@ -249,7 +206,7 @@ export default class AxQuery {
                     list.add(args);
                     e?.addEventListener?.(...args);
                 }
-            } else if (!mb) {
+            } else {
                 list.remove(args);
                 e?.removeEventListener?.(...args);
             }
@@ -259,74 +216,12 @@ export default class AxQuery {
     //
     async #listenAttributes(e, selector, mutation) {
         //
-        if (!e[_bound_]) {
+        if (!e[_observed_]) {
             //await Timer.raf;
             e[_changed_] = true;
-            e[_bound_] = true;
+            e[_observed_] = true;
             this.#attributeObserver.observe(e, {attributes: true});
-            e[_changed_] = false;
-
-            //
-            e.addEventListener(
-                "pointerenter",
-                evt => {
-                    evt.stopPropagation();
-                    const className = `aq-hover-${evt.pointerId}`;
-                    if (!e.classList.contains(className)) {
-                        e.classList.add(className);
-                    }
-                    this.#attribListener.get(selector)?.map?.(F => F([e], selector));
-                },
-                {passive: true, capture: false}
-            );
-
-            //
-            this.ROOT.addEventListener(
-                "pointercancel",
-                evt => {
-                    evt.stopPropagation();
-                    e.classList.remove(`aq-hover-${evt.pointerId}`);
-                    e.classList.remove(`aq-active-${evt.pointerId}`);
-                    this.#attribListener.get(selector)?.map?.(F => F([e], selector));
-                },
-                {passive: true, capture: true}
-            );
-
-            //
-            e.addEventListener(
-                "pointerleave",
-                evt => {
-                    e.classList.remove(`aq-hover-${evt.pointerId}`);
-                    e.classList.remove(`aq-active-${evt.pointerId}`);
-                    this.#attribListener.get(selector)?.map?.(F => F([e], selector));
-                },
-                {passive: true, capture: false}
-            );
-
-            //
-            e.addEventListener(
-                "pointerdown",
-                evt => {
-                    evt.stopPropagation();
-                    const className = `aq-active-${evt.pointerId}`;
-                    if (!e.classList.contains(className)) {
-                        e.classList.add(className);
-                    }
-                    this.#attribListener.get(selector)?.map?.(F => F([e], selector));
-                },
-                {passive: true, capture: false}
-            );
-
-            //
-            this.ROOT.addEventListener(
-                "pointerup",
-                evt => {
-                    evt.stopPropagation();
-                    e.classList.remove(`aq-active-${evt.pointerId}`);
-                    this.#attribListener.get(selector)?.map?.(F => F([e], selector));
-                },
-                {passive: true, capture: true}
-            );
+            delete e[_changed_];
         }
     }
 
@@ -339,7 +234,7 @@ export default class AxQuery {
                         //await Timer.raf;
                         e[_changed_] = true;
                         await value(e, I);
-                        e[_changed_] = false;
+                        delete e[_changed_];
                     }
                     //this.#listenAttributes(e, selector);
                 }
@@ -356,12 +251,12 @@ export default class AxQuery {
                         //await Timer.raf;
                         e[_changed_] = true;
                         const val = await (typeof value == "function" ? value(e, I) : value);
-                        if (e.getAttribute(key) != val) {
+                        const attr = e.getAttribute(key);
+                        if (attr != val || attr == null) {
                             e.setAttribute(key, val);
                         }
-                        e[_changed_] = false;
+                        delete e[_changed_];
                     }
-                    //this.#listenAttributes(e, selector);
                 }
             });
         }
@@ -410,10 +305,9 @@ export default class AxQuery {
 
     //
     once(selector, fn, muted = true) {
-        this.#muted = muted;
-        const result = this.dynamic(selector).map(fn);
-        this.#muted = false;
-        return result;
+        return this.#mutedAction(()=>{
+            return this.dynamic(selector).map(fn);
+        });
     }
 
     // new events type, based on bubble and delegation
@@ -461,15 +355,6 @@ export default class AxQuery {
         return dynamic;
     }
 
-    #mutFn(fn) {
-        return (...args) => {
-            this.#muted = true;
-            const result = fn(...args);
-            this.#muted = false;
-            return result;
-        };
-    }
-
     //
     per(s, fn) {
         return this.$domListen(s, (e, sel = s, m) =>
@@ -479,7 +364,7 @@ export default class AxQuery {
                         await Timer.raf;
                         el[_changed_] = true;
                         const chg = await fn(el, sel, m);
-                        el[_changed_] = false;
+                        delete el[_changed_];
                         return chg;
                     }
                     return null;
@@ -534,37 +419,6 @@ export default class AxQuery {
                 document.addEventListener("readystatechange", e => resolveOf(x), {once: false, passive: true});
             }
         });
-    }
-
-    //
-    static setStyleRule(selector, sheet) {
-        const styleRules = styleElement.sheet;
-        let ruleId = Array.from(styleRules?.cssRules || []).findIndex(({selectorText}) => selector == selectorText);
-        if (ruleId <= -1) {
-            ruleId = styleRules.insertRule(`${selector} {}`);
-        }
-
-        //
-        const rule = styleElement.sheet.cssRules[ruleId];
-        Object.entries(sheet).map(([propName, propValue]) => {
-            const exists = rule.style.getPropertyValue(propName);
-            if (!exists || exists != propValue) {
-                rule.style.setProperty(propName, propValue, "");
-            }
-        });
-    }
-
-    //
-    static setStyleRules(classes) {
-        return classes?.map?.(args => this.setStyleRule(...args));
-    }
-
-    //
-    setStyleRules(...args) {
-        return AxQuery.setStyleRules(...args);
-    }
-    setStyleRule(...args) {
-        return AxQuery.setStyleRule(...args);
     }
 
     //
