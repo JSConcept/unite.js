@@ -159,20 +159,20 @@ export default class AxQuery {
                         for (const [selector, fns] of domListener.entries()) {
                             mutationList.forEach(async mut => {
                                 //
-                                let elems =
+                                let elements =
                                     mut.childList?.filter(e => {
                                         //return elements.indexOf(e) > -1;
                                         return e.matches(selector);
                                     }) || [];
 
                                 //
-                                if (mut.target.matches(selector) && elems.indexOf(mut.target) < 0) {
-                                    elems.push(mut.target);
+                                if (mut.target.matches(selector) && elements.indexOf(mut.target) < 0) {
+                                    elements.push(mut.target);
                                 }
 
                                 //
-                                elems = [...new Set(elems)];
-                                fns.map(F => F(elems, selector));
+                                elements = [...new Set(elements)];
+                                fns.map(F => F(elements, selector));
                             });
                         }
                     }
@@ -250,6 +250,7 @@ export default class AxQuery {
                     e?.addEventListener?.(...args);
                 }
             } else if (!mb) {
+                list.remove(args);
                 e?.removeEventListener?.(...args);
             }
         });
@@ -269,10 +270,10 @@ export default class AxQuery {
             e.addEventListener(
                 "pointerenter",
                 evt => {
-                    //evt.stopPropagation();
-                    const clss = `aq-hover-${evt.pointerId}`;
-                    if (!e.classList.contains(clss)) {
-                        e.classList.add(clss);
+                    evt.stopPropagation();
+                    const className = `aq-hover-${evt.pointerId}`;
+                    if (!e.classList.contains(className)) {
+                        e.classList.add(className);
                     }
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
@@ -283,7 +284,7 @@ export default class AxQuery {
             this.ROOT.addEventListener(
                 "pointercancel",
                 evt => {
-                    //evt.stopPropagation();
+                    evt.stopPropagation();
                     e.classList.remove(`aq-hover-${evt.pointerId}`);
                     e.classList.remove(`aq-active-${evt.pointerId}`);
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
@@ -295,7 +296,6 @@ export default class AxQuery {
             e.addEventListener(
                 "pointerleave",
                 evt => {
-                    //evt.stopPropagation();
                     e.classList.remove(`aq-hover-${evt.pointerId}`);
                     e.classList.remove(`aq-active-${evt.pointerId}`);
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
@@ -307,10 +307,10 @@ export default class AxQuery {
             e.addEventListener(
                 "pointerdown",
                 evt => {
-                    //evt.stopPropagation();
-                    const clss = `aq-active-${evt.pointerId}`;
-                    if (!e.classList.contains(clss)) {
-                        e.classList.add(clss);
+                    evt.stopPropagation();
+                    const className = `aq-active-${evt.pointerId}`;
+                    if (!e.classList.contains(className)) {
+                        e.classList.add(className);
                     }
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
@@ -321,7 +321,7 @@ export default class AxQuery {
             this.ROOT.addEventListener(
                 "pointerup",
                 evt => {
-                    //evt.stopPropagation();
+                    evt.stopPropagation();
                     e.classList.remove(`aq-active-${evt.pointerId}`);
                     this.#attribListener.get(selector)?.map?.(F => F([e], selector));
                 },
@@ -369,7 +369,7 @@ export default class AxQuery {
 
     //
     $domListen(selector, fn_) {
-        const fn = this.#mutfn(async (els, ...args) => {
+        const fn = this.#mutFn(async (els, ...args) => {
             return fn_(
                 els.filter(el => !el[_changed_] && el.matches(selector)),
                 ...args
@@ -389,7 +389,7 @@ export default class AxQuery {
 
     //
     $attribListen(selector, fn_) {
-        const fn = this.#mutfn(async (els, ...args) => {
+        const fn = this.#mutFn(async (els, ...args) => {
             return fn_(
                 els.filter(el => !el[_changed_] && el.matches(selector)),
                 ...args
@@ -461,7 +461,7 @@ export default class AxQuery {
         return dynamic;
     }
 
-    #mutfn(fn) {
+    #mutFn(fn) {
         return (...args) => {
             this.#muted = true;
             const result = fn(...args);
@@ -473,7 +473,7 @@ export default class AxQuery {
     //
     per(s, fn) {
         return this.$domListen(s, (e, sel = s, m) =>
-            this.#mutfn(
+            this.#mutFn(
                 e.map(async el => {
                     if (el.matches(sel) && (m == null || ["id", "class"].indexOf(m) >= 0) && !el[_changed_]) {
                         await Timer.raf;
