@@ -241,10 +241,12 @@ export default class AxGesture {
             holder,
             container
         ) || [0, 0];
+        
+        console.log(widthDiff, heightDiff);
 
         // if centered
         real[0] = clamp(-widthDiff * 0.5, virtual[0], widthDiff * 0.5);
-        real[1] = clamp(-heightDiff * 0.5, virtual[1], heightDiff * 0.5);
+        real[1] = clamp(-heightDiff * 0.5, virtual[1], heightDiff * 0.5); 
 
         // if origin in top-left
         //real[0] = clamp(0, virtual[0], widthDiff);
@@ -276,6 +278,7 @@ export default class AxGesture {
         this.#holder.addEventListener(
             "m-dragstart",
             (ev) => {
+                status.pointerId = ev.pointerId;
                 this.#resizeMute = true;
             },
             { capture: true, passive: false }
@@ -324,6 +327,7 @@ export default class AxGesture {
 
         //
         handler.addEventListener("pointerdown", (ev) => {
+            status.pointerId = ev.pointerId;
             grabForDrag(this.#holder, ev, {
                 propertyName: "drag",
                 shifting: [
