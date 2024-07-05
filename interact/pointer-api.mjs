@@ -96,7 +96,7 @@ document.addEventListener(
 //
 document.addEventListener(
     "pointermove",
-    ev => {
+    (ev) => {
         const np = {
             id: ev.pointerId,
             event: ev,
@@ -105,7 +105,9 @@ document.addEventListener(
         };
 
         //
-        const exists = pointerMap.has(ev.pointerId) ? pointerMap.get(ev.pointerId) : np;
+        const exists = pointerMap.has(ev.pointerId)
+            ? pointerMap.get(ev.pointerId)
+            : np;
         np.movement[0] = np.current[0] - exists.current[0];
         np.movement[1] = np.current[1] - exists.current[1];
 
@@ -135,7 +137,7 @@ document.addEventListener(
         }
 
         //
-        exists.holding.map(hm => {
+        exists.holding.map((hm) => {
             hm.shifting[0] += np.movement[0];
             hm.shifting[1] += np.movement[1];
             hm.modified = [...hm.shifting];
@@ -149,44 +151,51 @@ document.addEventListener(
                 },
             });
 
+            //
             const em = hm.element.deref();
             em?.dispatchEvent?.(nev);
 
             //
-            em?.style?.setProperty?.(`--${hm.propertyName || "drag"}-x`, hm.modified[0]);
-            em?.style?.setProperty?.(`--${hm.propertyName || "drag"}-y`, hm.modified[1]);
+            em?.style?.setProperty?.(
+                `--${hm.propertyName || "drag"}-x`,
+                hm.modified[0]
+            );
+            em?.style?.setProperty?.(
+                `--${hm.propertyName || "drag"}-y`,
+                hm.modified[1]
+            );
         });
 
         //
-        ["left", "top", "right", "bottom"].map(side => {
+        ["left", "top", "right", "bottom"].map((side) => {
             if (exists.edges.results[side] != exists.edges[side]) {
                 const nev = new CustomEvent(
                     (exists.edges[side] ? "m-contact-" : "m-leave-") + side,
-                    {detail: exists}
+                    { detail: exists }
                 );
                 document?.dispatchEvent?.(nev);
             }
         });
     },
-    {capture: true}
+    { capture: true }
 );
 
 //
-export const releasePointer = ev => {
+export const releasePointer = (ev) => {
     const exists = pointerMap.get(ev.pointerId);
 
     //
     if (exists) {
         //
-        const preventClick = e => {
+        const preventClick = (e) => {
             e.stopImmediatePropagation();
             e.stopPropagation();
             e.preventDefault();
         };
 
         //
-        const emt = [preventClick, {once: true}];
-        const doc = [preventClick, {once: true, capture: true}];
+        const emt = [preventClick, { once: true }];
+        const doc = [preventClick, { once: true, capture: true }];
 
         //
         if (exists.holding.length > 0) {
@@ -206,7 +215,7 @@ export const releasePointer = ev => {
         }
 
         //
-        exists.holding.map(hm => {
+        exists.holding.map((hm) => {
             const em = hm.element.deref();
 
             //
@@ -238,13 +247,13 @@ export const releasePointer = ev => {
 };
 
 //
-document.addEventListener("pointercancel", releasePointer, {capture: true});
-document.addEventListener("pointerup", releasePointer, {capture: true});
+document.addEventListener("pointercancel", releasePointer, { capture: true });
+document.addEventListener("pointerup", releasePointer, { capture: true });
 
 //
 export const grabForDrag = (
     element,
-    ev = {pointerId: 0},
+    ev = { pointerId: 0 },
     {
         shifting = [0, 0],
         propertyName = "drag", // use dragging events for use limits
@@ -255,9 +264,15 @@ export const grabForDrag = (
         exists.event = ev;
 
         //
-        const hm = exists.holding.find(hm => hm.element.deref() == element) || {};
+        const hm =
+            exists.holding.find(
+                (hm) =>
+                    hm.element.deref() == element &&
+                    hm.propertyName == propertyName
+            ) || {};
         exists.holding.push(
             Object.assign(hm, {
+                propertyName,
                 element: new WeakRef(element),
                 shifting: [...(hm?.modified || hm?.shifting || shifting || [])],
             })

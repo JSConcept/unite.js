@@ -35,7 +35,6 @@ const heightOf = Symbol("@height");
 //
 export default class AxGesture {
     #holder = null;
-    #getSizeDiff = (holder, container, shifting) => {};
     #dragStatus = {};
     #resizeStatus = {};
     #resizeMute = false;
@@ -49,14 +48,6 @@ export default class AxGesture {
 
         //
         this.#holder = holder;
-
-        //
-        this.#getSizeDiff = (holder, container, shifting = [0, 0]) => {
-            // increase some FPS (but needs to resolve `offsetWidth` problem of main box)
-            const widthDiff = container.offsetWidth - holder[widthOf]; //(holder.clientWidth - shifting[0]);
-            const heightDiff = container.offsetHeight - holder[heightOf]; //(holder.clientHeight - shifting[1]);
-            return [widthDiff, heightDiff];
-        };
 
         //
         this.#observer = new ResizeObserver((entries) => {
@@ -77,8 +68,10 @@ export default class AxGesture {
         });
 
         //
-        this.#holder[widthOf] = this.#holder.clientWidth;
-        this.#holder[heightOf] = this.#holder.clientHeight;
+        this.#holder[widthOf] =
+            this.#holder.clientWidth - (this.propGet("--resize-x") || 0);
+        this.#holder[heightOf] =
+            this.#holder.clientHeight - (this.propGet("--resize-y") || 0);
         this.#observer.observe(this.#holder, { box: "border-box" });
     }
 
@@ -214,43 +207,32 @@ export default class AxGesture {
     }
 
     //
-    limitResize(real, virtual, status, holder, container) {
-        const [widthDiff, heightDiff] = this.#getSizeDiff(
-            holder,
-            container,
-            real
-        ) || [0, 0];
+    limitResize(real, virtual, holder, container) {
+        const widthDiff =
+            container.offsetWidth -
+            (holder[widthOf] - (this.propGet("--drag-x") || 0));
+        const heightDiff =
+            container.offsetHeight -
+            (holder[heightOf] - (this.propGet("--drag-y") || 0));
 
         // if relative of un-resized to edge corner max-size
         // discount of dragging offset!
-        real[0] = clamp(
-            0,
-            virtual[0],
-            widthDiff - (this.propGet("--drag-x") || 0)
-        );
-        real[1] = clamp(
-            0,
-            virtual[1],
-            heightDiff - (this.propGet("--drag-y") || 0)
-        );
+        real[0] = clamp(0, virtual[0], widthDiff);
+        real[1] = clamp(0, virtual[1], heightDiff);
     }
 
     //
     limitDrag(real, virtual, holder, container) {
-        const [widthDiff, heightDiff] = this.#getSizeDiff(
-            holder,
-            container
-        ) || [0, 0];
-        
-        console.log(widthDiff, heightDiff);
+        const widthDiff = container.offsetWidth - holder.clientWidth;
+        const heightDiff = container.offsetHeight - holder.clientHeight;
 
         // if centered
-        real[0] = clamp(-widthDiff * 0.5, virtual[0], widthDiff * 0.5);
-        real[1] = clamp(-heightDiff * 0.5, virtual[1], heightDiff * 0.5); 
+        //real[0] = clamp(-widthDiff * 0.5, virtual[0], widthDiff * 0.5);
+        //real[1] = clamp(-heightDiff * 0.5, virtual[1], heightDiff * 0.5);
 
         // if origin in top-left
-        //real[0] = clamp(0, virtual[0], widthDiff);
-        //real[1] = clamp(0, virtual[1], heightDiff);
+        real[0] = clamp(0, virtual[0], widthDiff);
+        real[1] = clamp(0, virtual[1], heightDiff);
     }
 
     //
@@ -265,6 +247,7 @@ export default class AxGesture {
 
         //
         handler.addEventListener("pointerdown", (ev) => {
+            status.pointerId = ev.pointerId;
             grabForDrag(this.#holder, ev, {
                 propertyName: "resize",
                 shifting: [
@@ -278,8 +261,10 @@ export default class AxGesture {
         this.#holder.addEventListener(
             "m-dragstart",
             (ev) => {
-                status.pointerId = ev.pointerId;
-                this.#resizeMute = true;
+                const dt = ev.detail;
+                if (dt.holding.propertyName == "resize") {
+                    this.#resizeMute = true;
+                }
             },
             { capture: true, passive: false }
         );
@@ -292,7 +277,8 @@ export default class AxGesture {
                 if (
                     this.#holder &&
                     dt.pointer.id == status.pointerId &&
-                    dt.holding.element.deref() == this.#holder
+                    dt.holding.element.deref() == this.#holder &&
+                    dt.holding.propertyName == "resize"
                 ) {
                     this.limitResize(
                         dt.holding.modified,
@@ -309,7 +295,16 @@ export default class AxGesture {
         this.#holder.addEventListener(
             "m-dragend",
             (ev) => {
-                this.#resizeMute = false;
+                const dt = ev.detail;
+                if (dt.holding.propertyName == "resize") {
+                    this.#resizeMute = false;
+                    this.#holder[widthOf] =
+                        this.#holder.clientWidth -
+                        (this.propGet("--resize-x") || 0);
+                    this.#holder[heightOf] =
+                        this.#holder.clientHeight -
+                        (this.propGet("--resize-y") || 0);
+                }
             },
             { capture: true, passive: false }
         );
@@ -345,7 +340,8 @@ export default class AxGesture {
                 if (
                     this.#holder &&
                     dt.pointer.id == status.pointerId &&
-                    dt.holding.element.deref() == this.#holder
+                    dt.holding.element.deref() == this.#holder &&
+                    dt.holding.propertyName == "drag"
                 ) {
                     this.limitDrag(
                         dt.holding.modified,
