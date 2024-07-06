@@ -84,96 +84,205 @@ export const WavyShapedCircle = (applicant = null)=>{
 
 //
 const properties = [
-    { name: "--clip-ampl", syntax: "<number>", inherits: true, initialValue: "0" },
-    { name: "--clip-freq", syntax: "<number>", inherits: true, initialValue: "0" },
-    { name: "--pfrot", syntax: "<angle>", inherits: true, initialValue: "0deg" },
-    { name: "--lfrot", syntax: "<angle>", inherits: true, initialValue: "0deg" },
+    {
+        name: "--visual-width",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--visual-height",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--clip-ampl",
+        syntax: "<number>",
+        inherits: true,
+        initialValue: "0",
+    },
+    {
+        name: "--clip-freq",
+        syntax: "<number>",
+        inherits: true,
+        initialValue: "0",
+    },
+    {
+        name: "--pfrot",
+        syntax: "<angle>",
+        inherits: true,
+        initialValue: "0deg",
+    },
+    {
+        name: "--lfrot",
+        syntax: "<angle>",
+        inherits: true,
+        initialValue: "0deg",
+    },
     { name: "--prot", syntax: "<angle>", inherits: true, initialValue: "0deg" },
     { name: "--lrot", syntax: "<angle>", inherits: true, initialValue: "0deg" },
-    { name: "--pth", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--ptw", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--lth", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--ltw", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--ptrans-x", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--ptrans-y", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--ltrans-x", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--ltrans-y", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--avail-width", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--avail-height", syntax: "<length-percentage>", inherits: true, initialValue: "0px" },
-    { name: "--pixel-ratio", syntax: "<number>", inherits: true, initialValue: "1" },
+    {
+        name: "--pth",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--ptw",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--lth",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--ltw",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--ptrans-x",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--ptrans-y",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--ltrans-x",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--ltrans-y",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--avail-width",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--avail-height",
+        syntax: "<length-percentage>",
+        inherits: true,
+        initialValue: "0px",
+    },
+    {
+        name: "--pixel-ratio",
+        syntax: "<number>",
+        inherits: true,
+        initialValue: "1",
+    },
 ];
 
 // define properties
-properties.map((o)=>CSS?.registerProperty?.(o));
+properties.map((o) => CSS?.registerProperty?.(o));
 
 //
-const displayPortrait90deg  = { "--pwm": "vertical-rl"  , "--pdir": "ltr", "--pfrot": "0deg" };
-const displayPortrait0deg   = { "--pwm": "horizontal-tb", "--pdir": "ltr", "--pfrot": "0deg" };
-const displayPortrait180deg = { "--pwm": "horizontal-tb", "--pdir": "ltr", "--pfrot": "180deg"};
-const displayPortrait270deg = CSS.supports("writing-mode", "sideways-lr") ?
-{ "--pwm": "sideways-lr", "--pdir": "ltr", "--pfrot": "0deg" } :
-{ "--pwm": "vertical-lr", "--pdir": "rtl", "--pfrot": "0deg" };
+const displayPortrait90deg = {
+    "--pwm": "vertical-rl",
+    "--pdir": "ltr",
+    "--pfrot": "0deg",
+};
+const displayPortrait0deg = {
+    "--pwm": "horizontal-tb",
+    "--pdir": "ltr",
+    "--pfrot": "0deg",
+};
+const displayPortrait180deg = {
+    "--pwm": "horizontal-tb",
+    "--pdir": "ltr",
+    "--pfrot": "180deg",
+};
+const displayPortrait270deg = CSS.supports("writing-mode", "sideways-lr")
+    ? { "--pwm": "sideways-lr", "--pdir": "ltr", "--pfrot": "0deg" }
+    : { "--pwm": "vertical-lr", "--pdir": "rtl", "--pfrot": "0deg" };
 //
-const displayLandscape90deg  = { "--lwm": "vertical-rl"  , "--ldir": "ltr", "--lfrot": "0deg" };
-const displayLandscape0deg   = { "--lwm": "horizontal-tb", "--ldir": "ltr", "--lfrot": "0deg" };
-const displayLandscape180deg = { "--lwm": "horizontal-tb", "--ldir": "ltr", "--lfrot": "180deg" };
-const displayLandscape270deg = CSS.supports("writing-mode", "sideways-lr") ?
-{ "--lwm": "sideways-lr", "--ldir": "ltr", "--lfrot": "0deg" } :
-{ "--lwm": "vertical-lr", "--ldir": "rtl", "--lfrot": "0deg" };
-
-
-
+const displayLandscape90deg = {
+    "--lwm": "vertical-rl",
+    "--ldir": "ltr",
+    "--lfrot": "0deg",
+};
+const displayLandscape0deg = {
+    "--lwm": "horizontal-tb",
+    "--ldir": "ltr",
+    "--lfrot": "0deg",
+};
+const displayLandscape180deg = {
+    "--lwm": "horizontal-tb",
+    "--ldir": "ltr",
+    "--lfrot": "180deg",
+};
+const displayLandscape270deg = CSS.supports("writing-mode", "sideways-lr")
+    ? { "--lwm": "sideways-lr", "--ldir": "ltr", "--lfrot": "0deg" }
+    : { "--lwm": "vertical-lr", "--ldir": "rtl", "--lfrot": "0deg" };
 
 //
-const portrait0deg   = { "--prot" : "0deg" };
-const portrait90deg  = { "--prot": "90deg"};
+const portrait0deg = { "--prot": "0deg" };
+const portrait90deg = { "--prot": "90deg" };
 const portrait180deg = { "--prot": "180deg" };
 const portrait270deg = { "--prot": "270deg" };
 
 //
-const landscape0deg   = { "--lrot": "0deg" };
-const landscape90deg  = { "--lrot": "90deg" };
+const landscape0deg = { "--lrot": "0deg" };
+const landscape90deg = { "--lrot": "90deg" };
 const landscape180deg = { "--lrot": "180deg" };
 const landscape270deg = { "--lrot": "270deg" };
-
-
 
 //
 const ptsLandscape = {
     "--ptw": "100cqb",
     "--pth": "100cqi",
-}
+};
 
 //
 const ptsPortrait = {
     "--ptw": "100cqi",
-    "--pth": "100cqb"
-}
+    "--pth": "100cqb",
+};
 
 //
 const ltsLandscape = {
     "--ltw": "100cqi",
-    "--lth": "100cqb"
-}
+    "--lth": "100cqb",
+};
 
 //
 const ltsPortrait = {
     "--ltw": "100cqb",
-    "--lth": "100cqi"
-}
-
+    "--lth": "100cqi",
+};
 
 //
 const ptransLandscape = {
-    "--ptrans-x": "calc(var(--h) * 0.5 + calc(var(--rx) * 1px + var(--cx)) - 50%)",
-    "--ptrans-y": "calc(var(--w) * 0.5 + calc(var(--ry) * 1px + var(--cy)) - 50%)"
-}
+    "--ptrans-x":
+        "calc(var(--h) * 0.5 + calc(var(--rx) * 1px + var(--cx)) - 50%)",
+    "--ptrans-y":
+        "calc(var(--w) * 0.5 + calc(var(--ry) * 1px + var(--cy)) - 50%)",
+};
 
 //
 const ptransPortrait = {
-    "--ptrans-x": "calc(var(--w) * 0.5 + calc(var(--rx) * 1px + var(--cx)) - 50%)",
-    "--ptrans-y": "calc(var(--h) * 0.5 + calc(var(--ry) * 1px + var(--cy)) - 50%)"
-}
+    "--ptrans-x":
+        "calc(var(--w) * 0.5 + calc(var(--rx) * 1px + var(--cx)) - 50%)",
+    "--ptrans-y":
+        "calc(var(--h) * 0.5 + calc(var(--ry) * 1px + var(--cy)) - 50%)",
+};
 
 //
 const landscape = Object.assign({}, landscape0deg);
@@ -195,8 +304,6 @@ const availSize = {
     "--avail-width": Math.min(screen.availWidth || 0, screen.width || 0) + "px",
     "--avail-height":
         Math.min(screen.availHeight || 0, screen.height || 0) + "px",
-    "--vs-width": (visualViewport?.width || 0) + "px",
-    "--vs-height": (visualViewport?.height || 0) + "px",
     "--pixel-ratio": devicePixelRatio || 1,
 };
 
@@ -207,8 +314,6 @@ const updateOrientation = (e) => {
             Math.min(screen.availWidth || 0, screen.width || 0) + "px",
         "--avail-height":
             Math.min(screen.availHeight || 0, screen.height || 0) + "px",
-        "--vs-width": (visualViewport?.width || 0) + "px",
-        "--vs-height": (visualViewport?.height || 0) + "px",
         "--pixel-ratio": devicePixelRatio || 1,
     });
 
@@ -317,3 +422,40 @@ document.documentElement.addEventListener(
     },
     { passive: true, capture: true }
 );
+
+//
+const viewportHandler = (event) => {
+    const layoutViewport = document.body;
+    const viewport = event?.target || visualViewport;
+    const offsetLeft = viewport.offsetLeft;
+    const offsetTop =
+        viewport?.height -
+        (layoutViewport.getBoundingClientRect().height || window.innerHeight) +
+        (viewport?.offsetTop || 0);
+
+    //
+    /*document.body.style.transform = `translate(${offsetLeft}px, ${offsetTop}px) scale(${
+        1 / viewport.scale
+    })`;*/
+
+    //
+    document.documentElement.style.setProperty(
+        "--visual-width",
+        (viewport?.width || 0) + "px",
+        ""
+    );
+
+    const vvh = (viewport?.height || 0) - offsetTop;
+    document.documentElement.style.setProperty(
+        "--visual-height",
+        vvh + "px",
+        ""
+    );
+};
+
+//
+window?.visualViewport?.addEventListener?.("scroll", viewportHandler);
+window?.visualViewport?.addEventListener?.("resize", viewportHandler);
+
+//
+viewportHandler();

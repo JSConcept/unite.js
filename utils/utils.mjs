@@ -8,11 +8,13 @@ export const zoomOf = ()=>{
             (document.documentElement.currentCSSZoom || 1) / devicePixelRatio
         );
     }
-    return (
-        parseFloat(
-            document.documentElement.style.getPropertyValue("--scaling")
-        ) || 1
-    );
+
+    // TODO! Independent from project.
+    return !!localStorage.getItem("@settings:@use-zoom")
+        ? parseFloat(
+              document.documentElement.style.getPropertyValue("--scaling")
+          ) || 1
+        : 1;
 }
 
 //
