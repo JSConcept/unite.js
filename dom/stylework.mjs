@@ -192,21 +192,24 @@ const cloudyShape = WavyShapedCircle();
 
 //
 const availSize = {
-    "--avail-width": (screen.availWidth || 0) + "px",
-    "--avail-height": (screen.availHeight || 0) + "px",
+    "--avail-width": Math.min(screen.availWidth || 0, screen.width || 0) + "px",
+    "--avail-height":
+        Math.min(screen.availHeight || 0, screen.height || 0) + "px",
     "--vs-width": (visualViewport?.width || 0) + "px",
     "--vs-height": (visualViewport?.height || 0) + "px",
-    "--pixel-ratio": devicePixelRatio || 1
+    "--pixel-ratio": devicePixelRatio || 1,
 };
 
 //
 const updateOrientation = (e) => {
     Object.assign(availSize, {
-        "--avail-width": (screen.availWidth || 0) + "px",
-        "--avail-height": (screen.availHeight || 0) + "px",
+        "--avail-width":
+            Math.min(screen.availWidth || 0, screen.width || 0) + "px",
+        "--avail-height":
+            Math.min(screen.availHeight || 0, screen.height || 0) + "px",
         "--vs-width": (visualViewport?.width || 0) + "px",
         "--vs-height": (visualViewport?.height || 0) + "px",
-        "--pixel-ratio": devicePixelRatio || 1
+        "--pixel-ratio": devicePixelRatio || 1,
     });
 
     //
@@ -289,13 +292,15 @@ navigator?.virtualKeyboard?.addEventListener?.(
     updateDynamic,
     { passive: true }
 );
-document.addEventListener("DOMContentLoaded", updateDynamic, { passive: true });
+document.documentElement.addEventListener("DOMContentLoaded", updateDynamic, {
+    passive: true,
+});
 screen.orientation.addEventListener("change", updateDynamic, { passive: true });
 self.addEventListener("resize", updateDynamic, { passive: true });
 updateDynamic();
 
 // pre-fix full-screen mode
-document.addEventListener(
+document.documentElement.addEventListener(
     "click",
     () => {
         if (

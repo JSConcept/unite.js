@@ -1,8 +1,7 @@
 // @ts-nocheck
+import { zoomOf } from "../utils/utils";
 import styles from "./scrollbox.css?inline";
 import html from "./scrollbox.html?raw";
-
-import { zoomOf } from "../utils/utils";
 
 //
 class ScrollBar {
@@ -74,17 +73,20 @@ class ScrollBar {
                 if (this.status.pointerId < 0) {
                     this.status.pointerId = ev.pointerId;
                     this.status.pointerLocation =
-                        ev[["clientX", "pageY"][axis]] / zoomOf();
+                        ev[["clientX", "clientY"][axis]] / zoomOf();
                     this.status.virtualScroll =
                         this.holder[["scrollLeft", "scrollTop"][axis]];
                 }
             });
 
         //
-        document.addEventListener("pointermove", (ev) => {
-            if (this.status.pointerId == ev.pointerId) {
+        document.documentElement.addEventListener("pointermove", (ev) => {
+            if (ev.pointerId == this.status.pointerId) {
+                ev.stopPropagation();
+
+                //
                 const previous = this.holder[["scrollLeft", "scrollTop"][axis]];
-                const coord = ev[["clientX", "pageY"][axis]] / zoomOf();
+                const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
 
                 //
                 this.status.virtualScroll +=
@@ -114,8 +116,12 @@ class ScrollBar {
         };
 
         //
-        document.addEventListener("pointerup", stopScroll, {});
-        document.addEventListener("pointercancel", stopScroll, {});
+        document.documentElement.addEventListener("pointerup", stopScroll, {});
+        document.documentElement.addEventListener(
+            "pointercancel",
+            stopScroll,
+            {}
+        );
 
         //
         this.holder.addEventListener("pointerleave", onChanges);

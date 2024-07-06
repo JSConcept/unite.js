@@ -3,10 +3,7 @@
 //
 export const zoomOf = ()=>{
     const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
-    return (
-        (document.documentElement.currentCSSZoom || 1) /
-        (isFirefox ? 1 : (devicePixelRatio || 1))
-    );
+    return (document.documentElement.currentCSSZoom || 1) / devicePixelRatio;
 }
 
 //

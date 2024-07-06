@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import { zoomOf } from "../utils/utils";
 
 class PointerEdge {
@@ -52,15 +51,15 @@ export const pointerMap = new Map([
 ]);
 
 //
-document.addEventListener(
+document.documentElement.addEventListener(
     "pointerdown",
     (ev) => {
         //
         const np = {
             id: ev.pointerId,
             event: ev,
-            current: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
-            down: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
+            current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
+            down: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
             movement: [0, 0],
         };
 
@@ -98,13 +97,13 @@ document.addEventListener(
 );
 
 //
-document.addEventListener(
+document.documentElement.addEventListener(
     "pointermove",
     (ev) => {
         const np = {
             id: ev.pointerId,
             event: ev,
-            current: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
+            current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
             movement: [0, 0],
         };
 
@@ -208,13 +207,16 @@ export const releasePointer = (ev) => {
             ev.preventDefault();
 
             //
-            document.addEventListener("click", ...doc);
-            document.addEventListener("contextmenu", ...doc);
+            document.documentElement.addEventListener("click", ...doc);
+            document.documentElement.addEventListener("contextmenu", ...doc);
 
             //
             setTimeout(() => {
-                document.removeEventListener("click", ...doc);
-                document.removeEventListener("contextmenu", ...doc);
+                document.documentElement.removeEventListener("click", ...doc);
+                document.documentElement.removeEventListener(
+                    "contextmenu",
+                    ...doc
+                );
             }, 100);
         }
 
@@ -251,8 +253,12 @@ export const releasePointer = (ev) => {
 };
 
 //
-document.addEventListener("pointercancel", releasePointer, { capture: true });
-document.addEventListener("pointerup", releasePointer, { capture: true });
+document.documentElement.addEventListener("pointercancel", releasePointer, {
+    capture: true,
+});
+document.documentElement.addEventListener("pointerup", releasePointer, {
+    capture: true,
+});
 
 //
 export const grabForDrag = (

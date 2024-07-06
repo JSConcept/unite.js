@@ -405,13 +405,13 @@ export default class AxQuery {
             args[0],
             async ($e) => {
                 const e =
-                    $e.clientX == null && $e.pageY == null && $e.detail
+                    $e.clientX == null && $e.clientY == null && $e.detail
                         ? $e.detail
                         : $e;
                 e.stopPropagation();
                 let target = this.ROOT?.elementFromPoint?.(
                     e.clientX / zoomOf(),
-                    e.pageY / zoomOf()
+                    e.clientY / zoomOf()
                 );
                 if (target != null) {
                     if (
@@ -432,7 +432,7 @@ export default class AxQuery {
                             Array.from(
                                 this.ROOT?.elementsFromPoint?.(
                                     (e.clientX / zoomOf()) * devicePixelRatio,
-                                    (e.pageY / zoomOf()) * devicePixelRatio
+                                    (e.clientY / zoomOf()) * devicePixelRatio
                                 )
                             ).indexOf(target) >= 0
                         ) {
@@ -550,7 +550,7 @@ export default class AxQuery {
         };
         return new Promise(async (x) => {
             if (!(await resolveOf(x))) {
-                document.addEventListener(
+                document.documentElement.addEventListener(
                     "readystatechange",
                     (e) => resolveOf(x),
                     { once: false, passive: true }
