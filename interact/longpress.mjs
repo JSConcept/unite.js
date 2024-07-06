@@ -1,10 +1,12 @@
 // @ts-nocheck
 
+import { zoomOf } from "../utils/utils";
+
 export const longPress = (node, threshold = 60) => {
     const handle_mousedown = (ev) => {
         const pointerId = ev.pointerId;
         let start = Date.now();
-        let begin = [ev.pageX, ev.pageY];
+        let begin = [ev.clientX, ev.pageY];
 
         //
         const timeout = setTimeout(() => {
@@ -23,10 +25,10 @@ export const longPress = (node, threshold = 60) => {
         //
         const shifted = (ev) => {
             if (
-                pointerId == ev.pointerId && 
+                pointerId == ev.pointerId &&
                 Math.hypot(
-                    begin[0] - ev.pageX,
-                    begin[1] - ev.pageY
+                    begin[0] - ev.clientX / zoomOf(),
+                    begin[1] - ev.pageY / zoomOf()
                 ) > 10
             ) {
                 cancel(ev);
@@ -34,18 +36,18 @@ export const longPress = (node, threshold = 60) => {
         };
 
         //
-        document.addEventListener('pointermove', shifted);
-        document.addEventListener('pointerup', cancel);
-        document.addEventListener('pointercancel', cancel);
-    }
-    
+        document.addEventListener("pointermove", shifted);
+        document.addEventListener("pointerup", cancel);
+        document.addEventListener("pointercancel", cancel);
+    };
+
     //
-    node.addEventListener('pointerdown', handle_mousedown);
-    
+    node.addEventListener("pointerdown", handle_mousedown);
+
     //
     return {
         destroy() {
-            node.removeEventListener('pointerdown', handle_mousedown);
-        }
+            node.removeEventListener("pointerdown", handle_mousedown);
+        },
     };
-}
+};

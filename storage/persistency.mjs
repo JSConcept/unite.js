@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 const $get = Symbol("get");
 const $set = Symbol("set");
 const $initialize = Symbol("initialize");

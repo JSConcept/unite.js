@@ -3,6 +3,7 @@
 
 //
 import Timer from "../performance/time.mjs";
+import { zoomOf } from "../utils/utils";
 
 //
 export class DynamicHandler {
@@ -27,12 +28,17 @@ export class DynamicHandler {
 
         //
         if (array[name] != null) {
-            return typeof array[name] == "function" || array[name] instanceof Function ? array[name].bind(array) : array[name];
+            return typeof array[name] == "function" ||
+                array[name] instanceof Function
+                ? array[name].bind(array)
+                : array[name];
         }
 
         //
         const _f = array[this.index ?? 0][name];
-        return typeof _f == "function" || _f instanceof Function ? _f.bind(ctx) : _f;
+        return typeof _f == "function" || _f instanceof Function
+            ? _f.bind(ctx)
+            : _f;
     }
 
     //
@@ -46,7 +52,10 @@ export class DynamicHandler {
         }
 
         //
-        if (array[name] != null /*&& (typeof array[name] == 'function' || array[name] instanceof Function)*/) {
+        if (
+            array[name] !=
+            null /*&& (typeof array[name] == 'function' || array[name] instanceof Function)*/
+        ) {
             return false;
         }
 
@@ -79,12 +88,16 @@ export default class AxQuery {
     //
     #mutFn(fn) {
         return (...args) => {
-            return this.#mutedAction(()=>fn(...args));
+            return this.#mutedAction(() => fn(...args));
         };
     }
 
     //
-    constructor(ROOT = typeof document != "undefined" ? document?.body ?? document : null) {
+    constructor(
+        ROOT = typeof document != "undefined"
+            ? document?.body ?? document
+            : null
+    ) {
         const attribListener = new Map([]);
         const eventListener = new WeakMap([]);
         const domListener = new Map([]);
@@ -93,60 +106,85 @@ export default class AxQuery {
         const attributeObserver =
             typeof MutationObserver != "undefined"
                 ? new MutationObserver(async (mutationList, observer) => {
-                    if (!this.#muted) {
-                        mutationList.forEach(async mut => {
-                            const allowed = ["style"].indexOf(mut.attributeName) < 0;
-                            const value = mut.target.getAttribute(mut.attributeName);
-                            if (!mut?.attributeName?.startsWith("aq-") && value != mut?.oldValue && !mut.target[_changed_]) {
-                                // TODO: de-apply events (i.e. unselected)
-                                for (const [selector, fns] of attribListener.entries()) {
-                                    if (allowed && mut.target.matches(selector)) {
-                                        fns.map(F => F([mut.target], selector, mut.attributeName));
-                                    }
-                                }
-                            }
-                        });
-                    }
-                })
+                      if (!this.#muted) {
+                          mutationList.forEach(async (mut) => {
+                              const allowed =
+                                  ["style"].indexOf(mut.attributeName) < 0;
+                              const value = mut.target.getAttribute(
+                                  mut.attributeName
+                              );
+                              if (
+                                  !mut?.attributeName?.startsWith("aq-") &&
+                                  value != mut?.oldValue &&
+                                  !mut.target[_changed_]
+                              ) {
+                                  // TODO: de-apply events (i.e. unselected)
+                                  for (const [
+                                      selector,
+                                      fns,
+                                  ] of attribListener.entries()) {
+                                      if (
+                                          allowed &&
+                                          mut.target.matches(selector)
+                                      ) {
+                                          fns.map((F) =>
+                                              F(
+                                                  [mut.target],
+                                                  selector,
+                                                  mut.attributeName
+                                              )
+                                          );
+                                      }
+                                  }
+                              }
+                          });
+                      }
+                  })
                 : null;
 
         //
         const nodeObserver =
             typeof MutationObserver != "undefined"
                 ? new MutationObserver(async (mutationList, observer) => {
-                    if (!this.#muted) {
-                        for (const [selector, fns] of domListener.entries()) {
-                            mutationList.forEach(async mut => {
-                                //
-                                let elements =
-                                    mut.childList?.filter(e => {
-                                        //return elements.indexOf(e) > -1;
-                                        return e.matches(selector);
-                                    }) || [];
+                      if (!this.#muted) {
+                          for (const [selector, fns] of domListener.entries()) {
+                              mutationList.forEach(async (mut) => {
+                                  //
+                                  let elements =
+                                      mut.childList?.filter((e) => {
+                                          //return elements.indexOf(e) > -1;
+                                          return e.matches(selector);
+                                      }) || [];
 
-                                //
-                                if (mut.target.matches(selector) && elements.indexOf(mut.target) < 0) {
-                                    elements.push(mut.target);
-                                }
+                                  //
+                                  if (
+                                      mut.target.matches(selector) &&
+                                      elements.indexOf(mut.target) < 0
+                                  ) {
+                                      elements.push(mut.target);
+                                  }
 
-                                //
-                                elements = [...new Set(elements)];
-                                fns.map(F => F(elements, selector));
-                            });
-                        }
-                    }
-                })
+                                  //
+                                  elements = [...new Set(elements)];
+                                  fns.map((F) => F(elements, selector));
+                              });
+                          }
+                      }
+                  })
                 : null;
 
         //
-        nodeObserver?.observe?.((this.ROOT = ROOT), {childList: true, subtree: true});
+        nodeObserver?.observe?.((this.ROOT = ROOT), {
+            childList: true,
+            subtree: true,
+        });
 
         //
         this.defer.then(() => {
             for (const [selector, fns] of domListener.entries()) {
-                fns.map(F =>
+                fns.map((F) =>
                     F(
-                        this.dynamic(selector).filter(el => !el[_changed_]),
+                        this.dynamic(selector).filter((el) => !el[_changed_]),
                         selector
                     )
                 );
@@ -170,15 +208,22 @@ export default class AxQuery {
             elements.map(async (e, I) => {
                 if (!e[_changed_] && e != null) {
                     //await Timer.raf;
-                    const K = await (typeof key == "function" ? key(e, I) : key);
+                    const K = await (typeof key == "function"
+                        ? key(e, I)
+                        : key);
                     const k = `${K}`; //(K.startsWith("aq-") ? `--${K}` : `--aq-${K}`);
-                    const v = typeof unit == "function" ? await unit?.(e?.getAttribute?.(K), e) : `${e?.getAttribute?.(K)}${unit ?? ""}`;
+                    const v =
+                        typeof unit == "function"
+                            ? await unit?.(e?.getAttribute?.(K), e)
+                            : `${e?.getAttribute?.(K)}${unit ?? ""}`;
 
                     //
                     e[_changed_] = true;
                     if (e.matches(selector)) {
                         const val = e.style.getPropertyValue(k) == null;
-                        if (val != v || val == null) { e.style.setProperty(k, v, ""); }
+                        if (val != v || val == null) {
+                            e.style.setProperty(k, v, "");
+                        }
                     } else {
                         e.style.removeProperty(k);
                     }
@@ -195,7 +240,9 @@ export default class AxQuery {
             const mb = e?.matches?.(selector);
 
             //
-            let list = this.#eventListener.has(e) ? this.#eventListener.get(e) : new Set([]);
+            let list = this.#eventListener.has(e)
+                ? this.#eventListener.get(e)
+                : new Set([]);
             if (mb && !list.has(args)) {
                 if (!this.#eventListener.has(e)) {
                     this.#eventListener.set(e, list);
@@ -220,7 +267,7 @@ export default class AxQuery {
             //await Timer.raf;
             e[_changed_] = true;
             e[_observed_] = true;
-            this.#attributeObserver.observe(e, {attributes: true});
+            this.#attributeObserver.observe(e, { attributes: true });
             delete e[_changed_];
         }
     }
@@ -230,7 +277,11 @@ export default class AxQuery {
         for (const [key, value] of attribs.entries()) {
             elements.map(async (e, I) => {
                 if (!e[_changed_] && e.matches(selector)) {
-                    if (["style", "class", "id"].indexOf(mutation ?? key) < 0 && (mutation ? key == mutation : true) && !key.startsWith("aq-")) {
+                    if (
+                        ["style", "class", "id"].indexOf(mutation ?? key) < 0 &&
+                        (mutation ? key == mutation : true) &&
+                        !key.startsWith("aq-")
+                    ) {
                         //await Timer.raf;
                         e[_changed_] = true;
                         await value(e, I);
@@ -247,10 +298,19 @@ export default class AxQuery {
         for (const [key, value] of attribs.entries()) {
             elements.map(async (e, I) => {
                 if (!e[_changed_] && e.matches(selector)) {
-                    if ((["style", "class", "id"].indexOf(mutation) >= 0 ? key != mutation : mutation ? key == mutation : true) && !key.startsWith("aq-")) {
+                    if (
+                        (["style", "class", "id"].indexOf(mutation) >= 0
+                            ? key != mutation
+                            : mutation
+                            ? key == mutation
+                            : true) &&
+                        !key.startsWith("aq-")
+                    ) {
                         //await Timer.raf;
                         e[_changed_] = true;
-                        const val = await (typeof value == "function" ? value(e, I) : value);
+                        const val = await (typeof value == "function"
+                            ? value(e, I)
+                            : value);
                         const attr = e.getAttribute(key);
                         if (attr != val || attr == null) {
                             e.setAttribute(key, val);
@@ -266,7 +326,7 @@ export default class AxQuery {
     $domListen(selector, fn_) {
         const fn = this.#mutFn(async (els, ...args) => {
             return fn_(
-                els.filter(el => !el[_changed_] && el.matches(selector)),
+                els.filter((el) => !el[_changed_] && el.matches(selector)),
                 ...args
             );
         });
@@ -286,14 +346,16 @@ export default class AxQuery {
     $attribListen(selector, fn_) {
         const fn = this.#mutFn(async (els, ...args) => {
             return fn_(
-                els.filter(el => !el[_changed_] && el.matches(selector)),
+                els.filter((el) => !el[_changed_] && el.matches(selector)),
                 ...args
             );
         });
 
         //
         if (!this.#attribListener.has(selector)) {
-            this.$domListen(selector, els => els.map(el => this.#listenAttributes(el, selector)));
+            this.$domListen(selector, (els) =>
+                els.map((el) => this.#listenAttributes(el, selector))
+            );
             this.#attribListener.set(selector, [fn]);
         } else {
             this.#attribListener.get(selector).push(fn);
@@ -305,7 +367,7 @@ export default class AxQuery {
 
     //
     once(selector, fn, muted = true) {
-        return this.#mutedAction(()=>{
+        return this.#mutedAction(() => {
             return this.dynamic(selector).map(fn);
         });
     }
@@ -316,13 +378,21 @@ export default class AxQuery {
         const dynamic = this.dynamic(selector);
         this.ROOT.addEventListener(
             args[0],
-            async e => {
+            async (e) => {
                 //await Timer.raf;
-                if (e?.target?.matches?.(selector) && dynamic.indexOf(e.target) >= 0) {
+                if (
+                    e?.target?.matches?.(selector) &&
+                    dynamic.indexOf(e.target) >= 0
+                ) {
                     args[1](e);
                 }
             },
-            {...(args?.[2] ?? {}), capture: args?.[2]?.capture ?? false, once: args?.[2]?.once ?? false, passive: args?.[2]?.passive ?? false}
+            {
+                ...(args?.[2] ?? {}),
+                capture: args?.[2]?.capture ?? false,
+                once: args?.[2]?.once ?? false,
+                passive: args?.[2]?.passive ?? false,
+            }
         );
         return dynamic;
     }
@@ -333,24 +403,50 @@ export default class AxQuery {
         const dynamic = this.dynamic(selector);
         this.ROOT.addEventListener(
             args[0],
-            async $e => {
-                const e = $e.clientX == null && $e.clientY == null && $e.detail ? $e.detail : $e;
+            async ($e) => {
+                const e =
+                    $e.clientX == null && $e.pageY == null && $e.detail
+                        ? $e.detail
+                        : $e;
                 e.stopPropagation();
-                let target = this.ROOT?.elementFromPoint?.(e.clientX, e.clientY);
+                let target = this.ROOT?.elementFromPoint?.(
+                    e.clientX / zoomOf(),
+                    e.pageY / zoomOf()
+                );
                 if (target != null) {
-                    if (target.matches(selector) && dynamic.indexOf(target) >= 0) {
+                    if (
+                        target.matches(selector) &&
+                        dynamic.indexOf(target) >= 0
+                    ) {
                         await args[1]($e, target);
                     }
 
                     // try on parent nodes
-                    else if ((target = target.closest(selector)) != null && !args?.[2]?.targetOnly) {
-                        if (target.matches(selector) && dynamic.indexOf(target) >= 0 && Array.from(this.ROOT?.elementsFromPoint?.(e.clientX, e.clientY)).indexOf(target) >= 0) {
+                    else if (
+                        (target = target.closest(selector)) != null &&
+                        !args?.[2]?.targetOnly
+                    ) {
+                        if (
+                            target.matches(selector) &&
+                            dynamic.indexOf(target) >= 0 &&
+                            Array.from(
+                                this.ROOT?.elementsFromPoint?.(
+                                    (e.clientX / zoomOf()) * devicePixelRatio,
+                                    (e.pageY / zoomOf()) * devicePixelRatio
+                                )
+                            ).indexOf(target) >= 0
+                        ) {
                             await args[1]($e, target);
                         }
                     }
                 }
             },
-            {...(args?.[2] ?? {}), capture: args?.[2]?.capture ?? true, once: args?.[2]?.once ?? false, passive: args?.[2]?.passive ?? false}
+            {
+                ...(args?.[2] ?? {}),
+                capture: args?.[2]?.capture ?? true,
+                once: args?.[2]?.once ?? false,
+                passive: args?.[2]?.passive ?? false,
+            }
         );
         return dynamic;
     }
@@ -359,8 +455,12 @@ export default class AxQuery {
     per(s, fn) {
         return this.$domListen(s, (e, sel = s, m) =>
             this.#mutFn(
-                e.map(async el => {
-                    if (el.matches(sel) && (m == null || ["id", "class"].indexOf(m) >= 0) && !el[_changed_]) {
+                e.map(async (el) => {
+                    if (
+                        el.matches(sel) &&
+                        (m == null || ["id", "class"].indexOf(m) >= 0) &&
+                        !el[_changed_]
+                    ) {
                         await Timer.raf;
                         el[_changed_] = true;
                         const chg = await fn(el, sel, m);
@@ -375,48 +475,86 @@ export default class AxQuery {
 
     //
     observe(s, attributes) {
-        return this.$attribListen(s, (elements, selector = s, mutation = null) => {
-            // pre-set attributes
-            return this.#observeAttrib(selector ?? s, elements, attributes instanceof Map ? attributes : new Map(attributes), mutation);
-        });
+        return this.$attribListen(
+            s,
+            (elements, selector = s, mutation = null) => {
+                // pre-set attributes
+                return this.#observeAttrib(
+                    selector ?? s,
+                    elements,
+                    attributes instanceof Map
+                        ? attributes
+                        : new Map(attributes),
+                    mutation
+                );
+            }
+        );
     }
 
     //
     sheet(s, attributes) {
-        return this.$attribListen(s, (elements, selector = s, mutation = null) => {
-            // pre-set attributes
-            return this.#applyAttrib(selector ?? s, elements, attributes instanceof Map ? attributes : new Map(attributes), mutation);
-        });
+        return this.$attribListen(
+            s,
+            (elements, selector = s, mutation = null) => {
+                // pre-set attributes
+                return this.#applyAttrib(
+                    selector ?? s,
+                    elements,
+                    attributes instanceof Map
+                        ? attributes
+                        : new Map(attributes),
+                    mutation
+                );
+            }
+        );
     }
 
     //
     event(s, args) {
-        return this.$attribListen(s, (elements, selector = s, mutation = null) => {
-            // pre-set attributes
-            return this.#applyEvents(selector ?? s, elements, args);
-        });
+        return this.$attribListen(
+            s,
+            (elements, selector = s, mutation = null) => {
+                // pre-set attributes
+                return this.#applyEvents(selector ?? s, elements, args);
+            }
+        );
     }
 
     //
     attribCSS(s, attributes) {
-        return this.$attribListen(s, (elements, selector = s, mutation = null) => {
-            return this.#reflectAttribInStyle(selector ?? s, elements, attributes);
-        });
+        return this.$attribListen(
+            s,
+            (elements, selector = s, mutation = null) => {
+                return this.#reflectAttribInStyle(
+                    selector ?? s,
+                    elements,
+                    attributes
+                );
+            }
+        );
     }
 
     //
     get defer() {
-        const resolveOf = async x => {
-            if (["loading", "interactive", "complete"].indexOf(this.ROOT.readyState ?? document.readyState) >= 1) {
+        const resolveOf = async (x) => {
+            if (
+                ["loading", "interactive", "complete"].indexOf(
+                    this.ROOT.readyState ?? document.readyState
+                ) >= 1
+            ) {
                 await Timer.raf;
                 x({});
                 return true;
             }
             return false;
         };
-        return new Promise(async x => {
+        return new Promise(async (x) => {
             if (!(await resolveOf(x))) {
-                document.addEventListener("readystatechange", e => resolveOf(x), {once: false, passive: true});
+                document.addEventListener(
+                    "readystatechange",
+                    (e) => resolveOf(x),
+                    { once: false, passive: true }
+                );
             }
         });
     }

@@ -1,5 +1,6 @@
 // @ts-nocheck
-import {grabForDrag} from "./pointer-api.mjs";
+import { zoomOf } from "../utils/utils";
+import { grabForDrag } from "./pointer-api.mjs";
 
 //
 const clamp = (min, val, max) => {
@@ -16,11 +17,11 @@ const tpm = (callback = (p0, p1) => {}, timeout = 1000) => {
 
         // Set up the real work
         callback(
-            value => {
+            (value) => {
                 clearTimeout(timer);
                 resolve(value);
             },
-            error => {
+            (error) => {
                 clearTimeout(timer);
                 reject(error);
             }
@@ -86,8 +87,8 @@ export default class AxGesture {
                 if (ev.target == options?.handler) {
                     swipes.set(ev.pointerId, {
                         target: ev.target,
-                        start: [ev.pageX, ev.pageY],
-                        current: [ev.pageX, ev.pageY],
+                        start: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
+                        current: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
                         pointerId: ev.pointerId,
                         startTime: performance.now(),
                         time: performance.now(),
@@ -102,7 +103,7 @@ export default class AxGesture {
                     const swipe = swipes.get(ev.pointerId);
                     Object.assign(swipe, {
                         //speed: (swipe.speed == 0 ? speed : (speed * 0.8 + swipe.speed * 0.2)),
-                        current: [ev.pageX, ev.pageY],
+                        current: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
                         pointerId: ev.pointerId,
                         time: performance.now(),
                     });
@@ -428,8 +429,8 @@ export default class AxGesture {
         const registerCoord = [
             (ev) => {
                 if (ev.pointerId == action.pointerId) {
-                    action.lastCoord[0] = ev.pageX;
-                    action.lastCoord[1] = ev.pageY;
+                    action.lastCoord[0] = ev.clientX / zoomOf();
+                    action.lastCoord[1] = ev.pageY / zoomOf();
                 }
             },
             { capture: true, passive: true },
@@ -438,8 +439,8 @@ export default class AxGesture {
         //
         const triggerOrCancel = (ev) => {
             if (ev.pointerId == action.pointerId) {
-                action.lastCoord[0] = ev.pageX;
-                action.lastCoord[1] = ev.pageY;
+                action.lastCoord[0] = ev.clientX / zoomOf();
+                action.lastCoord[1] = ev.pageY / zoomOf();
 
                 //
                 ev.preventDefault();
@@ -457,8 +458,8 @@ export default class AxGesture {
         //
         const cancelWhenMove = (ev) => {
             if (ev.pointerId == action.pointerId) {
-                action.lastCoord[0] = ev.pageX;
-                action.lastCoord[1] = ev.pageY;
+                action.lastCoord[0] = ev.clientX / zoomOf();
+                action.lastCoord[1] = ev.pageY / zoomOf();
 
                 //
                 ev.preventDefault();
@@ -487,8 +488,14 @@ export default class AxGesture {
                     ev.stopPropagation();
 
                     //
-                    action.pageCoord = [ev.pageX, ev.pageY];
-                    action.lastCoord = [ev.pageX, ev.pageY];
+                    action.pageCoord = [
+                        ev.clientX / zoomOf(),
+                        ev.pageY / zoomOf(),
+                    ];
+                    action.lastCoord = [
+                        ev.clientX / zoomOf(),
+                        ev.pageY / zoomOf(),
+                    ];
                     action.pointerId = ev.pointerId;
 
                     //

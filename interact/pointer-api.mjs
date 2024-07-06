@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+import { zoomOf } from "../utils/utils";
+
 class PointerEdge {
     constructor(pointer) {
         this.pointer = pointer;
@@ -52,18 +54,20 @@ export const pointerMap = new Map([
 //
 document.addEventListener(
     "pointerdown",
-    ev => {
+    (ev) => {
         //
         const np = {
             id: ev.pointerId,
             event: ev,
-            current: [ev.pageX, ev.pageY],
-            down: [ev.pageX, ev.pageY],
+            current: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
+            down: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
             movement: [0, 0],
         };
 
         //
-        const exists = pointerMap.has(ev.pointerId) ? pointerMap.get(ev.pointerId) : np;
+        const exists = pointerMap.has(ev.pointerId)
+            ? pointerMap.get(ev.pointerId)
+            : np;
         np.movement[0] = np.current[0] - exists.current[0];
         np.movement[1] = np.current[1] - exists.current[1];
 
@@ -73,7 +77,7 @@ document.addEventListener(
         }
 
         //
-        exists.holding.map(hm => {
+        exists.holding.map((hm) => {
             hm.shifting = [...(hm.modified || hm.shifting)];
         });
 
@@ -90,7 +94,7 @@ document.addEventListener(
             pointerMap.set(ev.pointerId, exists);
         }
     },
-    {capture: true}
+    { capture: true }
 );
 
 //
@@ -100,7 +104,7 @@ document.addEventListener(
         const np = {
             id: ev.pointerId,
             event: ev,
-            current: [ev.pageX, ev.pageY],
+            current: [ev.clientX / zoomOf(), ev.pageY / zoomOf()],
             movement: [0, 0],
         };
 

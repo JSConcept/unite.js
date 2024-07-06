@@ -2,9 +2,11 @@
 import styles from "./scrollbox.css?inline";
 import html from "./scrollbox.html?raw";
 
+import { zoomOf } from "../utils/utils";
+
 //
 class ScrollBar {
-    constructor({holder, scrollbar}, axis = 0) {
+    constructor({ holder, scrollbar }, axis = 0) {
         this.scrollbar = scrollbar;
         this.holder = holder;
 
@@ -17,18 +19,34 @@ class ScrollBar {
 
         //
         const onChanges = () => {
-            const thumbSize = this.scrollbar[["offsetWidth", "offsetHeight"][axis]] * Math.min(this.holder[["offsetWidth", "offsetHeight"][axis]] / this.holder[["scrollWidth", "scrollHeight"][axis]], 1);
+            const thumbSize =
+                this.scrollbar[["offsetWidth", "offsetHeight"][axis]] *
+                Math.min(
+                    this.holder[["offsetWidth", "offsetHeight"][axis]] /
+                        this.holder[["scrollWidth", "scrollHeight"][axis]],
+                    1
+                );
 
             //
-            const percentInPx = this.scrollbar[["offsetWidth", "offsetHeight"][axis]] - thumbSize;
+            const percentInPx =
+                this.scrollbar[["offsetWidth", "offsetHeight"][axis]] -
+                thumbSize;
 
             //
             this.scrollbar.style.setProperty("--thumbSize", thumbSize, "");
             this.scrollbar.style.setProperty("--percentInPx", percentInPx, "");
 
             //
-            this.holder.style.setProperty("--scroll-top", this.holder.scrollTop, "");
-            this.holder.style.setProperty("--scroll-left", this.holder.scrollLeft, "");
+            this.holder.style.setProperty(
+                "--scroll-top",
+                this.holder.scrollTop,
+                ""
+            );
+            this.holder.style.setProperty(
+                "--scroll-left",
+                this.holder.scrollLeft,
+                ""
+            );
 
             //
             const event = new CustomEvent("scroll-change", {
@@ -50,24 +68,29 @@ class ScrollBar {
         };
 
         //
-        this.scrollbar.querySelector(".thumb").addEventListener("pointerdown", ev => {
-            if (this.status.pointerId < 0) {
-                this.status.pointerId = ev.pointerId;
-                this.status.pointerLocation = ev[["pageX", "pageY"][axis]];
-                this.status.virtualScroll = this.holder[["scrollLeft", "scrollTop"][axis]];
-            }
-        });
+        this.scrollbar
+            .querySelector(".thumb")
+            .addEventListener("pointerdown", (ev) => {
+                if (this.status.pointerId < 0) {
+                    this.status.pointerId = ev.pointerId;
+                    this.status.pointerLocation =
+                        ev[["clientX", "pageY"][axis]] / zoomOf();
+                    this.status.virtualScroll =
+                        this.holder[["scrollLeft", "scrollTop"][axis]];
+                }
+            });
 
         //
-        document.addEventListener("pointermove", ev => {
+        document.addEventListener("pointermove", (ev) => {
             if (this.status.pointerId == ev.pointerId) {
                 const previous = this.holder[["scrollLeft", "scrollTop"][axis]];
-
-
-                const coord = ev[["pageX", "pageY"][axis]];
+                const coord = ev[["clientX", "pageY"][axis]] / zoomOf();
 
                 //
-                this.status.virtualScroll += (coord - this.status.pointerLocation) * (this.holder[["scrollWidth", "scrollHeight"][axis]] / this.scrollbar[["offsetWidth", "offsetHeight"][axis]]);
+                this.status.virtualScroll +=
+                    (coord - this.status.pointerLocation) *
+                    (this.holder[["scrollWidth", "scrollHeight"][axis]] /
+                        this.scrollbar[["offsetWidth", "offsetHeight"][axis]]);
                 this.status.pointerLocation = coord;
 
                 //
@@ -82,9 +105,10 @@ class ScrollBar {
         });
 
         //
-        const stopScroll = ev => {
+        const stopScroll = (ev) => {
             if (this.status.pointerId == ev.pointerId) {
-                this.status.virtualScroll = this.holder[["scrollLeft", "scrollTop"][axis]];
+                this.status.virtualScroll =
+                    this.holder[["scrollLeft", "scrollTop"][axis]];
                 this.status.pointerId = -1;
             }
         };
@@ -97,11 +121,11 @@ class ScrollBar {
         this.holder.addEventListener("pointerleave", onChanges);
         this.holder.addEventListener("pointerenter", onChanges);
         this.holder.addEventListener("scroll", onChanges);
-        new ResizeObserver(entries => {
+        new ResizeObserver((entries) => {
             if (entries) {
                 onChanges();
             }
-        }).observe(this.holder, {box: "content-box"});
+        }).observe(this.holder, { box: "content-box" });
 
         //
         addEventListener("resize", onChanges);

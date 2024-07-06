@@ -1,6 +1,15 @@
 // @ts-nocheck
 
 //
+export const zoomOf = ()=>{
+    const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
+    return (
+        (document.documentElement.currentCSSZoom || 1) /
+        (isFirefox ? 1 : (devicePixelRatio || 1))
+    );
+}
+
+//
 export const EmbedStyle = async (shadow, styles)=>{
     const style = document.createElement("style");
     //style.setAttribute("scoped", "");
