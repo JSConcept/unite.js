@@ -1,26 +1,33 @@
 <script>
     import {observeBySelector} from "dom/Observer";
     import GridItem from "grid/GridItem.svelte";
+    import GridItemLabel from "grid/GridItemLabel.svelte";
     
     //
-    export let list = [];
-    export let layout = [];
-    export let size = [];
-    export let id = "";
-    
-    //
+    export let gridPage = {};
     export let items = new Map([]);
+    export let type = "items";
     
     //
     let target = null;
+    let list = [];
     
     //
-    $: size?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--grid-w", v, "")), 0);
-    $: size?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--grid-h", v, "")), 1);
+    $: gridPage?.["@subscribe"]?.((v)=>{
+        list = v;
+    }, "list");
     
     //
-    $: layout?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--columns", v, "")), 0);
-    $: layout?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--rows", v, "")), 1);
+    $: gridPage?.["@subscribe"]?.((v)=>{
+        target?.style?.setProperty?.("--grid-w", v[0], "")
+        target?.style?.setProperty?.("--grid-w", v[1], "")
+    }, "size");
+    
+    //
+    $: gridPage?.["@subscribe"]?.((v)=>{
+        target?.style?.setProperty?.("--columns", v[0], "")
+        target?.style?.setProperty?.("--rows", v[1], "")
+    }, "layout");
     
     //
     onMount(()=>{
@@ -30,10 +37,15 @@
     });
 </script>
 
-<div bind:this={target} data-id={id} class="ux-grid">
+<!-- -->
+<div bind:this={target} data-id={gridPage.id} class="ux-grid">
     
     {#each list as L}
-        <GridItem {...items.get(L)}></GridItem>
+        {#if type == "labels"}
+            <GridItemLabel type={type} gridItem={items.get(L)}></GridItemLabel>
+        {:else}
+            <GridItem type={type} gridItem={items.get(L)}></GridItem>
+        {/if}
     {/each}
     
 </div>

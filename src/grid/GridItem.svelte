@@ -1,22 +1,16 @@
 <script>
-    import {onMount} from "svelte";
-    
-    //
-    export let cell = [0, 0];
-    export let id = "";
-    export let label = "";
-    export let pointerId = -1;
-
-    //
+    export let gridItem = {};
     export let type = "";
-
+    
     //
     let target = null;
 
     //
-    $: cell?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--cell-x", v, "")), 0);
-    $: cell?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--cell-y", v, "")), 1);
-    
+    $: gridItem?.["@subscribe"]?.((v)=>{
+        target?.style?.setProperty?.("--cell-x", v[0], "")
+        target?.style?.setProperty?.("--cell-y", v[1], "")
+    }, "cell");
+
     //
     export let whenMount = ()=>{};
     
@@ -25,6 +19,6 @@
 </script>
 
 <!-- -->
-<div bind:this={target} data-id={id} data-type={type} class="ux-grid-item">
+<div bind:this={target} data-id={gridItem.id} data-type={type} class="ux-grid-item">
     <slot></slot>
 </div>
