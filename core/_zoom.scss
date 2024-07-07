@@ -1,0 +1,16 @@
+@property --zoom { syntax: "<number>"; initial-value: 1; inherits: true; };
+@property --scaling { syntax: "<number>"; initial-value: 1; inherits: true; };
+
+//
+.__exp-use-zoom {
+    zoom: var(--scaling, 1);
+    font-size: initial !important;
+    --zoom: var(--scaling, 1);
+}
+
+//
+.__use_font-size {
+    zoom: initial !important;
+    font-size: calc(16px * var(--scaling, 1));
+    --zoom: 1;
+}

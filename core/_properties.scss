@@ -1,0 +1,74 @@
+
+//
+@property --resize-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --resize-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --ppx {
+    syntax: "<length-percentage>";
+    initial-value: 1px;
+    inherits: true;
+}
+
+//
+@property --translate-x {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --translate-y {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --avail-width {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --pixel-ratio {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --avail-height {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --keyboard-inset-bottom {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --keyboard-inset-height {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --translate-x {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --translate-y {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
