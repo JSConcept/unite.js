@@ -13,6 +13,6 @@
 </script>
 
 <!-- -->
-<div bind:this={target} data-id={id} class="ux-grid-item">
-    <slot></slot>
+<div bind:this={target} data-id={id} class="ux-grid-item-label">
+    {label||""}
 </div>

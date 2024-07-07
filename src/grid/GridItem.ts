@@ -11,6 +11,7 @@ interface GridItem {
 
 //
 interface GridPage {
+    id: string;
     list: string[];
     layout: [number, number];
     size: [number, number];
@@ -22,7 +23,6 @@ interface GridArgs {
     items: Map<string, GridItem>;
     page: GridPage;
 };
-
 
 //
 export const getParent = (e) => {
@@ -253,5 +253,5 @@ export const putToCell = (gridArgs: GridArgs, $coord: [number, number]) => {
     return redirectCell(
         gridArgs,
         preCell
-    );;
+    );
 };
