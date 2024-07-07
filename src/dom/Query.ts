@@ -6,6 +6,7 @@ export class DynamicHandler {
     index: number = 0;
     query: string = "";
 
+    //
     constructor(query = "", index = 0) {
         this.index = index;
         this.query = query;

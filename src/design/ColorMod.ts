@@ -81,10 +81,10 @@ export const sourceColorFromImage = async (bitmap) => {
 
     //
     const result = await QuantizerCelebi.quantize(pixels, Q.sampling);
-    const colors: number[] = Array.from(result.entries());
+    const colors: [number, number][] = Array.from(result.entries());
 
     //
-    const mostCount = colors.toSorted((a: number, b: number) => {
+    const mostCount = colors.toSorted((a: [number, number], b: [number, number]) => {
         return Math.sign(b[1] - a[1]);
     });
 
@@ -94,8 +94,8 @@ export const sourceColorFromImage = async (bitmap) => {
 
     //
     const mostChroma = mostCount.toSorted((a, b) => {
-        const hct_a = new Hct(a[0]);
-        const hct_b = new Hct(b[0]);
+        const hct_a = Hct.fromInt(a[0] as number);
+        const hct_b = Hct.fromInt(b[0] as number);
         return Math.sign(hct_b.chroma - hct_a.chroma);
     });
 
@@ -141,7 +141,7 @@ export const applyTheme = (theme, options) => {
 export const setSchemeProperties = (target, scheme, suffix = '') => {
     for (const [key, value] of Object.entries(scheme.toJSON())) {
         const token = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-        const color = hexFromArgb(value);
+        const color = hexFromArgb(value as number);
         target.style.setProperty(`--md-sys-color-${token}${suffix}`, color);
     }
 };
