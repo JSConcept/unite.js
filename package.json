@@ -40,8 +40,8 @@
         "vite-plugin-browser-sync": "^3.0.3",
         "vite-plugin-bundle-prefetch": "^0.0.4",
         "vite-plugin-compression2": "^1.1.1",
+        "vite-plugin-node-polyfills": "^0.22.0",
         "vite-plugin-pwa": "^0.20.0",
-        "vite-plugin-static-copy": "^1.0.5",
-        "vite-plugin-node-polyfills": "^0.22.0"
+        "vite-plugin-static-copy": "^1.0.5"
     }
 }

@@ -1,5 +1,6 @@
 export default class ReactiveObject {
-    subscribers: Map<string | number | symbol, Set<(value: any) => void>>;
+    subscribers: Map<string | number | symbol, Set<(value: any, prop: string | number | symbol) => void>>;
+    listeners: Set<(value: any, prop: string | number | symbol) => void>;
 
     //
     constructor() {
@@ -7,11 +8,15 @@ export default class ReactiveObject {
     }
 
     //
-    ["@subscribe"](prop: string | number | symbol, cb: (value: any) => void) {
-        if (this.subscribers.has(prop)) {
-            this.subscribers.get(prop)?.add?.(cb);
+    ["@subscribe"](cb: (value: any, prop: string | number | symbol) => void, prop: string | number | symbol) {
+        if (prop) {
+            if (this.subscribers.has(prop)) {
+                this.subscribers.get(prop)?.add?.(cb);
+            } else {
+                this.subscribers.set(prop, new Set([cb]));
+            }
         } else {
-            this.subscribers.set(prop, new Set([cb]));
+            this.listeners.add?.(cb);
         }
     }
 
@@ -20,7 +25,7 @@ export default class ReactiveObject {
         if (name == "@subscribe") {
             return (prop: string, cb: (value: any) => void) => {
                 cb?.(Reflect.get(target, prop, ctx));
-                this["@subscribe"](prop, cb);
+                this["@subscribe"](cb, prop);
             };
         }
         if (name == "@extract") {
@@ -48,13 +53,15 @@ export default class ReactiveObject {
 
     //
     set(target, name: string | number | symbol, value) {
-        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
+        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, name));
+        Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, name));
         return Reflect.set(target, name, value);
     }
 
     //
     deleteProperty(target, name: string | number | symbol) {
-        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any) => void) => cb(null));
+        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(null, name));
+        Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(null, name));
         return Reflect.deleteProperty(target, name);
     }
 }

@@ -15,12 +15,12 @@
     let target = null;
     
     //
-    $: size?.["@subscribe"]?.(0, (v)=>(target?.style?.setProperty?.("--grid-w", v, "")));
-    $: size?.["@subscribe"]?.(1, (v)=>(target?.style?.setProperty?.("--grid-h", v, "")));
+    $: size?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--grid-w", v, "")), 0);
+    $: size?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--grid-h", v, "")), 1);
     
     //
-    $: layout?.["@subscribe"]?.(0, (v)=>(target?.style?.setProperty?.("--columns", v, "")));
-    $: layout?.["@subscribe"]?.(1, (v)=>(target?.style?.setProperty?.("--rows", v, "")));
+    $: layout?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--columns", v, "")), 0);
+    $: layout?.["@subscribe"]?.((v)=>(target?.style?.setProperty?.("--rows", v, "")), 1);
     
     //
     onMount(()=>{

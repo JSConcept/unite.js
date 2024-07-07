@@ -1,5 +1,6 @@
 export default class ReactiveSet {
-    subscribers: Map<string | number | symbol, Set<(value: any) => void>>;
+    subscribers: Map<any, Set<(value: any) => void>>;
+    listeners: Set<(value: any) => void>;
 
     //
     constructor() {
@@ -7,11 +8,15 @@ export default class ReactiveSet {
     }
 
     //
-    ["@subscribe"](prop: string | number | symbol, cb: (value: any) => void) {
-        if (this.subscribers.has(prop)) {
-            this.subscribers.get(prop)?.add?.(cb);
+    ["@subscribe"](cb: (value: any) => void, value: any) {
+        if (value) {
+            if (this.subscribers.has(value)) {
+                this.subscribers.get(value)?.add?.(cb);
+            } else {
+                this.subscribers.set(value, new Set([cb]));
+            }
         } else {
-            this.subscribers.set(prop, new Set([cb]));
+            this.listeners.add?.(cb);
         }
     }
 
@@ -25,11 +30,11 @@ export default class ReactiveSet {
     //
     get(target, name: string | number | symbol, ctx) {
         if (name == "@subscribe") {
-            return (prop: string, cb: (value: any) => void) => {
-                if (target.has(prop)) {
-                    cb?.(target.get(prop));
+            return (cb: (value: any) => void, value: string) => {
+                if (target.has(value)) {
+                    cb?.(target.get(value));
                 }
-                this["@subscribe"](prop, cb);
+                this["@subscribe"](cb, value);
             };
         }
 
@@ -42,6 +47,7 @@ export default class ReactiveSet {
         if (name == "delete") {
             return (value) => {
                 Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
+                Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
                 (Reflect.get(target, name, ctx))(value, value);
             };
         }
@@ -50,6 +56,7 @@ export default class ReactiveSet {
         if (name == "add") {
             return (value) => {
                 Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
+                Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
                 (Reflect.get(target, name, ctx))(value, value);
             };
         }

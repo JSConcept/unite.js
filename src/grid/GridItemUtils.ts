@@ -1,9 +1,9 @@
 //
-import {makeReactiveObject} from "../proxy/ReactiveObject.ts";
+import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
 import {getCorrectOrientation, isMobile} from "../utils/Utils.ts";
 
 //
-interface GridItem {
+export interface GridItem {
     cell: [number, number];
     id: string;
     label: string;
@@ -11,7 +11,7 @@ interface GridItem {
 };
 
 //
-interface GridPage {
+export interface GridPage {
     id: string;
     list: string[];
     layout: [number, number];
@@ -19,7 +19,7 @@ interface GridPage {
 };
 
 //
-interface GridArgs {
+export interface GridArgs {
     item: GridItem;
     items: Map<string, GridItem>;
     page: GridPage;
