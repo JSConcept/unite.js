@@ -1,0 +1,52 @@
+
+//
+@mixin virtualCell() {}
+
+//
+@mixin calculateMetric() {
+    // CLAMPED GRID
+    --f-col: clamp(4, var(--columns, 4), 6);
+    --f-row: clamp(8, var(--rows, 8), 12);
+
+    //
+    --fc-cell-x: calc(clamp(0, var(--cell-x), calc(var(--f-col) - 1)) + 1);
+    --fc-cell-y: calc(clamp(0, var(--cell-y), calc(var(--f-row) - 1)) + 1);
+
+    //
+    --fp-cell-x: calc(clamp(0, var(--p-cell-x), calc(var(--f-col) - 1)) + 1);
+    --fp-cell-y: calc(clamp(0, var(--p-cell-y), calc(var(--f-row) - 1)) + 1);
+
+    //
+    --vect-x: calc(var(--fc-cell-x) - var(--fp-cell-x));
+    --vect-y: calc(var(--fc-cell-y) - var(--fp-cell-y));
+}
+
+//
+.ux-grid {
+    //
+    grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
+    grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+
+    //
+    --c-gap: 1;
+    --r-gap: 1;
+
+    //
+    padding-inline: calc(var(--c-gap) * 0.5rem);
+    padding-block : calc(var(--r-gap) * 0.5rem);
+
+    //
+    column-gap: calc(var(--c-gap) * 1rem);
+    row-gap: calc(var(--r-gap) * 1rem);
+    
+    //
+    place-items: center;
+    place-content: space-around;
+    
+    //
+    .ux-grid-item {
+        @include calculateMetric();
+        grid-column: var(--cell-x);
+        grid-row: var(--cell-y);
+    }
+}

@@ -3,10 +3,10 @@
 //
 import {hexFromArgb} from "@material/material-color-utilities";
 import {formatCss, formatHex, interpolate, oklch, parse} from "culori";
-import {sourceColorFromImage} from "./color-mod.mjs";
+import {sourceColorFromImage} from "./ColorMod.mjs/index.js";
 
 //
-import {setStyleRule} from "@unite/dom/stylework.mjs";
+import {setStyleRule} from "../dom/StyleWork.mjs";
 
 //
 export const provide = async (path = "", rw = false) => {

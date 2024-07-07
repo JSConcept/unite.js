@@ -1,0 +1,47 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "browserslist": [
+        "last 1 chrome version",
+        "last 1 firefox version"
+    ],
+    "dependencies": {
+        "@effective/eslint-config": "^5.4.7",
+        "@fastify/vite": "^6.0.6",
+        "@material/material-color-utilities": "^0.2.7",
+        "@sveltejs/vite-plugin-svelte": "^3.1.1",
+        "@sveltejs/vite-plugin-svelte-inspector": "^2.1.0",
+        "@tsconfig/svelte": "^5.0.2",
+        "@types/node": "*",
+        "@vitejs/plugin-legacy": "^5.4.1",
+        "@xl-soft/ui": "^2.2.7-stable",
+        "autoprefixer": "^10.4.16",
+        "cbor-x": "^1.5.9",
+        "culori": "^4.0.1",
+        "eslint-config-prettier": "^9.1.0",
+        "fastify": "^4.28.0",
+        "glob": "^10.4.2",
+        "jsox": "^1.2.119",
+        "lucide-svelte": "^0.395.0",
+        "rimraf": "^5.0.7",
+        "sass": "^1.77.6",
+        "svelte": "^4.2.2",
+        "svelte-gestures": "^5.0.1",
+        "svelte-preprocess": "^5.0.4",
+        "svelte-range-slider-pips": "^2.3.1",
+        "typescript": "^5.5.2",
+        "vite": "^5.3.1",
+        "vite-bundle-analyzer": "^0.10.3",
+        "vite-plugin-browser-sync": "^3.0.3",
+        "vite-plugin-bundle-prefetch": "^0.0.4",
+        "vite-plugin-compression2": "^1.1.1",
+        "vite-plugin-pwa": "^0.20.0",
+        "vite-plugin-static-copy": "^1.0.5",
+        "vite-plugin-node-polyfills": "^0.22.0"
+    }
+}

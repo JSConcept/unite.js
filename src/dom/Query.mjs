@@ -2,7 +2,7 @@
 /** @format */
 
 //
-import Timer from "../performance/time.mjs";
+import Timer from "../performance/Time.mjs";
 import { zoomOf } from "../utils/utils";
 
 //

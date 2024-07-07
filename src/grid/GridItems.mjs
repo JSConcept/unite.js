@@ -169,24 +169,31 @@ export const animationSequence = () => {
         {
             "--translate-x": "calc(var(--drag-x) * 1px)",
             "--translate-y": "calc(var(--drag-y) * 1px)",
-
+            gridColumn: "var(--p-cell-x)",
+            gridRow: "var(--p-cell-y)",
             easing: "step-start",
             offset: 0.0,
         },
         {
             "--translate-x": "calc(var(--drag-x) * 1px)",
             "--translate-y": "calc(var(--drag-y) * 1px)",
-
+            gridColumn: "var(--p-cell-x)",
+            gridRow: "var(--p-cell-y)",
             easing: "linear",
             offset: 0.01,
         },
-        {
+        {   
+            gridColumn: "var(--p-cell-x)",
+            gridRow: "var(--p-cell-y)",
             ...getOrientedPoint(),
             easing: "step-end",
             offset: 0.99,
         },
         {
-            ...getOrientedPoint(),
+            gridColumn: "var(--cell-x)",
+            gridRow: "var(--cell-y)",
+            "--drag-x": 0,
+            "--drag-y": 0,
             easing: "step-end",
             offset: 1,
         },

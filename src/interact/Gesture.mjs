@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { zoomOf } from "../utils/utils";
-import { grabForDrag } from "./pointer-api.mjs";
+import { grabForDrag } from "./PointerAPI.mjs";
 
 //
 const clamp = (min, val, max) => {

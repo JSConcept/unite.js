@@ -375,7 +375,7 @@ const updateOrientation = (e) => {
 
 //
 const classes = [
-    [":root, :host, :scope", cloudyShape],
+    [":where(.wavy-shaped)", cloudyShape],
     [":root, :host, :scope", portrait],
     [":root, :host, :scope", landscape],
     [":root, :host, :scope", displayPortrait],
