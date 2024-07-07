@@ -1,7 +1,5 @@
-// @ts-nocheck
-
 //
-import {getCorrectOrientation} from "../utils/utils";
+import {getCorrectOrientation} from "../utils/Utils";
 
 //
 const styleElement = document.createElement("style");
@@ -11,28 +9,33 @@ document.querySelector("head")?.appendChild?.(styleElement);
 let shapeCount = 0;
 
 //
-export const setStyleRule = (selector, sheet) => {
+export const setStyleRule = (selector: string, sheet: object) => {
     const styleRules = styleElement.sheet;
-    let ruleId = Array.from(styleRules?.cssRules || []).findIndex(({selectorText})=>(selector == selectorText));
-    if (ruleId <= -1) { ruleId = styleRules.insertRule(`${selector} {}`); }
+    let ruleId = Array.from(styleRules?.cssRules || []).findIndex((rule) => (rule instanceof CSSStyleRule ? (selector == rule?.selectorText) : false));
+    if (ruleId <= -1) {ruleId = styleRules?.insertRule(`${selector} {}`) as number;}
 
     //
-    const rule = styleElement.sheet.cssRules[ruleId];
-    Object.entries(sheet).map(([propName, propValue])=>{
-        const exists = rule.style.getPropertyValue(propName);
-        if (!exists || exists != propValue) {
-            rule.style.setProperty(propName, propValue, "");
+    const rule = styleElement?.sheet?.cssRules[ruleId];
+    Object.entries(sheet).map(([propName, propValue]) => {
+        if (rule instanceof CSSStyleRule) {
+            const exists = rule?.style?.getPropertyValue(propName);
+            if (!exists || exists != propValue) {
+                rule?.style?.setProperty?.(propName, (propValue || "") as string, "");
+            }
         }
     });
-}
+};
 
 //
-export const setStyleRules = (classes) => {
-    return classes?.map?.((args)=>setStyleRule(...args));
-}
+type StyleTuple = [selector: string, sheet: object];
 
 //
-export const WavyShapedCircle = (applicant = null)=>{
+export const setStyleRules = (classes: StyleTuple[]) => {
+    return classes?.map?.((args) => setStyleRule(...args));
+};
+
+//
+export const WavyShapedCircle = (applicant = null) => {
     const steps = 100;
     const cx = 0.5;
     const cy = 0.5;
@@ -41,9 +44,9 @@ export const WavyShapedCircle = (applicant = null)=>{
     const radius = 0.5;
 
     //
-    const points = [];
-    for (let i=0;i<steps;i++) {
-        points.push(i/steps);
+    const points: number[] = [];
+    for (let i = 0; i < steps; i++) {
+        points.push(i / steps);
     }
 
     /*for (let i=0;i<steps;i++) {
@@ -53,34 +56,34 @@ export const WavyShapedCircle = (applicant = null)=>{
         const ry = cy + Math.sin(angle) * (radius - variant);
         points.push([rx, ry]);
     }*/
-// * 0.5 + 0.5
-    const angle = (step)=>{
+    // * 0.5 + 0.5
+    const angle = (step) => {
         return `calc(${step}rad * pi * 2)`;
-    }
+    };
 
     //
-    const variant = (step)=>{
-        return `calc(calc(cos(calc(var(--clip-freq) * ${angle(step)})) * 0.5 + 0.5) * var(--clip-ampl))`
-    }
+    const variant = (step) => {
+        return `calc(calc(cos(calc(var(--clip-freq) * ${angle(step)})) * 0.5 + 0.5) * var(--clip-ampl))`;
+    };
 
     //
-    const func = (step)=>{
+    const func = (step) => {
         return [
             `calc(calc(0.5 + calc(cos(${angle(step)}) * calc(0.5 - ${variant(step)}))) * 100%)`,
             `calc(calc(0.5 + calc(sin(${angle(step)}) * calc(0.5 - ${variant(step)}))) * 100%)`
         ];
-    }
+    };
 
     //
-    const d = points.map((step)=>{ const stp = func(step).join(" "); return stp}).join(", ");
+    const d = points.map((step) => {const stp = func(step).join(" "); return stp;}).join(", ");
 
     //
     return {
         "--clip-ampl": ampl,
         "--clip-freq": freq,
         "--clip-path": `polygon(${d})`
-    }
-}
+    };
+};
 
 //
 const properties = [
@@ -120,8 +123,8 @@ const properties = [
         inherits: true,
         initialValue: "0deg",
     },
-    { name: "--prot", syntax: "<angle>", inherits: true, initialValue: "0deg" },
-    { name: "--lrot", syntax: "<angle>", inherits: true, initialValue: "0deg" },
+    {name: "--prot", syntax: "<angle>", inherits: true, initialValue: "0deg"},
+    {name: "--lrot", syntax: "<angle>", inherits: true, initialValue: "0deg"},
     {
         name: "--pth",
         syntax: "<length-percentage>",
@@ -210,8 +213,8 @@ const displayPortrait180deg = {
     "--pfrot": "180deg",
 };
 const displayPortrait270deg = CSS.supports("writing-mode", "sideways-lr")
-    ? { "--pwm": "sideways-lr", "--pdir": "ltr", "--pfrot": "0deg" }
-    : { "--pwm": "vertical-lr", "--pdir": "rtl", "--pfrot": "0deg" };
+    ? {"--pwm": "sideways-lr", "--pdir": "ltr", "--pfrot": "0deg"}
+    : {"--pwm": "vertical-lr", "--pdir": "rtl", "--pfrot": "0deg"};
 //
 const displayLandscape90deg = {
     "--lwm": "vertical-rl",
@@ -229,20 +232,20 @@ const displayLandscape180deg = {
     "--lfrot": "180deg",
 };
 const displayLandscape270deg = CSS.supports("writing-mode", "sideways-lr")
-    ? { "--lwm": "sideways-lr", "--ldir": "ltr", "--lfrot": "0deg" }
-    : { "--lwm": "vertical-lr", "--ldir": "rtl", "--lfrot": "0deg" };
+    ? {"--lwm": "sideways-lr", "--ldir": "ltr", "--lfrot": "0deg"}
+    : {"--lwm": "vertical-lr", "--ldir": "rtl", "--lfrot": "0deg"};
 
 //
-const portrait0deg = { "--prot": "0deg" };
-const portrait90deg = { "--prot": "90deg" };
-const portrait180deg = { "--prot": "180deg" };
-const portrait270deg = { "--prot": "270deg" };
+const portrait0deg = {"--prot": "0deg"};
+const portrait90deg = {"--prot": "90deg"};
+const portrait180deg = {"--prot": "180deg"};
+const portrait270deg = {"--prot": "270deg"};
 
 //
-const landscape0deg = { "--lrot": "0deg" };
-const landscape90deg = { "--lrot": "90deg" };
-const landscape180deg = { "--lrot": "180deg" };
-const landscape270deg = { "--lrot": "270deg" };
+const landscape0deg = {"--lrot": "0deg"};
+const landscape90deg = {"--lrot": "90deg"};
+const landscape180deg = {"--lrot": "180deg"};
+const landscape270deg = {"--lrot": "270deg"};
 
 //
 const ptsLandscape = {
@@ -308,7 +311,7 @@ const availSize = {
 };
 
 //
-const updateOrientation = (e) => {
+const updateOrientation = (e?: any) => {
     Object.assign(availSize, {
         "--avail-width":
             Math.min(screen.availWidth || 0, screen.width || 0) + "px",
@@ -374,7 +377,7 @@ const updateOrientation = (e) => {
 };
 
 //
-const classes = [
+const classes: StyleTuple[] = [
     [":where(.wavy-shaped)", cloudyShape],
     [":root, :host, :scope", portrait],
     [":root, :host, :scope", landscape],
@@ -386,22 +389,28 @@ const classes = [
 ];
 
 //
-const updateDynamic = (e) => {
+const updateDynamic = (e?: any) => {
     updateOrientation(e);
     setStyleRules(classes);
 };
 
 //
-navigator?.virtualKeyboard?.addEventListener?.(
-    "geometrychange",
-    updateDynamic,
-    { passive: true }
-);
+if ("virtualKeyboard" in navigator) {
+    // @ts-ignore
+    navigator?.virtualKeyboard?.addEventListener?.(
+        "geometrychange",
+        updateDynamic,
+        {passive: true}
+    );
+}
+
 document.documentElement.addEventListener("DOMContentLoaded", updateDynamic, {
     passive: true,
 });
-screen.orientation.addEventListener("change", updateDynamic, { passive: true });
-self.addEventListener("resize", updateDynamic, { passive: true });
+screen.orientation.addEventListener("change", updateDynamic, {passive: true});
+self.addEventListener("resize", updateDynamic, {passive: true});
+
+//
 updateDynamic();
 
 // pre-fix full-screen mode
@@ -420,11 +429,11 @@ document.documentElement.addEventListener(
                 ?.catch(console.warn.bind(console));*/
         }
     },
-    { passive: true, capture: true }
+    {passive: true, capture: true}
 );
 
 //
-const viewportHandler = (event) => {
+const viewportHandler = (event?: any) => {
     const layoutViewport = document.body;
     const viewport = event?.target || visualViewport;
     const offsetLeft = viewport.offsetLeft;

@@ -1,12 +1,11 @@
-// @ts-nocheck
-/** @format */
-
-//
-import Timer from "../performance/Time.mjs";
-import { zoomOf } from "../utils/utils";
+import Timer from "../performance/Time.ts";
+import {zoomOf} from "../utils/Utils.ts";
 
 //
 export class DynamicHandler {
+    index: number = 0;
+    query: string = "";
+
     constructor(query = "", index = 0) {
         this.index = index;
         this.query = query;
@@ -23,7 +22,7 @@ export class DynamicHandler {
 
         //
         if (name == "length") {
-            return array[name] - (this.index ?? 0);
+            return array.length - (this.index ?? 0);
         }
 
         //
@@ -35,7 +34,7 @@ export class DynamicHandler {
         }
 
         //
-        const _f = array[this.index ?? 0][name];
+        const _f = (array[this.index || 0] as HTMLElement)[name];
         return typeof _f == "function" || _f instanceof Function
             ? _f.bind(ctx)
             : _f;
@@ -60,7 +59,7 @@ export class DynamicHandler {
         }
 
         //
-        return (array[this.index ?? 0][name] = value) != null;
+        return ((array[this.index || 0] as HTMLElement)[name] = value) != null;
     }
 }
 
@@ -69,13 +68,19 @@ const _changed_ = Symbol("changed");
 const _observed_ = Symbol("bound");
 
 //
+type EventSequence = [name: string, cb: Function, params?: Object];
+
+//
 export default class AxQuery {
-    #nodeObserver = null;
-    #attributeObserver = null;
-    #attribListener = new Map([]);
-    #eventListener = new WeakMap([]);
-    #domListener = new Map([]);
+    #nodeObserver: MutationObserver | null = null;
+    #attributeObserver: MutationObserver | null = null;
+    #attribListener = new Map<String, Set<Function>>([]);
+    #eventListener = new WeakMap<HTMLElement, Set<EventSequence>>([]);
+    #domListener = new Map<string, Set<Function>>([]);
     #muted = false;
+
+    //
+    ROOT: HTMLElement = document.documentElement;
 
     //
     #mutedAction(action) {
@@ -93,84 +98,75 @@ export default class AxQuery {
     }
 
     //
-    constructor(
-        ROOT = typeof document != "undefined"
-            ? document?.body ?? document
-            : null
-    ) {
-        const attribListener = new Map([]);
-        const eventListener = new WeakMap([]);
-        const domListener = new Map([]);
+    constructor(ROOT: HTMLElement = document.documentElement) {
+        const attribListener = new Map<string, Set<Function>>([]);
+        const eventListener = new WeakMap<HTMLElement, Set<EventSequence>>([]);
+        const domListener = new Map<string, Set<Function>>([]);
 
         //
         const attributeObserver =
             typeof MutationObserver != "undefined"
                 ? new MutationObserver(async (mutationList, observer) => {
-                      if (!this.#muted) {
-                          mutationList.forEach(async (mut) => {
-                              const allowed =
-                                  ["style"].indexOf(mut.attributeName) < 0;
-                              const value = mut.target.getAttribute(
-                                  mut.attributeName
-                              );
-                              if (
-                                  !mut?.attributeName?.startsWith("aq-") &&
-                                  value != mut?.oldValue &&
-                                  !mut.target[_changed_]
-                              ) {
-                                  // TODO: de-apply events (i.e. unselected)
-                                  for (const [
-                                      selector,
-                                      fns,
-                                  ] of attribListener.entries()) {
-                                      if (
-                                          allowed &&
-                                          mut.target.matches(selector)
-                                      ) {
-                                          fns.map((F) =>
-                                              F(
-                                                  [mut.target],
-                                                  selector,
-                                                  mut.attributeName
-                                              )
-                                          );
-                                      }
-                                  }
-                              }
-                          });
-                      }
-                  })
+                    if (!this.#muted) {
+                        mutationList.forEach(async (mut) => {
+                            const allowed = ["style"].indexOf(mut.attributeName || "") < 0;
+                            const value = (mut.target as HTMLElement)?.getAttribute?.(mut.attributeName || "");
+                            if (
+                                !mut?.attributeName?.startsWith("aq-") &&
+                                value != mut?.oldValue &&
+                                !mut.target[_changed_]
+                            ) {
+                                for (const [selector, fns] of attribListener.entries()) {
+                                    if (
+                                        allowed &&
+                                        (mut.target as HTMLElement)?.matches?.(selector || "")
+                                    ) {
+                                        Array.from(fns.values()).map((F) =>
+                                            F(
+                                                [mut.target],
+                                                selector,
+                                                mut.attributeName
+                                            )
+                                        );
+                                    }
+                                }
+                            }
+                        });
+                    }
+                })
                 : null;
 
         //
         const nodeObserver =
             typeof MutationObserver != "undefined"
                 ? new MutationObserver(async (mutationList, observer) => {
-                      if (!this.#muted) {
-                          for (const [selector, fns] of domListener.entries()) {
-                              mutationList.forEach(async (mut) => {
-                                  //
-                                  let elements =
-                                      mut.childList?.filter((e) => {
-                                          //return elements.indexOf(e) > -1;
-                                          return e.matches(selector);
-                                      }) || [];
+                    if (!this.#muted) {
+                        for (const [selector, fns] of domListener.entries()) {
+                            mutationList.forEach(async (mut) => {
+                                const target = mut?.target as HTMLElement;
 
-                                  //
-                                  if (
-                                      mut.target.matches(selector) &&
-                                      elements.indexOf(mut.target) < 0
-                                  ) {
-                                      elements.push(mut.target);
-                                  }
+                                //
+                                let elements =
+                                    (mut.addedNodes as unknown as HTMLElement[])?.filter((e) => {
+                                        //return elements.indexOf(e) > -1;
+                                        return e.matches(selector);
+                                    }) || [];
 
-                                  //
-                                  elements = [...new Set(elements)];
-                                  fns.map((F) => F(elements, selector));
-                              });
-                          }
-                      }
-                  })
+                                //
+                                if (
+                                    target?.matches(selector) &&
+                                    elements.indexOf(target as HTMLElement) < 0
+                                ) {
+                                    elements.push(target as HTMLElement);
+                                }
+
+                                //
+                                elements = [...new Set(elements)];
+                                Array.from(fns.values()).map((F) => F(elements, selector));
+                            });
+                        }
+                    }
+                })
                 : null;
 
         //
@@ -182,21 +178,22 @@ export default class AxQuery {
         //
         this.defer.then(() => {
             for (const [selector, fns] of domListener.entries()) {
-                fns.map((F) =>
+                Array.from(fns.values()).map((F) =>
                     F(
                         this.dynamic(selector).filter((el) => !el[_changed_]),
                         selector
                     )
                 );
             }
-            /*for (const [selector, fns] of attribListener.entries()) {
-                fns.map((F) => F(this.dynamic(selector).filter((el)=>!el[_changed_]), selector));
-            }*/
         });
 
-        //
+        // @ts-ignore
         this.#nodeObserver = nodeObserver;
+
+        // @ts-ignore
         this.#attributeObserver = attributeObserver;
+
+        //
         this.#attribListener = attribListener;
         this.#eventListener = eventListener;
         this.#domListener = domListener;
@@ -240,9 +237,11 @@ export default class AxQuery {
             const mb = e?.matches?.(selector);
 
             //
-            let list = this.#eventListener.has(e)
+            let list = (this.#eventListener.has(e)
                 ? this.#eventListener.get(e)
-                : new Set([]);
+                : new Set([])) || new Set([]);
+
+            //
             if (mb && !list.has(args)) {
                 if (!this.#eventListener.has(e)) {
                     this.#eventListener.set(e, list);
@@ -254,7 +253,7 @@ export default class AxQuery {
                     e?.addEventListener?.(...args);
                 }
             } else {
-                list.remove(args);
+                list.delete(args);
                 e?.removeEventListener?.(...args);
             }
         });
@@ -267,7 +266,7 @@ export default class AxQuery {
             //await Timer.raf;
             e[_changed_] = true;
             e[_observed_] = true;
-            this.#attributeObserver.observe(e, { attributes: true });
+            this.#attributeObserver?.observe?.(e, {attributes: true});
             delete e[_changed_];
         }
     }
@@ -302,8 +301,8 @@ export default class AxQuery {
                         (["style", "class", "id"].indexOf(mutation) >= 0
                             ? key != mutation
                             : mutation
-                            ? key == mutation
-                            : true) &&
+                                ? key == mutation
+                                : true) &&
                         !key.startsWith("aq-")
                     ) {
                         //await Timer.raf;
@@ -333,9 +332,9 @@ export default class AxQuery {
 
         //
         if (!this.#domListener.has(selector)) {
-            this.#domListener.set(selector, [fn]);
+            this.#domListener.set(selector, new Set([fn]));
         } else {
-            this.#domListener.get(selector).push(fn);
+            this.#domListener.get(selector)?.add?.(fn);
         }
 
         //
@@ -354,11 +353,11 @@ export default class AxQuery {
         //
         if (!this.#attribListener.has(selector)) {
             this.$domListen(selector, (els) =>
-                els.map((el) => this.#listenAttributes(el, selector))
+                els.map((el) => this.#listenAttributes(el, selector, null))
             );
-            this.#attribListener.set(selector, [fn]);
+            this.#attribListener.set(selector, new Set([fn]));
         } else {
-            this.#attribListener.get(selector).push(fn);
+            this.#attribListener.get(selector)?.add?.(fn);
         }
 
         //
@@ -409,7 +408,7 @@ export default class AxQuery {
                         ? $e.detail
                         : $e;
                 e.stopPropagation();
-                let target = this.ROOT?.elementFromPoint?.(
+                let target = document?.elementFromPoint?.(
                     e.clientX / zoomOf(),
                     e.clientY / zoomOf()
                 );
@@ -430,7 +429,7 @@ export default class AxQuery {
                             target.matches(selector) &&
                             dynamic.indexOf(target) >= 0 &&
                             Array.from(
-                                this.ROOT?.elementsFromPoint?.(
+                                document?.elementsFromPoint?.(
                                     (e.clientX / zoomOf()) * devicePixelRatio,
                                     (e.clientY / zoomOf()) * devicePixelRatio
                                 )
@@ -539,7 +538,7 @@ export default class AxQuery {
         const resolveOf = async (x) => {
             if (
                 ["loading", "interactive", "complete"].indexOf(
-                    this.ROOT.readyState ?? document.readyState
+                    document.readyState
                 ) >= 1
             ) {
                 await Timer.raf;
@@ -553,7 +552,7 @@ export default class AxQuery {
                 document.documentElement.addEventListener(
                     "readystatechange",
                     (e) => resolveOf(x),
-                    { once: false, passive: true }
+                    {once: false, passive: true}
                 );
             }
         });
@@ -566,4 +565,4 @@ export default class AxQuery {
 }
 
 //
-export const AQDefault = new AxQuery(document);
+export const AQDefault = new AxQuery();

@@ -1,12 +1,11 @@
-// @ts-nocheck
-import {UUIDv4} from "../utils/utils";
+import {UUIDv4} from "../utils/Utils.ts";
 
 //
 export default class AxTime {
     #lastTime = 0;
-    static looping = new Map([]);
+    static looping = new Map<string, Function>([]);
     static registry = new FinalizationRegistry(tmp => {
-        AxTime.looping.delete(tmp);
+        AxTime.looping.delete(tmp as string);
     });
 
     //
@@ -42,7 +41,7 @@ export default class AxTime {
             console.warn(e);
         }
 
-        if (ctx != null && typeof ctx == "") {
+        if (ctx != null && (typeof ctx)) {
             try {
                 AxTime?.registry?.register?.(ctx, tmp);
             } catch (e) {

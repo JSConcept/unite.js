@@ -1,11 +1,26 @@
-// @ts-nocheck
-import { zoomOf } from "../utils/utils";
+import {zoomOf} from "../utils/Utils.ts";
+
+// @ts-ignore
 import styles from "./scrollbox.css?inline";
+
+// @ts-ignore
 import html from "./scrollbox.html?raw";
 
 //
+interface ScrollBarStatus {
+    pointerId: number;
+    virtualScroll: number;
+    pointerLocation: number;
+}
+
+//
 class ScrollBar {
-    constructor({ holder, scrollbar }, axis = 0) {
+    scrollbar: HTMLDivElement;
+    holder: HTMLElement;
+    status: ScrollBarStatus;
+
+    //
+    constructor({holder, scrollbar}, axis = 0) {
         this.scrollbar = scrollbar;
         this.holder = holder;
 
@@ -22,7 +37,7 @@ class ScrollBar {
                 this.scrollbar[["offsetWidth", "offsetHeight"][axis]] *
                 Math.min(
                     this.holder[["offsetWidth", "offsetHeight"][axis]] /
-                        this.holder[["scrollWidth", "scrollHeight"][axis]],
+                    this.holder[["scrollWidth", "scrollHeight"][axis]],
                     1
                 );
 
@@ -32,18 +47,18 @@ class ScrollBar {
                 thumbSize;
 
             //
-            this.scrollbar.style.setProperty("--thumbSize", thumbSize, "");
-            this.scrollbar.style.setProperty("--percentInPx", percentInPx, "");
+            this.scrollbar.style.setProperty("--thumbSize", (thumbSize || "0") as string, "");
+            this.scrollbar.style.setProperty("--percentInPx", (percentInPx || "0") as string, "");
 
             //
             this.holder.style.setProperty(
                 "--scroll-top",
-                this.holder.scrollTop,
+                (this.holder.scrollTop || "0") as string,
                 ""
             );
             this.holder.style.setProperty(
                 "--scroll-left",
-                this.holder.scrollLeft,
+                (this.holder.scrollLeft || "0") as string,
                 ""
             );
 
@@ -68,8 +83,8 @@ class ScrollBar {
 
         //
         this.scrollbar
-            .querySelector(".thumb")
-            .addEventListener("pointerdown", (ev) => {
+            ?.querySelector?.(".thumb")
+            ?.addEventListener?.("pointerdown", (ev) => {
                 if (this.status.pointerId < 0) {
                     this.status.pointerId = ev.pointerId;
                     this.status.pointerLocation =
@@ -131,7 +146,7 @@ class ScrollBar {
             if (entries) {
                 onChanges();
             }
-        }).observe(this.holder, { box: "content-box" });
+        }).observe(this.holder, {box: "content-box"});
 
         //
         addEventListener("resize", onChanges);
@@ -188,8 +203,8 @@ class ScrollBox extends HTMLElement {
         //
         if (this.dataset.scrollTop || this.dataset.scrollLeft) {
             this.scrollTo({
-                top: this.dataset.scrollTop || 0,
-                left: this.dataset.scrollLeft || 0,
+                top: parseFloat(this.dataset.scrollTop || "0") || 0,
+                left: parseFloat(this.dataset.scrollLeft || "0") || 0,
                 behavior: "instant",
             });
 
@@ -211,7 +226,7 @@ class ScrollBox extends HTMLElement {
         //
         if (name == this.dataset.scrollTop) {
             this.scrollTo({
-                top: this.dataset.scrollTop || 0,
+                top: parseFloat(this.dataset.scrollTop || "0") || 0,
                 left: this.scrollLeft || 0,
                 behavior: "instant",
             });
@@ -219,8 +234,8 @@ class ScrollBox extends HTMLElement {
             //
             const event = new CustomEvent("scroll-set", {
                 detail: {
-                    scrollTop: this.dataset.scrollTop || 0,
-                    scrollLeft: this.dataset.scrollLeft || 0,
+                    scrollTop: parseFloat(this.dataset.scrollTop || "0") || 0,
+                    scrollLeft: parseFloat(this.dataset.scrollLeft || "0") || 0,
                 },
             });
 
@@ -232,15 +247,15 @@ class ScrollBox extends HTMLElement {
         if (name == this.dataset.scrollLeft) {
             this.scrollTo({
                 top: this.scrollTop || 0,
-                left: this.dataset.scrollLeft || 0,
+                left: parseFloat(this.dataset.scrollLeft || "0") || 0,
                 behavior: "instant",
             });
 
             //
             const event = new CustomEvent("scroll-set", {
                 detail: {
-                    scrollTop: this.dataset.scrollTop || 0,
-                    scrollLeft: this.dataset.scrollLeft || 0,
+                    scrollTop: parseFloat(this.dataset.scrollTop || "0") || 0,
+                    scrollLeft: parseFloat(this.dataset.scrollLeft || "0") || 0,
                 },
             });
 

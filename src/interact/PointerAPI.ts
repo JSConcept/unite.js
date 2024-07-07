@@ -1,8 +1,12 @@
-// @ts-nocheck
-import { zoomOf } from "../utils/utils";
+import {zoomOf} from "../utils/Utils";
 
+//
 class PointerEdge {
-    constructor(pointer) {
+    pointer: [number, number] = [0, 0];
+    results: any;
+
+    //
+    constructor(pointer: [number, number] = [0, 0]) {
         this.pointer = pointer;
         this.results = {
             left: false,
@@ -33,9 +37,30 @@ class PointerEdge {
     }
 }
 
+interface EvStub {
+    pointerId: number;
+}
+
+interface HoldingElement {
+    propertyName?: string;
+    shifting?: [number, number];
+    modified?: [number, number];
+    element?: WeakRef<HTMLElement>;
+}
+
+interface PointerObject {
+    id: number;
+    movement: [number, number];
+    down?: [number, number],
+    current: [number, number],
+    event?: MouseEvent | PointerEvent | EvStub;
+    holding?: HoldingElement[];
+    edges?: PointerEdge;
+};
+
 //
-export const pointerMap = new Map([
-    [
+export const pointerMap = new Map<number, PointerObject>([
+    /*[
         -1,
         {
             id: -1,
@@ -47,7 +72,7 @@ export const pointerMap = new Map([
             //
             holding: [],
         },
-    ],
+    ],*/
 ]);
 
 //
@@ -55,7 +80,7 @@ document.documentElement.addEventListener(
     "pointerdown",
     (ev) => {
         //
-        const np = {
+        const np: PointerObject = {
             id: ev.pointerId,
             event: ev,
             current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
@@ -64,9 +89,9 @@ document.documentElement.addEventListener(
         };
 
         //
-        const exists = pointerMap.has(ev.pointerId)
+        const exists = (pointerMap.has(ev.pointerId)
             ? pointerMap.get(ev.pointerId)
-            : np;
+            : np) || np;
         np.movement[0] = np.current[0] - exists.current[0];
         np.movement[1] = np.current[1] - exists.current[1];
 
@@ -77,12 +102,12 @@ document.documentElement.addEventListener(
 
         //
         exists.holding.map((hm) => {
-            hm.shifting = [...(hm.modified || hm.shifting)];
+            hm.shifting = [...(hm.modified || hm.shifting || [0, 0])];
         });
 
         //
         if (!exists.edges) {
-            exists.edges = new PointerEdge(exists);
+            exists.edges = new PointerEdge(np.current);
         }
 
         //
@@ -93,14 +118,14 @@ document.documentElement.addEventListener(
             pointerMap.set(ev.pointerId, exists);
         }
     },
-    { capture: true }
+    {capture: true}
 );
 
 //
 document.documentElement.addEventListener(
     "pointermove",
     (ev) => {
-        const np = {
+        const np: PointerObject = {
             id: ev.pointerId,
             event: ev,
             current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
@@ -108,9 +133,9 @@ document.documentElement.addEventListener(
         };
 
         //
-        const exists = pointerMap.has(ev.pointerId)
+        const exists = (pointerMap.has(ev.pointerId)
             ? pointerMap.get(ev.pointerId)
-            : np;
+            : np) || np;
         np.movement[0] = np.current[0] - exists.current[0];
         np.movement[1] = np.current[1] - exists.current[1];
 
@@ -120,7 +145,7 @@ document.documentElement.addEventListener(
         }
 
         //
-        if (exists.holding.length > 0) {
+        if ((exists.holding.length || 0) > 0) {
             ev.stopImmediatePropagation();
             ev.stopPropagation();
             ev.preventDefault();
@@ -128,7 +153,7 @@ document.documentElement.addEventListener(
 
         //
         if (!exists.edges) {
-            exists.edges = new PointerEdge(exists);
+            exists.edges = new PointerEdge(np.current);
         }
 
         //
@@ -141,9 +166,11 @@ document.documentElement.addEventListener(
 
         //
         exists.holding.map((hm) => {
-            hm.shifting[0] += np.movement[0];
-            hm.shifting[1] += np.movement[1];
-            hm.modified = [...hm.shifting];
+            if (hm.shifting) {
+                hm.shifting[0] += np.movement[0];
+                hm.shifting[1] += np.movement[1];
+                hm.modified = [...hm.shifting];
+            }
 
             //
             const nev = new CustomEvent("m-dragging", {
@@ -155,32 +182,34 @@ document.documentElement.addEventListener(
             });
 
             //
-            const em = hm.element.deref();
+            const em = hm.element?.deref();
             em?.dispatchEvent?.(nev);
 
             //
-            em?.style?.setProperty?.(
-                `--${hm.propertyName || "drag"}-x`,
-                hm.modified[0]
-            );
-            em?.style?.setProperty?.(
-                `--${hm.propertyName || "drag"}-y`,
-                hm.modified[1]
-            );
+            if (hm.modified) {
+                em?.style?.setProperty?.(
+                    `--${hm.propertyName || "drag"}-x`,
+                    hm.modified[0] as unknown as string, ""
+                );
+                em?.style?.setProperty?.(
+                    `--${hm.propertyName || "drag"}-y`,
+                    hm.modified[1] as unknown as string, ""
+                );
+            }
         });
 
         //
         ["left", "top", "right", "bottom"].map((side) => {
-            if (exists.edges.results[side] != exists.edges[side]) {
+            if (exists?.edges?.results?.[side] != exists?.edges?.[side]) {
                 const nev = new CustomEvent(
-                    (exists.edges[side] ? "m-contact-" : "m-leave-") + side,
-                    { detail: exists }
+                    (exists.edges?.[side] ? "m-contact-" : "m-leave-") + side,
+                    {detail: exists}
                 );
                 document?.dispatchEvent?.(nev);
             }
         });
     },
-    { capture: true }
+    {capture: true}
 );
 
 //
@@ -190,18 +219,18 @@ export const releasePointer = (ev) => {
     //
     if (exists) {
         //
-        const preventClick = (e) => {
+        const preventClick = (e: PointerEvent | MouseEvent) => {
             e.stopImmediatePropagation();
             e.stopPropagation();
             e.preventDefault();
         };
 
         //
-        const emt = [preventClick, { once: true }];
-        const doc = [preventClick, { once: true, capture: true }];
+        const emt: [(e: PointerEvent | MouseEvent) => any, AddEventListenerOptions] = [preventClick, {once: true}];
+        const doc: [(e: PointerEvent | MouseEvent) => any, AddEventListenerOptions] = [preventClick, {once: true, capture: true}];
 
         //
-        if (exists.holding.length > 0) {
+        if ((exists.holding?.length || 0) > 0) {
             ev.stopImmediatePropagation();
             ev.stopPropagation();
             ev.preventDefault();
@@ -213,19 +242,16 @@ export const releasePointer = (ev) => {
             //
             setTimeout(() => {
                 document.documentElement.removeEventListener("click", ...doc);
-                document.documentElement.removeEventListener(
-                    "contextmenu",
-                    ...doc
-                );
+                document.documentElement.removeEventListener("contextmenu", ...doc);
             }, 100);
         }
 
         //
-        exists.holding.map((hm) => {
-            const em = hm.element.deref();
+        (exists.holding || []).map((hm) => {
+            const em = hm.element?.deref();
 
             //
-            if (Math.hypot(...hm.shifting) > 10 && em) {
+            if (Math.hypot(...(hm.shifting || [0])) > 10 && em) {
                 em?.addEventListener?.("click", ...emt);
                 em?.addEventListener?.("contextmenu", ...emt);
 
@@ -263,7 +289,7 @@ document.documentElement.addEventListener("pointerup", releasePointer, {
 //
 export const grabForDrag = (
     element,
-    ev = { pointerId: 0 },
+    ev: EvStub = {pointerId: 0},
     {
         shifting = [0, 0],
         propertyName = "drag", // use dragging events for use limits
@@ -275,13 +301,13 @@ export const grabForDrag = (
 
         //
         const hm =
-            exists.holding.find(
+            (exists.holding || []).find(
                 (hm) =>
-                    hm.element.deref() == element &&
+                    hm.element?.deref?.() == element &&
                     hm.propertyName == propertyName
             ) || {};
-        exists.holding.push(
-            Object.assign(hm, {
+        (exists.holding || []).push(
+            Object.assign(hm || {}, {
                 propertyName,
                 element: new WeakRef(element),
                 shifting: [...(hm?.modified || hm?.shifting || shifting || [])],

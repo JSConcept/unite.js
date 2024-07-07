@@ -1,5 +1,5 @@
 //
-import {getCorrectOrientation} from "@unite/utils/utils.mjs";
+import {getCorrectOrientation} from "../utils/Utils.ts/index.js";
 
 //
 const or_mod = {
@@ -14,18 +14,18 @@ export const getParent = (e) => {
     const parent = e.parentNode || e.parentElement || e?.getRootNode?.()?.host;
     return parent.shadowRoot && e.slot != null
         ? parent.shadowRoot.querySelector(
-              e.slot ? `slot[name=\"${e.slot}\"]` : `slot:not([name])`
-          ).parentNode
+            e.slot ? `slot[name=\"${e.slot}\"]` : `slot:not([name])`
+        ).parentNode
         : parent;
 };
 
 //
 export const redirectCell = (
-    { gridPage, iconItem, iconItems },
+    {gridPage, iconItem, iconItems},
     $preCell
 ) => {
     const items = iconItems;
-    const preCell = { ...$preCell }; // make non-conflict copy
+    const preCell = {...$preCell}; // make non-conflict copy
     const icons =
         gridPage.list?.map((id) => iconItems.get(id)).filter((m) => !!m) || [];
 
@@ -42,7 +42,7 @@ export const redirectCell = (
     if (!checkBusy(preCell)) {
         iconItem.cellX = preCell.x;
         iconItem.cellY = preCell.y;
-        return { x: iconItem.cellX, y: iconItem.cellY };
+        return {x: iconItem.cellX, y: iconItem.cellY};
     }
 
     //
@@ -51,10 +51,10 @@ export const redirectCell = (
 
     //
     const variants = [
-        { x: preCell.x + 1, y: preCell.y },
-        { x: preCell.x - 1, y: preCell.y },
-        { x: preCell.x, y: preCell.y + 1 },
-        { x: preCell.x, y: preCell.y - 1 },
+        {x: preCell.x + 1, y: preCell.y},
+        {x: preCell.x - 1, y: preCell.y},
+        {x: preCell.x, y: preCell.y + 1},
+        {x: preCell.x, y: preCell.y - 1},
     ].filter((v) => {
         return v.x >= 0 && v.x < columns && v.y >= 0 && v.y < rows;
     });
@@ -64,7 +64,7 @@ export const redirectCell = (
     if (suitable) {
         iconItem.cellX = suitable.x;
         iconItem.cellY = suitable.y;
-        return { x: iconItem.cellX, y: iconItem.cellY };
+        return {x: iconItem.cellX, y: iconItem.cellY};
     }
 
     //
@@ -74,7 +74,7 @@ export const redirectCell = (
         if (!busy) {
             iconItem.cellX = preCell.x;
             iconItem.cellY = preCell.y;
-            return { x: iconItem.cellX, y: iconItem.cellY };
+            return {x: iconItem.cellX, y: iconItem.cellY};
         }
 
         //
@@ -137,22 +137,18 @@ const getOrientedPoint = () => {
 
         case "landscape-primary":
             return {
-                "--translate-x": `calc(calc(calc(var(--grid-${
-                    isMobile() ? "h" : "w"
-                }) / var(--f-row)) * var(--vect-y)) * 1px)`,
-                "--translate-y": `calc(calc(calc(var(--grid-${
-                    isMobile() ? "w" : "h"
-                }) / var(--f-col)) * var(--vect-x)) * -1px)`,
+                "--translate-x": `calc(calc(calc(var(--grid-${isMobile() ? "h" : "w"
+                    }) / var(--f-row)) * var(--vect-y)) * 1px)`,
+                "--translate-y": `calc(calc(calc(var(--grid-${isMobile() ? "w" : "h"
+                    }) / var(--f-col)) * var(--vect-x)) * -1px)`,
             };
 
         case "landscape-secondary":
             return {
-                "--translate-x": `calc(calc(calc(var(--grid-${
-                    isMobile() ? "h" : "w"
-                }) / var(--f-row)) * var(--vect-y)) * -1px)`,
-                "--translate-y": `calc(calc(calc(var(--grid-${
-                    isMobile() ? "w" : "h"
-                }) / var(--f-col)) * var(--vect-x)) * 1px)`,
+                "--translate-x": `calc(calc(calc(var(--grid-${isMobile() ? "h" : "w"
+                    }) / var(--f-row)) * var(--vect-y)) * -1px)`,
+                "--translate-y": `calc(calc(calc(var(--grid-${isMobile() ? "w" : "h"
+                    }) / var(--f-col)) * var(--vect-x)) * 1px)`,
             };
 
         default:
@@ -182,7 +178,7 @@ export const animationSequence = () => {
             easing: "linear",
             offset: 0.01,
         },
-        {   
+        {
             gridColumn: "var(--p-cell-x)",
             gridRow: "var(--p-cell-y)",
             ...getOrientedPoint(),
@@ -212,9 +208,9 @@ export const putToCell = ({
     gridPage,
     iconItems,
     iconItem,
-}, $coord)  => {
+}, $coord) => {
     // should be relative from grid-box (not absolute or fixed position)
-    const last = { ...$coord };
+    const last = {...$coord};
 
     //
     const orientation = getCorrectOrientation();
@@ -227,7 +223,7 @@ export const putToCell = ({
     const inBox = [oxBox[0] / gridPage.layout[0], oxBox[1] / gridPage.layout[1]];
 
     //
-    const preCell = { x: iconItem.cellX || 0, y: iconItem.cellY || 0 };
+    const preCell = {x: iconItem.cellX || 0, y: iconItem.cellY || 0};
     (iconItem.pCellX = iconItem.cellX || 0);
     (iconItem.pCellY = iconItem.cellY || 0);
 

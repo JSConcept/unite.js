@@ -6,7 +6,7 @@ import {formatCss, formatHex, interpolate, oklch, parse} from "culori";
 import {sourceColorFromImage} from "./ColorMod.mjs/index.js";
 
 //
-import {setStyleRule} from "../dom/StyleWork.mjs";
+import {setStyleRule} from "../dom/StyleWork.ts/index.js";
 
 //
 export const provide = async (path = "", rw = false) => {

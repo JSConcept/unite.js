@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { zoomOf } from "../utils/utils";
+import {zoomOf} from "../utils/Utils";
 
 //
 export const longPress = (node, threshold = 60) => {
@@ -12,7 +11,7 @@ export const longPress = (node, threshold = 60) => {
             //
             const timeout = setTimeout(() => {
                 node.dispatchEvent(
-                    new CustomEvent("long-press", { detail: ev })
+                    new CustomEvent("long-press", {detail: ev})
                 );
             }, threshold);
 

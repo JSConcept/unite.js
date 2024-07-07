@@ -1,12 +1,10 @@
-// @ts-nocheck
-
 const $get = Symbol("get");
 const $set = Symbol("set");
 const $initialize = Symbol("initialize");
 
 //
 class AxPersistency {
-    #names = new Map([]);
+    #names = new Map<string, Function>([]);
     #namespace = "psx";
     #smap = new WeakMap();
     #tmp = {};
@@ -43,8 +41,8 @@ class AxPersistency {
 
     // svelte specific (TODO: weak ref support)
     makeWritable(name, base = null) {
-        const unit = base ?? { [name]: null };
-        const subs = new Set([]);
+        const unit = base ?? {[name]: null};
+        const subs = new Set<Function>([]);
         this.synchronizeWith(unit);
 
         //
@@ -69,30 +67,30 @@ class AxPersistency {
 
     // svelte specific (TODO: weak ref support)
     makeReadable(name, base = null) {
-        const unit = base ?? { [name]: null };
-        const subs = new Set([]);
+        const unit = base ?? {[name]: null};
+        const subs = new Set<Function>([]);
         this.synchronizeWith(unit);
 
         //
         return {
             get: () => {
                 const value = unit[name];
-                
+
                 Array.from(subs.values()).forEach(cb => cb(value));
                 return value;
             },
             update: fx => {
                 const value = fx(unit[name]);
                 unit[name] = value;
-                
+
                 Array.from(subs.values()).forEach(cb => cb(value));
             },
             unsubscribe: fx => {
-                
+
                 subs.delete(fx);
             },
             subscribe: fx => {
-                
+
                 subs.add(fx);
             },
         };
@@ -110,7 +108,7 @@ class AxPersistency {
 
         //
         const res = localStorage.getItem(this.#namespace + ":" + name) ?? initial;
-        return typeof res == "function" ? res.bind(ctx) : res;
+        return res;//typeof res == "function" ? res.bind(ctx) : res;
     }
 
     //
@@ -183,7 +181,7 @@ const proxy = new Proxy(
         construct(target, args) {
             return new target(...args);
         },
-        
+
         apply(target, args) {
             return {};
         },

@@ -1,6 +1,5 @@
-// @ts-nocheck
-import { zoomOf } from "../utils/utils";
-import { grabForDrag } from "./PointerAPI.mjs";
+import {zoomOf} from "../utils/Utils.ts";
+import {grabForDrag} from "./PointerAPI.ts";
 
 //
 const clamp = (min, val, max) => {
@@ -34,12 +33,17 @@ const widthOf = Symbol("@width");
 const heightOf = Symbol("@height");
 
 //
+interface InteractStatus {
+    pointerId?: number;
+}
+
+//
 export default class AxGesture {
-    #holder = null;
-    #dragStatus = {};
-    #resizeStatus = {};
+    #holder: HTMLElement;
+    #dragStatus: InteractStatus = {pointerId: -1};
+    #resizeStatus: InteractStatus = {pointerId: -1};
     #resizeMute = false;
-    #observer = null;
+    #observer: ResizeObserver;
 
     //
     constructor(holder) {
@@ -73,14 +77,14 @@ export default class AxGesture {
             this.#holder.clientWidth - (this.propGet("--resize-x") || 0);
         this.#holder[heightOf] =
             this.#holder.clientHeight - (this.propGet("--resize-y") || 0);
-        this.#observer.observe(this.#holder, { box: "border-box" });
+        this.#observer.observe(this.#holder, {box: "border-box"});
     }
 
     //
     swipe(options) {
         if (options?.handler) {
             //
-            const swipes = new Map([]);
+            const swipes = new Map<number, any>([]);
 
             //
             document.documentElement.addEventListener("pointerdown", (ev) => {
@@ -102,7 +106,7 @@ export default class AxGesture {
                 if (swipes.has(ev.pointerId)) {
                     ev.stopPropagation();
                     const swipe = swipes.get(ev.pointerId);
-                    Object.assign(swipe, {
+                    Object.assign(swipe || {}, {
                         //speed: (swipe.speed == 0 ? speed : (speed * 0.8 + swipe.speed * 0.2)),
                         current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
                         pointerId: ev.pointerId,
@@ -202,12 +206,12 @@ export default class AxGesture {
             document.documentElement.addEventListener(
                 "pointerup",
                 (ev) => completeSwipe(ev.pointerId),
-                { capture: true }
+                {capture: true}
             );
             document.documentElement.addEventListener(
                 "pointercancel",
                 (ev) => completeSwipe(ev.pointerId),
-                { capture: true }
+                {capture: true}
             );
         }
     }
@@ -274,7 +278,7 @@ export default class AxGesture {
                     this.#resizeMute = true;
                 }
             },
-            { capture: true, passive: false }
+            {capture: true, passive: false}
         );
 
         //
@@ -296,7 +300,7 @@ export default class AxGesture {
                     );
                 }
             },
-            { capture: true, passive: false }
+            {capture: true, passive: false}
         );
 
         //
@@ -314,7 +318,7 @@ export default class AxGesture {
                         (this.propGet("--resize-y") || 0);
                 }
             },
-            { capture: true, passive: false }
+            {capture: true, passive: false}
         );
     }
 
@@ -361,7 +365,7 @@ export default class AxGesture {
                     );
                 }
             },
-            { capture: true, passive: false }
+            {capture: true, passive: false}
         );
     }
 
@@ -381,15 +385,15 @@ export default class AxGesture {
 
     //
     longPress(
-        options = {},
+        options: any = {},
         fx = (ev) => {
             ev.target.dispatchEvent(
-                new CustomEvent("long-press", { detail: ev })
+                new CustomEvent("long-press", {detail: ev})
             );
         }
     ) {
         const handler = options.handler || this.#holder;
-        const action = {
+        const action: any = {
             pointerId: -1,
             timer: null,
             cancelPromise: null,
@@ -397,6 +401,7 @@ export default class AxGesture {
             pageCoord: [0, 0],
             lastCoord: [0, 0],
             ready: false,
+            cancelRv: () => {}
         };
 
         //
@@ -431,8 +436,8 @@ export default class AxGesture {
         };
 
         //
-        const forMove = [null, { capture: true }];
-        const forCanc = [null, { capture: true }];
+        const forMove: any[] = [null, {capture: true}];
+        const forCanc: any[] = [null, {capture: true}];
 
         //
         const registerCoord = [
@@ -442,7 +447,7 @@ export default class AxGesture {
                     action.lastCoord[1] = ev.clientY / zoomOf();
                 }
             },
-            { capture: true, passive: true },
+            {capture: true, passive: true},
         ];
 
         //
@@ -514,14 +519,17 @@ export default class AxGesture {
                     action.cancelRv = () => {
                         document.documentElement.removeEventListener(
                             "pointerup",
+                            // @ts-ignore
                             ...forCanc
                         );
                         document.documentElement.removeEventListener(
                             "pointercancel",
+                            // @ts-ignore
                             ...forCanc
                         );
                         document.documentElement.removeEventListener(
                             "pointermove",
+                            // @ts-ignore
                             ...forMove
                         );
 
@@ -536,7 +544,7 @@ export default class AxGesture {
                         action.pointerId = -1;
 
                         //
-                        cancelPromiseWithResolve.resolve();
+                        cancelPromiseWithResolve.resolve(true);
                     };
 
                     //
@@ -548,18 +556,18 @@ export default class AxGesture {
                         Promise.any([
                             tpm(
                                 (resolve, $rj) =>
-                                    (action.timer = setTimeout(
-                                        prepare(resolve, action, ev),
-                                        options?.minHoldTime ?? 300
-                                    )),
+                                (action.timer = setTimeout(
+                                    prepare(resolve, action, ev),
+                                    options?.minHoldTime ?? 300
+                                )),
                                 1000 * 5
                             ).then(() => (action.ready = true)),
                             tpm(
                                 (resolve, $rj) =>
-                                    (action.imTimer = setTimeout(
-                                        immediate(resolve, action, ev),
-                                        options?.maxHoldTime ?? 600
-                                    )),
+                                (action.imTimer = setTimeout(
+                                    immediate(resolve, action, ev),
+                                    options?.maxHoldTime ?? 600
+                                )),
                                 1000
                             ),
                             action.cancelPromise,
@@ -571,32 +579,38 @@ export default class AxGesture {
                     //
                     document.documentElement.addEventListener(
                         "pointerup",
+                        // @ts-ignore
                         ...forCanc
                     );
                     document.documentElement.addEventListener(
                         "pointercancel",
+                        // @ts-ignore
                         ...forCanc
                     );
                     document.documentElement.addEventListener(
                         "pointermove",
+                        // @ts-ignore
                         ...forMove
                     );
                 }
             },
-            { passive: false, capture: false }
+            {passive: false, capture: false}
         );
 
         //
         document.documentElement.addEventListener(
             "pointerup",
+            // @ts-ignore
             ...registerCoord
         );
         document.documentElement.addEventListener(
             "pointercancel",
+            // @ts-ignore
             ...registerCoord
         );
         document.documentElement.addEventListener(
             "pointermove",
+            // @ts-ignore
             ...registerCoord
         );
     }
