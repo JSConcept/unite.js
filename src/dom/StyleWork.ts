@@ -1,12 +1,12 @@
 //
-import {getCorrectOrientation} from "../utils/Utils";
+import {getCorrectOrientation} from "../utils/Utils.ts";
 
 //
 const styleElement = document.createElement("style");
 document.querySelector("head")?.appendChild?.(styleElement);
 
 //
-let shapeCount = 0;
+//let shapeCount: number = 0;
 
 //
 export const setStyleRule = (selector: string, sheet: object) => {
@@ -35,13 +35,13 @@ export const setStyleRules = (classes: StyleTuple[]) => {
 };
 
 //
-export const WavyShapedCircle = (applicant = null) => {
+export const WavyShapedCircle = () => {
     const steps = 100;
-    const cx = 0.5;
-    const cy = 0.5;
+    //const cx = 0.5;
+    //const cy = 0.5;
     const ampl = 0.06;
     const freq = 8;
-    const radius = 0.5;
+    //const radius = 0.5;
 
     //
     const points: number[] = [];
@@ -271,6 +271,7 @@ const ltsPortrait = {
     "--lth": "100cqi",
 };
 
+/*
 //
 const ptransLandscape = {
     "--ptrans-x":
@@ -286,6 +287,7 @@ const ptransPortrait = {
     "--ptrans-y":
         "calc(var(--h) * 0.5 + calc(var(--ry) * 1px + var(--cy)) - 50%)",
 };
+*/
 
 //
 const landscape = Object.assign({}, landscape0deg);
@@ -311,7 +313,7 @@ const availSize = {
 };
 
 //
-const updateOrientation = (e?: any) => {
+const updateOrientation = (_) => {
     Object.assign(availSize, {
         "--avail-width":
             Math.min(screen.availWidth || 0, screen.width || 0) + "px",
@@ -436,7 +438,7 @@ document.documentElement.addEventListener(
 const viewportHandler = (event?: any) => {
     const layoutViewport = document.body;
     const viewport = event?.target || visualViewport;
-    const offsetLeft = viewport.offsetLeft;
+    //const offsetLeft = viewport.offsetLeft;
     const offsetTop =
         viewport?.height -
         (layoutViewport.getBoundingClientRect().height || window.innerHeight) +

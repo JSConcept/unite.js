@@ -1,6 +1,5 @@
-// @ts-nocheck
 
-//
+// @ts-ignore
 import {argbFromRgb, Hct, hexFromArgb, QuantizerCelebi} from "@material/material-color-utilities";
 
 //
@@ -10,11 +9,11 @@ const qualityMode = {
         filter: "blur(4px)",
         sampling: 128
     }
-}
+};
 
 //
 export const sourceColorFromImage = async (bitmap) => {
-    
+
     // Convert Image data to Pixel Array
     const Q = qualityMode["fast"];
 
@@ -44,7 +43,7 @@ export const sourceColorFromImage = async (bitmap) => {
     }
 
     //
-    const rect = [0, 0, canvas.width, canvas.height];
+    const rect: [x: number, y: number, w: number, h: number] = [0, 0, canvas.width as number, canvas.height as number];
     context.save();
     context.fillStyle = "black";
     context.clearRect(...rect);
@@ -58,34 +57,34 @@ export const sourceColorFromImage = async (bitmap) => {
     //
     //const area = image.dataset['area'];
     //if (area && /^\d+(\s*,\s*\d+){3}$/.test(area)) {
-        //rect = area.split(/\s*,\s*/).map((s) => {
-            // tslint:disable-next-line:ban
-            //return parseInt(s, 10);
-        //});
+    //rect = area.split(/\s*,\s*/).map((s) => {
+    // tslint:disable-next-line:ban
+    //return parseInt(s, 10);
+    //});
     //}
 
     //
-    const imageBytes = context?.getImageData?.(...rect, { colorType: "unorm8", colorSpace: "srgb" }).data;
-    if (!imageBytes) { return [0, 0]; };
+    const imageBytes = context?.getImageData?.(...rect, {colorSpace: "srgb"}).data;
+    if (!imageBytes) {return [0, 0];};
 
     // Convert Image data to Pixel Array
-    const pixels = [];
+    const pixels: any[] = [];
     for (let i = 0; i < imageBytes.length; i += 4) {
         const r = imageBytes[i];
         const g = imageBytes[i + 1];
         const b = imageBytes[i + 2];
         const a = imageBytes[i + 3];
-        if (a < 255) { continue; }
-        const argb = argbFromRgb(r, g, b);
-        pixels.push(argb);
+        if (a < 255) {continue;}
+        const argb = argbFromRgb?.(r, g, b);
+        if (argb) pixels.push(argb);
     }
 
     //
     const result = await QuantizerCelebi.quantize(pixels, Q.sampling);
-    const colors = Array.from(result.entries());
+    const colors: number[] = Array.from(result.entries());
 
     //
-    const mostCount = colors.toSorted((a, b)=>{
+    const mostCount = colors.toSorted((a: number, b: number) => {
         return Math.sign(b[1] - a[1]);
     });
 
@@ -94,7 +93,7 @@ export const sourceColorFromImage = async (bitmap) => {
     document.body.style.setProperty("--mx-common-bg-color", hexFromArgb(mostCount[0][0]));
 
     //
-    const mostChroma = mostCount.toSorted((a, b)=>{
+    const mostChroma = mostCount.toSorted((a, b) => {
         const hct_a = new Hct(a[0]);
         const hct_b = new Hct(b[0]);
         return Math.sign(hct_b.chroma - hct_a.chroma);
@@ -131,7 +130,7 @@ export const applyTheme = (theme, options) => {
             const paletteKey = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
             for (const tone of tones) {
                 const token = `--md-ref-palette-${paletteKey}-${paletteKey}${tone}`;
-                const color = hexFromArgb(palette.tone(tone));
+                const color = hexFromArgb((palette as any).tone(tone));
                 target.style.setProperty(token, color);
             }
         }

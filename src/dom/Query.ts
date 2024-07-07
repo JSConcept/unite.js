@@ -72,7 +72,7 @@ type EventSequence = [name: string, cb: Function, params?: Object];
 
 //
 export default class AxQuery {
-    #nodeObserver: MutationObserver | null = null;
+    //#nodeObserver: MutationObserver | null = null;
     #attributeObserver: MutationObserver | null = null;
     #attribListener = new Map<String, Set<Function>>([]);
     #eventListener = new WeakMap<HTMLElement, Set<EventSequence>>([]);
@@ -106,7 +106,7 @@ export default class AxQuery {
         //
         const attributeObserver =
             typeof MutationObserver != "undefined"
-                ? new MutationObserver(async (mutationList, observer) => {
+                ? new MutationObserver(async (mutationList, _) => {
                     if (!this.#muted) {
                         mutationList.forEach(async (mut) => {
                             const allowed = ["style"].indexOf(mut.attributeName || "") < 0;
@@ -139,7 +139,7 @@ export default class AxQuery {
         //
         const nodeObserver =
             typeof MutationObserver != "undefined"
-                ? new MutationObserver(async (mutationList, observer) => {
+                ? new MutationObserver(async (mutationList, _) => {
                     if (!this.#muted) {
                         for (const [selector, fns] of domListener.entries()) {
                             mutationList.forEach(async (mut) => {
@@ -232,7 +232,7 @@ export default class AxQuery {
 
     //
     #applyEvents(selector, elements, args) {
-        elements.map(async (e, I) => {
+        elements.map(async (e, _) => {
             //
             const mb = e?.matches?.(selector);
 
@@ -260,7 +260,7 @@ export default class AxQuery {
     }
 
     //
-    async #listenAttributes(e, selector, mutation) {
+    async #listenAttributes(e/*, selector, mutation*/) {
         //
         if (!e[_observed_]) {
             //await Timer.raf;
@@ -353,7 +353,7 @@ export default class AxQuery {
         //
         if (!this.#attribListener.has(selector)) {
             this.$domListen(selector, (els) =>
-                els.map((el) => this.#listenAttributes(el, selector, null))
+                els.map((el) => this.#listenAttributes(el/*, selector, null*/))
             );
             this.#attribListener.set(selector, new Set([fn]));
         } else {
@@ -365,7 +365,7 @@ export default class AxQuery {
     }
 
     //
-    once(selector, fn, muted = true) {
+    once(selector, fn/*, muted = true*/) {
         return this.#mutedAction(() => {
             return this.dynamic(selector).map(fn);
         });
@@ -512,7 +512,7 @@ export default class AxQuery {
     event(s, args) {
         return this.$attribListen(
             s,
-            (elements, selector = s, mutation = null) => {
+            (elements, selector = s, _) => {
                 // pre-set attributes
                 return this.#applyEvents(selector ?? s, elements, args);
             }
@@ -523,7 +523,7 @@ export default class AxQuery {
     attribCSS(s, attributes) {
         return this.$attribListen(
             s,
-            (elements, selector = s, mutation = null) => {
+            (elements, selector = s, _) => {
                 return this.#reflectAttribInStyle(
                     selector ?? s,
                     elements,
@@ -551,7 +551,7 @@ export default class AxQuery {
             if (!(await resolveOf(x))) {
                 document.documentElement.addEventListener(
                     "readystatechange",
-                    (e) => resolveOf(x),
+                    (_) => resolveOf(x),
                     {once: false, passive: true}
                 );
             }

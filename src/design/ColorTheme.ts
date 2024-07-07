@@ -1,12 +1,12 @@
-// @ts-nocheck
-
-//
+// @ts-ignore
 import {hexFromArgb} from "@material/material-color-utilities";
+
+// @ts-ignore
 import {formatCss, formatHex, interpolate, oklch, parse} from "culori";
-import {sourceColorFromImage} from "./ColorMod.mjs/index.js";
 
 //
-import {setStyleRule} from "../dom/StyleWork.ts/index.js";
+import {setStyleRule} from "../dom/StyleWork.ts";
+import {sourceColorFromImage} from "./ColorMod.ts";
 
 //
 export const provide = async (path = "", rw = false) => {
@@ -23,7 +23,7 @@ export const provide = async (path = "", rw = false) => {
         for (let I = 0; I < parts.length - 1; I++) {
             if (!parts[I]) continue;
             dir = await dir
-                ?.getDirectoryHandle?.(parts[I], { create: rw })
+                ?.getDirectoryHandle?.(parts[I], {create: rw})
                 ?.catch?.(console.warn.bind(console));
             if (!dir) break;
         }
@@ -40,16 +40,16 @@ export const provide = async (path = "", rw = false) => {
 };
 
 //
-const lightMods = ["#000000", "#FFFFFF"],
-    darkMods = ["#FFFFFF", "#000000"];
-let baseColorI = {};
-let baseColorH = "#FFFFFF";
-let baseColor =
-    localStorage.getItem("--theme-base-color") || "oklch(50% 0.3 0)";
-let surfaceColorI = {};
-let surfaceColorH = "#FFFFFF";
-let surfaceColor = "#FFFFFF";
-let chromaMod = {};
+//let baseColorH: string = "#FFFFFF";
+//let surfaceColor: string = "#FFFFFF";
+
+//
+const lightMods: string[] = ["#000000", "#FFFFFF"], darkMods: string[] = ["#FFFFFF", "#000000"];
+let baseColorI: any = {};
+let baseColor: string = localStorage.getItem("--theme-base-color") || "oklch(50% 0.3 0)";
+let surfaceColorI: any = {};
+let surfaceColorH: string = "#FFFFFF";
+let chromaMod: any = {};
 let cssIsDark =
     parseInt(localStorage.getItem("--theme-wallpaper-is-dark") || "0") || 0;
 
@@ -65,21 +65,23 @@ export const switchTheme = (isDark = false) => {
 
     // used in UI
     surfaceColorI = interpolate(
-        [baseColorI, [lightMods, darkMods][isDark - 0][1]],
+        [baseColorI, [lightMods, darkMods][(isDark ? 1 : 0) - 0][1]],
         "oklch",
         {}
     )(0.96);
 
     //
     surfaceColorH = formatHex(surfaceColorI);
-    surfaceColor = formatCss(baseColorI);
+    //surfaceColor = formatCss(baseColorI);
 
     //
     const media = document?.head?.querySelector?.(
         'meta[name="theme-color"]:not([media])'
     );
+
+    //
     if (media) {
-        media.content = surfaceColorH;
+        media.setAttribute("content", surfaceColorH);
     }
 };
 
@@ -97,7 +99,7 @@ export const colorScheme = async (blob) => {
     const commonOkLch = oklch(parse(commonHex));
 
     //
-    const cssIsDark = Math.sign(0.65 - commonOkLch.l) * 0.5 + 0.5;
+    const cssIsDark: number = Math.sign(0.65 - commonOkLch.l) * 0.5 + 0.5;
 
     //
     baseColorI = interpolate([commonOkLch, chromaOkLch], "oklch", {
@@ -108,17 +110,17 @@ export const colorScheme = async (blob) => {
     baseColorI.h ||= 0;
 
     //
-    const whiteMod = { ...baseColorI };
+    const whiteMod = {...baseColorI};
     whiteMod.c = 0.01;
     whiteMod.l = 0.99;
 
     //
-    const blackMod = { ...baseColorI };
+    const blackMod = {...baseColorI};
     blackMod.c = 0.01;
     blackMod.l = 0.01;
 
     //
-    chromaMod = { ...baseColorI };
+    chromaMod = {...baseColorI};
     chromaMod.c = 0.99;
 
     //
@@ -130,7 +132,7 @@ export const colorScheme = async (blob) => {
     darkMods[1] = interpolate([baseColorI, blackMod], "oklch", {})(0.9);
 
     //
-    baseColorH = formatHex(baseColorI);
+    //baseColorH = formatHex(baseColorI);
     baseColor = formatCss(baseColorI);
 
     //
@@ -142,7 +144,7 @@ export const colorScheme = async (blob) => {
 
         //
         localStorage.setItem("--theme-base-color", baseColor);
-        localStorage.setItem("--theme-wallpaper-is-dark", cssIsDark);
+        localStorage.setItem("--theme-wallpaper-is-dark", cssIsDark as unknown as string);
     }
 
     //
@@ -152,7 +154,7 @@ export const colorScheme = async (blob) => {
 //
 window
     .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", ({ matches }) => {
+    .addEventListener("change", ({matches}) => {
         switchTheme(matches);
     });
 
@@ -165,7 +167,7 @@ window.addEventListener("wallpaper", (ev) => {
                 const filename =
                     "/opfs?path=images/" + (blob.name || "wallpaper");
                 provide(filename, true)
-                    .then(async (fw) => {
+                    .then(async (fw: any) => {
                         localStorage.setItem("@wallpaper", filename);
                         await fw?.write?.(blob);
                         await fw?.flush?.();

@@ -1,7 +1,7 @@
 export const importTimeout = async (url, timeout = 1000) => {
     return Promise.race([
         import(url),
-        new Promise((rv, rj)=>(setTimeout(rj, timeout)))
+        new Promise((_, rj) => (setTimeout(rj, timeout)))
     ]);
 }
 

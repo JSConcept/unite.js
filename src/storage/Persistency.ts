@@ -181,8 +181,7 @@ const proxy = new Proxy(
         construct(target, args) {
             return new target(...args);
         },
-
-        apply(target, args) {
+        apply() {
             return {};
         },
     })

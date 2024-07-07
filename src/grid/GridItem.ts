@@ -1,13 +1,5 @@
 //
-import {getCorrectOrientation} from "../utils/Utils.ts/index.js";
-
-//
-const or_mod = {
-    "landscape-primary": [1, 1, 1],
-    "landscape-secondary": [1, 1, 1],
-    "portrait-primary": [1, 1, 0],
-    "portrait-secondary": [-1, -1, 0],
-};
+import {getCorrectOrientation} from "../utils/Utils.ts";
 
 //
 export const getParent = (e) => {
@@ -24,7 +16,7 @@ export const redirectCell = (
     {gridPage, iconItem, iconItems},
     $preCell
 ) => {
-    const items = iconItems;
+    //const items = iconItems;
     const preCell = {...$preCell}; // make non-conflict copy
     const icons =
         gridPage.list?.map((id) => iconItems.get(id)).filter((m) => !!m) || [];

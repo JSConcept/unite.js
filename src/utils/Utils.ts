@@ -1,9 +1,20 @@
+//
+export const or_mod = {
+    "landscape-primary": [1, 1, 1],
+    "landscape-secondary": [1, 1, 1],
+    "portrait-primary": [1, 1, 0],
+    "portrait-secondary": [-1, -1, 0],
+};
 
+//
 export const zoomOf = () => {
-    const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
+    // @ts-ignore
+    const isFirefox: boolean = navigator.userAgent.toLowerCase().includes("firefox") || false;
+
+    ///
     if ("currentCSSZoom" in document.documentElement) {
         return (
-            ((document.documentElement.currentCSSZoom as number) || 1) / devicePixelRatio
+            ((document.documentElement.currentCSSZoom as number) || 1) / (isFirefox ? 1 : devicePixelRatio)
         );
     }
 
@@ -157,7 +168,7 @@ export const UUIDv4 = () => {
 
 //
 export const propsFilter = (obj) => {
-    return Object.fromEntries(Array.from(Object.entries(obj)).filter(([k, v]) => {
+    return Object.fromEntries(Array.from(Object.entries(obj)).filter(([_, v]) => {
         return !(typeof v == "function" || typeof v == "object");
     }));
 };

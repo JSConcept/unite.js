@@ -26,8 +26,8 @@ export default class AxTime {
     }
 
     //
-    static symbol(name = "") {
-        const sym = Symbol("switch");
+    static symbol(name: string = "") {
+        const sym = Symbol(name || "switch");
         document[sym] = true;
         return sym;
     }

@@ -1,4 +1,4 @@
-import {zoomOf} from "../utils/Utils";
+import {zoomOf} from "../utils/Utils.ts";
 
 //
 export const longPress = (node, threshold = 60) => {
