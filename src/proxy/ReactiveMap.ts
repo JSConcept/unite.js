@@ -1,5 +1,5 @@
 export default class ReactiveMap {
-    subscribers: Map<string, Set<(value: any) => void>>;
+    subscribers: Map<string | number | symbol, Set<(value: any) => void>>;
 
     //
     constructor() {
@@ -7,7 +7,7 @@ export default class ReactiveMap {
     }
 
     //
-    ["@subscribe"](prop: string, cb: (value: any) => void) {
+    ["@subscribe"](prop: string | number | symbol, cb: (value: any) => void) {
         if (this.subscribers.has(prop)) {
             this.subscribers.get(prop)?.add?.(cb);
         } else {
@@ -16,7 +16,14 @@ export default class ReactiveMap {
     }
 
     //
-    get(target, name, ctx) {
+    has(target, prop: string | number | symbol) {
+        if (prop == "@subscribe") {return false;};
+        if (prop == "@extract") {return false;};
+        return Reflect.has(target, prop);
+    }
+
+    //
+    get(target, name: string | number | symbol, ctx) {
         if (name == "@subscribe") {
             return (prop: string, cb: (value: any) => void) => {
                 if (target.has(prop)) {
@@ -24,6 +31,11 @@ export default class ReactiveMap {
                 }
                 this["@subscribe"](prop, cb);
             };
+        }
+
+        //
+        if (name == "@extract") {
+            return target;
         }
 
         //
