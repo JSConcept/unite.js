@@ -40,7 +40,7 @@
 <!-- -->
 <div bind:this={target} data-id={gridPage.id} class="ux-grid">
     
-    {#each list as L}
+    {#each list as L (L)}
         {#if type == "labels"}
             <GridItemLabel type={type} gridItem={items.get(L)}></GridItemLabel>
         {:else}
