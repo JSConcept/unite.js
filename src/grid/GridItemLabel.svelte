@@ -8,8 +8,8 @@
     let target = null;
 
     //
-    $: target?.style?.setProperty?.("--cell-x", cell[0], "");
-    $: target?.style?.setProperty?.("--cell-y", cell[1], "");
+    $: cell?.["@subscribe"]?.(0, (v)=>(target?.style?.setProperty?.("--cell-x", v, "")));
+    $: cell?.["@subscribe"]?.(1, (v)=>(target?.style?.setProperty?.("--cell-y", v, "")));
 </script>
 
 <!-- -->

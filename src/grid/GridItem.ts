@@ -1,4 +1,5 @@
 //
+import {makeReactiveObject} from "../proxy/ReactiveObject.ts";
 import {getCorrectOrientation, isMobile} from "../utils/Utils.ts";
 
 //
@@ -52,8 +53,8 @@ export const redirectCell = (gridArgs: GridArgs, $preCell: [number, number]) => 
 
     //
     if (!checkBusy(preCell)) {
-        gridArgs.item.cell = [...preCell];
-        return [...preCell];
+        gridArgs.item.cell = makeReactiveObject([...preCell]);
+        return gridArgs.item.cell;
     }
 
     //
@@ -73,8 +74,8 @@ export const redirectCell = (gridArgs: GridArgs, $preCell: [number, number]) => 
     //
     const suitable = variants.find((v) => !checkBusy(v));
     if (suitable) {
-        gridArgs.item.cell = [...suitable];
-        return [...suitable];
+        gridArgs.item.cell = makeReactiveObject([...suitable]);
+        return gridArgs.item.cell;
     }
 
     //
@@ -82,8 +83,8 @@ export const redirectCell = (gridArgs: GridArgs, $preCell: [number, number]) => 
     let busy = checkBusy(preCell);
     while (busy && exceed++ < columns * rows) {
         if (!busy) {
-            gridArgs.item.cell = [...preCell];
-            return [...preCell];
+            gridArgs.item.cell = makeReactiveObject([...preCell]);
+            return gridArgs.item.cell;
         }
 
         //
@@ -102,7 +103,8 @@ export const redirectCell = (gridArgs: GridArgs, $preCell: [number, number]) => 
         busy = checkBusy(preCell);
     }
 
-    return preCell;
+    //
+    return makeReactiveObject(preCell);
 };
 
 //
