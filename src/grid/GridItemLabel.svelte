@@ -1,9 +1,13 @@
-<script>
-    export let gridItem = {};
+<script type="ts">
+    import {onMount} from 'svelte';
+    import {GridItemType} from "./GridItemUtils";
+    
+    // @ts-ignore
+    export let gridItem: GridItemType = {};
     export let type = "";
     
     //
-    let target = null;
+    let target: HTMLElement | null = null;
     let label = null;
 
     //

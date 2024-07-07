@@ -1,9 +1,12 @@
-<script>
+<script type="ts">
     import {observeBySelector} from "dom/Observer";
     import GridPage from "grid/GridPage.svelte";
     import {createReactiveSet} from "reactive/ReactiveSet";
-    import {animationSequence} from "./GridItemUtils";
-    import * as state from "./GridState";
+    import {onMount} from 'svelte';
+    import {grabForDrag} from "../interact/PointerAPI";
+    import {zoomOf} from "../utils/Utils";
+    import {animationSequence, GridItemType, GridPageType, putToCell} from "./GridItemUtils";
+    import {state} from "./GridState";
     
     //
     export let current = "";
@@ -12,16 +15,16 @@
     export let lists = state.lists;
     export let grids = state.grids;
     export let items = state.items;
-    export let backup = createReactiveSet([]);
+    export let backup = createReactiveSet<string>([]);
     
     //
-    let target = null;
+    let target: HTMLElement | null = null;
     
     //
     const initGrab = (ev)=> {
         ev?.stopPropagation?.();
         if (ev.target?.dataset?.id) {
-            backup.add(ev.target.dataset.id);
+            backup.add(ev.target.dataset.id as string);
             
             // may broke multi-touch dragging! (if unsupported partial redraw)
             backup = backup; // trigger re-draw
@@ -38,7 +41,7 @@
         };
 
         //
-        const grabEvent = ["pointermove", (evm)=>{
+        const grabEvent: ["pointermove", (e: PointerEvent)=>any, AddEventListenerOptions] = ["pointermove", (evm: PointerEvent)=>{
             if (dragState.pointerId == evm.pointerId && Math.hypot(
                 dragState.startX - (evm.clientX / zoomOf()), 
                 dragState.startY - (evm.clientY / zoomOf())
@@ -55,17 +58,28 @@
     }
     
     //
+    document.addEventListener("long-press", (ev)=>{
+        if (ev.target.matches(".ux-grid-item[data-type=\"items\"]")) {
+            grabItem(ev.detail);
+        }
+    });
+    
+    //
     const placeElement = async ({pointer, holding})=>{
         const el = holding.element.deref();
         const id = el.dataset.id;
         
         //
         const bbox = el.parentNode.getBoundingClientRect();
-        const xy = [pointer.current[0] - (bbox?.left || 0), pointer.current[1] - (bbox?.top || 0)];
+        const xy: [number, number] = [pointer.current[0] - (bbox?.left || 0), pointer.current[1] - (bbox?.top || 0)];
         
         //
-        const prev = [...items.get(id).cell];
-        const cell = putToCell({ items, grids, item: items.get(id) }, xy);
+        const prev = [...(items?.get?.(id)?.cell || [0, 0])];
+        const item: GridItemType = items.get(id) as unknown as GridItemType;
+        const page: GridPageType = grids.get(current) as unknown as GridPageType;
+        
+        // 
+        putToCell({ items, item, page }, xy);
         
         //
         el.style.setProperty("--p-cell-x", prev[0], "");
@@ -80,11 +94,11 @@
         }).finished;
         
         //
-        const real = target.querySelector(".ux-grid-item[data-type=\"item\"][data-id=\"" + el.dataset.id + "\"]");
-        real.classList.remove("ux-hidden");
+        const real = target?.querySelector?.(".ux-grid-item[data-type=\"item\"][data-id=\"" + el.dataset.id + "\"]");
+        real?.classList?.remove("ux-hidden");
         
         //
-        if (!lists.get(current).has(id)) {
+        if (!lists?.get?.(current)?.has?.(id)) {
             const oldList = Array.from(lists.values()).find((L)=>{
                 return L.has(id);
             });
@@ -92,12 +106,15 @@
             //
             if (oldList) {
                 oldList.delete(id);
-                lists.get(current).add(id);
+                lists?.get?.(current)?.add?.(id);
                 
                 // trigger re-draw
                 lists = lists;
             }
         }
+
+        // trigger icon state change (localStorage)
+        if (item) items?.set?.(id, item);
 
         // trigger dis-appear of backup elements
         // may broke multi-touch dragging! (if unsupported partial redraw)
@@ -116,9 +133,9 @@
     onMount(()=>{
         observeBySelector(target, ".ux-grid-item[data-type=\"backup\"]", (mut)=>{
             mut.addedNodes.map((el)=>{
-                const real = target.querySelector(".ux-grid-item[data-type=\"items\"][data-id=\"" + el.dataset.id + "\"]");
-                if (!real.classList.contains("ux-hidden")) {
-                    real.classList.add("ux-hidden");
+                const real = target?.querySelector?.(".ux-grid-item[data-type=\"items\"][data-id=\"" + el.dataset.id + "\"]");
+                if (!real?.classList?.contains?.("ux-hidden")) {
+                    real?.classList?.add?.("ux-hidden");
                 }
                 grabForDrag(el, items.get(el.dataset.id));
             });
@@ -127,7 +144,7 @@
         //
         observeBySelector(target, ".ux-grid-item[data-type=\"items\"]", (mut)=>{
             mut.addedNodes.map((el)=>{
-                const visual = target.querySelector(".ux-grid-item[data-type=\"backup\"][data-id=\"" + el.dataset.id + "\"]");
+                const visual = target?.querySelector?.(".ux-grid-item[data-type=\"backup\"][data-id=\"" + el.dataset.id + "\"]");
                 if (visual) {
                     // avoid re-appear
                     if (!el.classList.contains("ux-hidden")) {
@@ -141,7 +158,7 @@
 
 <!-- -->
 <div bind:this={target} class="ux-grid-pages">
-    <GridPage lists={lists} list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
-    <GridPage lists={lists} list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
-    <GridPage lists={lists} list={backup} gridPage={"backup"} items={items} type="backup"></GridPage>
+    <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
+    <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
+    <GridPage list={backup} gridPage={"backup"} items={items} type="backup"></GridPage>
 </div>

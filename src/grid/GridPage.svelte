@@ -1,16 +1,18 @@
-<script>
+<script type="ts">
     import {observeBySelector} from "dom/Observer";
     import GridItem from "grid/GridItem.svelte";
     import GridItemLabel from "grid/GridItemLabel.svelte";
+    import type {GridItemType} from "grid/GridItemUtils";
+    import {onMount} from 'svelte';
     
-    //
-    export let gridPage = {};
-    export let items = new Map([]);
+    // @ts-ignore
+    export let gridPage: GridPageType = {};
+    export let items = new Map<string, GridItemType>([]);
     export let type = "items";
+    export let list = new Set<string>;
     
     //
-    let target = null;
-    let list = [];
+    let target: HTMLElement | null = null;
     
     //
     $: gridPage?.["@subscribe"]?.((v)=>{
@@ -31,14 +33,14 @@
     
     //
     onMount(()=>{
-        observeBySelector(target, ".ux-grid-item", (mut)=>{
+        observeBySelector(target, ".ux-grid-item", (_)=>{
             //mut.addedNodes
         });
     });
 </script>
 
 <!-- -->
-<div bind:this={target} data-id={gridPage.id} class="ux-grid">
+<div bind:this={target} data-id={gridPage?.id||""} class="ux-grid">
     
     {#each list as L (L)}
         {#if type == "labels"}

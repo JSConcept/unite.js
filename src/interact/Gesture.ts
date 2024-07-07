@@ -388,7 +388,7 @@ export default class AxGesture {
         options: any = {},
         fx = (ev) => {
             ev.target.dispatchEvent(
-                new CustomEvent("long-press", {detail: ev})
+                new CustomEvent("long-press", {detail: ev, bubbles: true})
             );
         }
     ) {

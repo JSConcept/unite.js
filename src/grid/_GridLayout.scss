@@ -46,7 +46,7 @@
     //
     .ux-grid-item {
         @include calculateMetric();
-        grid-column: var(--cell-x);
-        grid-row: var(--cell-y);
+        grid-column: var(--fc-cell-x);
+        grid-row: var(--fc-cell-y);
     }
 }

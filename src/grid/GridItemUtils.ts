@@ -3,7 +3,7 @@ import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
 import {getCorrectOrientation, isMobile} from "../utils/Utils.ts";
 
 //
-export interface GridItem {
+export interface GridItemType {
     cell: [number, number];
     id: string;
     label: string;
@@ -11,7 +11,7 @@ export interface GridItem {
 };
 
 //
-export interface GridPage {
+export interface GridPageType {
     id: string;
     list: string[];
     layout: [number, number];
@@ -19,10 +19,10 @@ export interface GridPage {
 };
 
 //
-export interface GridArgs {
-    item: GridItem;
-    items: Map<string, GridItem>;
-    page: GridPage;
+export interface GridArgsType {
+    item: GridItemType;
+    items: Map<string, GridItemType>;
+    page: GridPageType;
 };
 
 //
@@ -36,7 +36,7 @@ export const getParent = (e) => {
 };
 
 //
-export const redirectCell = (gridArgs: GridArgs, $preCell: [number, number]) => {
+export const redirectCell = (gridArgs: GridArgsType, $preCell: [number, number]) => {
     //const items = gridItems;
     const preCell: [number, number] = [...$preCell]; // make non-conflict copy
     const icons =
@@ -169,29 +169,29 @@ export const animationSequence = () => {
         {
             "--translate-x": "calc(var(--drag-x) * 1px)",
             "--translate-y": "calc(var(--drag-y) * 1px)",
-            gridColumn: "var(--p-cell-x)",
-            gridRow: "var(--p-cell-y)",
+            gridColumn: "var(--fp-cell-x)",
+            gridRow: "var(--fp-cell-y)",
             easing: "step-start",
             offset: 0.0,
         },
         {
             "--translate-x": "calc(var(--drag-x) * 1px)",
             "--translate-y": "calc(var(--drag-y) * 1px)",
-            gridColumn: "var(--p-cell-x)",
-            gridRow: "var(--p-cell-y)",
+            gridColumn: "var(--fp-cell-x)",
+            gridRow: "var(--fp-cell-y)",
             easing: "linear",
             offset: 0.01,
         },
         {
-            gridColumn: "var(--p-cell-x)",
-            gridRow: "var(--p-cell-y)",
+            gridColumn: "var(--fp-cell-x)",
+            gridRow: "var(--fp-cell-y)",
             ...getOrientedPoint(),
             easing: "step-end",
             offset: 0.99,
         },
         {
-            gridColumn: "var(--cell-x)",
-            gridRow: "var(--cell-y)",
+            gridColumn: "var(--fc-cell-x)",
+            gridRow: "var(--fc-cell-y)",
             "--drag-x": 0,
             "--drag-y": 0,
             easing: "step-end",
@@ -208,7 +208,7 @@ export const animationSequence = () => {
 }*/
 
 //
-export const putToCell = (gridArgs: GridArgs, $coord: [number, number]) => {
+export const putToCell = (gridArgs: GridArgsType, $coord: [number, number]) => {
     // should be relative from grid-box (not absolute or fixed position)
     const last: [number, number] = [...$coord];
 

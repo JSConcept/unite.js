@@ -4,7 +4,7 @@ import * as JSOX from 'jsox';
 import {createReactiveMap} from "reactive/ReactiveMap";
 import {makeReactiveObject} from "reactive/ReactiveObject";
 import {makeReactiveSet} from "reactive/ReactiveSet";
-import type {GridItem, GridPage} from "./GridItemUtils.ts";
+import {GridItemType, GridPageType} from "./GridItemUtils.ts";
 
 //
 export const toMapSet = <K, V>(list) => {
@@ -22,12 +22,37 @@ export const fromMap = <K, V>(map: Map<K, V>): V[] => {
 };
 
 //
-export const gridsState: Map<string, GridPage> = toMap(JSOX.parse(localStorage.getItem("@gridsState") || "[]"));
-export const itemsState: Map<string, GridItem> = toMap(JSOX.parse(localStorage.getItem("@itemsState") || "[]"));
-export const gridsLists: Map<string, Set<string>> = toMapSet(Array.from(gridsState.values()).map((gs) => [gs.id, gs.list]));
+export const state: {
+    grids: Map<string, GridPageType>;
+    items: Map<string, GridItemType>;
+    lists: Map<string, Set<string>>;
+} = makeReactiveObject({
+    grids: toMap(JSOX.parse(localStorage.getItem("@gridsState") || "[]")),
+    items: toMap(JSOX.parse(localStorage.getItem("@itemsState") || "[]")),
+    lists: new Map<string, Set<string>>()
+});
 
 //
-gridsLists?.["@subscribe"]?.((v, prop) => {
-    const changed = gridsState.get(prop);
+state.lists = toMapSet(Array.from(state.grids.values()).map((gs) => [gs.id, gs.list]));
+
+//
+state.lists?.["@subscribe"]?.((v, prop) => {
+    const changed = state.grids.get(prop);
     if (changed) {changed.list = v;}
+});
+
+//
+state.grids?.["@subscribe"]?.(() => {
+    localStorage.setItem("@gridsState", JSOX.stringify(Array.from(state.grids.values())));
+});
+
+//
+state.items?.["@subscribe"]?.(() => {
+    localStorage.setItem("@itemsState", JSOX.stringify(Array.from(state.items.values())));
+});
+
+//
+state?.["@subscribe"]?.(() => {
+    localStorage.setItem("@gridsState", JSOX.stringify(Array.from(state.grids.values())));
+    localStorage.setItem("@itemsState", JSOX.stringify(Array.from(state.items.values())));
 });

@@ -1,9 +1,16 @@
-<script>
-    export let gridItem = {};
+<script type="ts">
+    import LucideIcon from "design/LucideIcon.svelte";
+    import {onMount} from 'svelte';
+    import GestureControl from "../interact/Gesture";
+    import {GridItemType} from "./GridItemUtils";
+
+    // @ts-ignore
+    export let gridItem: GridItemType = {};
     export let type = "";
     
     //
-    let target = null;
+    let target: HTMLElement | null = null;
+    let icon = "";
 
     //
     $: gridItem?.["@subscribe"]?.((v)=>{
@@ -12,13 +19,27 @@
     }, "cell");
 
     //
+    $: gridItem?.["@subscribe"]?.((v)=>{
+        icon = v;
+    }, "icon");
+
+    //
     export let whenMount = ()=>{};
     
     //
-    onMount(whenMount);
+    onMount(()=>{
+        const gest = new GestureControl(target);
+        gest.longPress({
+            anyPointer: true,
+            mouseImmediate: true,
+            minHoldTime: 60 * 3600,
+            maxHoldTime: 100
+        });
+    });
 </script>
 
 <!-- -->
 <div bind:this={target} data-id={gridItem.id} data-type={type} class="ux-grid-item">
-    <slot></slot>
+    <!--<slot></slot>-->
+    <LucideIcon name={icon}></LucideIcon>
 </div>
