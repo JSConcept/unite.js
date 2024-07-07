@@ -1,5 +1,28 @@
 //
-import {getCorrectOrientation} from "../utils/Utils.ts";
+import {getCorrectOrientation, isMobile} from "../utils/Utils.ts";
+
+//
+interface GridItem {
+    cell: [number, number];
+    id: string;
+    label: string;
+    pointerId: number;
+};
+
+//
+interface GridPage {
+    list: string[];
+    layout: [number, number];
+    size: [number, number];
+};
+
+//
+interface GridArgs {
+    item: GridItem;
+    items: Map<string, GridItem>;
+    page: GridPage;
+};
+
 
 //
 export const getParent = (e) => {
@@ -12,51 +35,46 @@ export const getParent = (e) => {
 };
 
 //
-export const redirectCell = (
-    {gridPage, iconItem, iconItems},
-    $preCell
-) => {
-    //const items = iconItems;
-    const preCell = {...$preCell}; // make non-conflict copy
+export const redirectCell = (gridArgs: GridArgs, $preCell: [number, number]) => {
+    //const items = gridItems;
+    const preCell: [number, number] = [...$preCell]; // make non-conflict copy
     const icons =
-        gridPage.list?.map((id) => iconItems.get(id)).filter((m) => !!m) || [];
+        gridArgs.page.list?.map((id) => gridArgs.items.get(id)).filter((m) => !!m) || [];
 
     //
     const checkBusy = (cell) => {
         return icons
-            .filter((e) => e != iconItem && e.id != iconItem.id)
+            .filter((e) => e != gridArgs.item && e.id != gridArgs.item.id)
             .find((one) => {
-                return one.cellX == cell.x && one.cellY == cell.y;
+                return one.cell[0] == cell[0] && one.cell[1] == cell[1];
             });
     };
 
     //
     if (!checkBusy(preCell)) {
-        iconItem.cellX = preCell.x;
-        iconItem.cellY = preCell.y;
-        return {x: iconItem.cellX, y: iconItem.cellY};
+        gridArgs.item.cell = [...preCell];
+        return [...preCell];
     }
 
     //
-    const columns = gridPage.layout[0] || 4;
-    const rows = gridPage.layout[1] || 8;
+    const columns = gridArgs.page.layout[0] || 4;
+    const rows = gridArgs.page.layout[1] || 8;
 
     //
-    const variants = [
-        {x: preCell.x + 1, y: preCell.y},
-        {x: preCell.x - 1, y: preCell.y},
-        {x: preCell.x, y: preCell.y + 1},
-        {x: preCell.x, y: preCell.y - 1},
+    const variants: [number, number][] = [
+        [preCell[0] + 1, preCell[1]] as [number, number],
+        [preCell[0] - 1, preCell[1]] as [number, number],
+        [preCell[0], preCell[1] + 1] as [number, number],
+        [preCell[0], preCell[1] - 1] as [number, number],
     ].filter((v) => {
-        return v.x >= 0 && v.x < columns && v.y >= 0 && v.y < rows;
-    });
+        return v[0] >= 0 && v[0] < columns && v[1] >= 0 && v[1] < rows;
+    }) || [];
 
     //
     const suitable = variants.find((v) => !checkBusy(v));
     if (suitable) {
-        iconItem.cellX = suitable.x;
-        iconItem.cellY = suitable.y;
-        return {x: iconItem.cellX, y: iconItem.cellY};
+        gridArgs.item.cell = [...suitable];
+        return [...suitable];
     }
 
     //
@@ -64,20 +82,19 @@ export const redirectCell = (
     let busy = checkBusy(preCell);
     while (busy && exceed++ < columns * rows) {
         if (!busy) {
-            iconItem.cellX = preCell.x;
-            iconItem.cellY = preCell.y;
-            return {x: iconItem.cellX, y: iconItem.cellY};
+            gridArgs.item.cell = [...preCell];
+            return [...preCell];
         }
 
         //
-        preCell.x++;
-        if (preCell.x >= columns) {
-            preCell.x = 0;
-            preCell.y++;
+        preCell[0]++;
+        if (preCell[0] >= columns) {
+            preCell[0] = 0;
+            preCell[1]++;
 
             //
-            if (preCell.y >= rows) {
-                preCell.y = 0;
+            if (preCell[1] >= rows) {
+                preCell[1] = 0;
             }
         }
 
@@ -103,13 +120,6 @@ CSS?.registerProperty?.({
     inherits: true,
     initialValue: "0px",
 });
-
-//
-const isMobile = () => {
-    const regex =
-        /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-    return regex.test(navigator.userAgent);
-};
 
 //
 const getOrientedPoint = () => {
@@ -196,59 +206,52 @@ export const animationSequence = () => {
 }*/
 
 //
-export const putToCell = ({
-    gridPage,
-    iconItems,
-    iconItem,
-}, $coord) => {
+export const putToCell = (gridArgs: GridArgs, $coord: [number, number]) => {
     // should be relative from grid-box (not absolute or fixed position)
-    const last = {...$coord};
+    const last: [number, number] = [...$coord];
 
     //
     const orientation = getCorrectOrientation();
-    const oxBox = gridPage.size;
+    const oxBox = gridArgs.page.size;
 
     //
     if (orientation.startsWith("landscape")) oxBox.reverse();
 
     //
-    const inBox = [oxBox[0] / gridPage.layout[0], oxBox[1] / gridPage.layout[1]];
-
-    //
-    const preCell = {x: iconItem.cellX || 0, y: iconItem.cellY || 0};
-    (iconItem.pCellX = iconItem.cellX || 0);
-    (iconItem.pCellY = iconItem.cellY || 0);
+    const inBox = [oxBox[0] / gridArgs.page.layout[0], oxBox[1] / gridArgs.page.layout[1]];
+    let preCell: [number, number] = [...gridArgs.item.cell];
 
     //
     switch (orientation) {
         case "portrait-primary":
-            preCell.x = Math.floor(last.x / inBox[0]) || 0;
-            preCell.y = Math.floor(last.y / inBox[1]) || 0;
+            preCell = [
+                Math.floor(last[0] / inBox[0]) || 0,
+                Math.floor(last[1] / inBox[1]) || 0
+            ];
             break;
         case "landscape-primary":
-            preCell.x = Math.floor((oxBox[0] - last.y) / inBox[0]) || 0;
-            preCell.y = Math.floor(last.x / inBox[1]) || 0;
+            preCell = [
+                Math.floor((oxBox[0] - last[1]) / inBox[0]) || 0,
+                Math.floor(last[0] / inBox[1]) || 0
+            ];
             break;
         case "portrait-secondary":
-            preCell.x = Math.floor((oxBox[0] - last.x) / inBox[0]) || 0;
-            preCell.y = Math.floor((oxBox[1] - last.y) / inBox[1]) || 0;
+            preCell = [
+                Math.floor((oxBox[0] - last[0]) / inBox[0]) || 0,
+                Math.floor((oxBox[1] - last[1]) / inBox[1]) || 0
+            ];
             break;
         case "landscape-secondary":
-            preCell.x = Math.floor(last.y / inBox[0]) || 0;
-            preCell.y = Math.floor((oxBox[1] - last.x) / inBox[1]) || 0;
+            preCell = [
+                Math.floor(last[1] / inBox[0]) || 0,
+                Math.floor((oxBox[1] - last[0]) / inBox[1]) || 0
+            ];
             break;
     }
 
     //
-    const fValue = redirectCell(
-        {
-            gridPage,
-            iconItem,
-            iconItems
-        },
+    return redirectCell(
+        gridArgs,
         preCell
-    );
-
-    //
-    return fValue;
+    );;
 };

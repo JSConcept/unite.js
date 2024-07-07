@@ -7,7 +7,7 @@ const clamp = (min, val, max) => {
 };
 
 //
-const tpm = (callback = (p0, p1) => {}, timeout = 1000) => {
+const tpm = (callback: (p0: Function, p1: Function) => {}, timeout = 1000) => {
     return new Promise((resolve, reject) => {
         // Set up the timeout
         const timer = setTimeout(() => {
@@ -40,8 +40,8 @@ interface InteractStatus {
 //
 export default class AxGesture {
     #holder: HTMLElement;
-    #dragStatus: InteractStatus = {pointerId: -1};
-    #resizeStatus: InteractStatus = {pointerId: -1};
+    //#dragStatus: InteractStatus = {pointerId: -1};
+    //#resizeStatus: InteractStatus = {pointerId: -1};
     #resizeMute = false;
     #observer: ResizeObserver;
 
@@ -248,12 +248,12 @@ export default class AxGesture {
     //
     resizable(options) {
         const handler = options.handler ?? this.#holder;
-        const status = {
+        const status: InteractStatus = {
             pointerId: -1,
         };
 
         //
-        this.#resizeStatus = status;
+        //this.#resizeStatus = status;
 
         //
         document.documentElement.addEventListener("pointerdown", (ev) => {
@@ -325,12 +325,12 @@ export default class AxGesture {
     //
     draggable(options) {
         const handler = options.handler ?? this.#holder;
-        const status = {
+        const status: InteractStatus = {
             pointerId: -1,
         };
 
         //
-        this.#dragStatus = status;
+        //this.#dragStatus = status;
 
         //
         document.documentElement.addEventListener("pointerdown", (ev) => {
@@ -555,7 +555,7 @@ export default class AxGesture {
                         //
                         Promise.any([
                             tpm(
-                                (resolve, $rj) =>
+                                (resolve, _) =>
                                 (action.timer = setTimeout(
                                     prepare(resolve, action, ev),
                                     options?.minHoldTime ?? 300
@@ -563,7 +563,7 @@ export default class AxGesture {
                                 1000 * 5
                             ).then(() => (action.ready = true)),
                             tpm(
-                                (resolve, $rj) =>
+                                (resolve, _) =>
                                 (action.imTimer = setTimeout(
                                     immediate(resolve, action, ev),
                                     options?.maxHoldTime ?? 600

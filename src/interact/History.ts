@@ -73,7 +73,7 @@ export default class State {
 }
 
 //
-addEventListener("popstate", e => {
+addEventListener("popstate", _ => {
     const prevState = State.$story.at(State.$story.length - 1) ?? null;
     State.$story.pop();
     const state = State.$story.at(State.$story.length - 1) ?? null;

@@ -5,7 +5,7 @@ export const longPress = (node, threshold = 60) => {
     const handle_mousedown = (ev) => {
         if (ev.target == node) {
             const pointerId = ev.pointerId;
-            let start = Date.now();
+            //let start = Date.now();
             let begin = [ev.clientX, ev.clientY];
 
             //

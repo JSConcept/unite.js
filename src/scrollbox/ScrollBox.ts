@@ -1,7 +1,7 @@
 import {zoomOf} from "../utils/Utils.ts";
 
 // @ts-ignore
-import styles from "./scrollbox.css?inline";
+import styles from "./scrollbox.scss?inline";
 
 // @ts-ignore
 import html from "./scrollbox.html?raw";
@@ -222,7 +222,7 @@ class ScrollBox extends HTMLElement {
     }
 
     //
-    attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback(name/*, oldValue, newValue*/) {
         //
         if (name == this.dataset.scrollTop) {
             this.scrollTo({
