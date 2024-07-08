@@ -79,43 +79,46 @@ export const pointerMap = new Map<number, PointerObject>([
 document.documentElement.addEventListener(
     "pointerdown",
     (ev) => {
-        //
-        const np: PointerObject = {
-            id: ev.pointerId,
-            event: ev,
-            current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
-            down: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
-            movement: [0, 0],
-        };
+        if (ev.target == document.documentElement) {
 
-        //
-        const exists = (pointerMap.has(ev.pointerId)
-            ? pointerMap.get(ev.pointerId)
-            : np) || np;
-        np.movement[0] = np.current[0] - exists.current[0];
-        np.movement[1] = np.current[1] - exists.current[1];
+            //
+            const np: PointerObject = {
+                id: ev.pointerId,
+                event: ev,
+                current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
+                down: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
+                movement: [0, 0],
+            };
 
-        //
-        if (!exists.holding) {
-            exists.holding = [];
-        }
+            //
+            const exists = (pointerMap.has(ev.pointerId)
+                ? pointerMap.get(ev.pointerId)
+                : np) || np;
+            np.movement[0] = np.current[0] - exists.current[0];
+            np.movement[1] = np.current[1] - exists.current[1];
 
-        //
-        exists.holding.map((hm) => {
-            hm.shifting = [...(hm.modified || hm.shifting || [0, 0])];
-        });
+            //
+            if (!exists.holding) {
+                exists.holding = [];
+            }
 
-        //
-        if (!exists.edges) {
-            exists.edges = new PointerEdge(np.current);
-        }
+            //
+            exists.holding.map((hm) => {
+                hm.shifting = [...(hm.modified || hm.shifting || [0, 0])];
+            });
 
-        //
-        Object.assign(exists, np);
+            //
+            if (!exists.edges) {
+                exists.edges = new PointerEdge(np.current);
+            }
 
-        //
-        if (!pointerMap.has(ev.pointerId)) {
-            pointerMap.set(ev.pointerId, exists);
+            //
+            Object.assign(exists, np);
+
+            //
+            if (!pointerMap.has(ev.pointerId)) {
+                pointerMap.set(ev.pointerId, exists);
+            }
         }
     },
     {capture: true}
@@ -125,6 +128,7 @@ document.documentElement.addEventListener(
 document.documentElement.addEventListener(
     "pointermove",
     (ev) => {
+        //if (ev.target == document.documentElement) {
         const np: PointerObject = {
             id: ev.pointerId,
             event: ev,
@@ -208,6 +212,7 @@ document.documentElement.addEventListener(
                 document?.dispatchEvent?.(nev);
             }
         });
+        //}
     },
     {capture: true}
 );

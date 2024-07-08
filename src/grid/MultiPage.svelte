@@ -3,7 +3,7 @@
     import {observeBySelector} from "../dom/Observer.ts";
     import {grabForDrag} from "../interact/PointerAPI";
     import {createReactiveSet} from "../reactive/ReactiveSet";
-    import {zoomOf} from "../utils/Utils";
+    import {MOC, zoomOf} from "../utils/Utils";
     import {animationSequence, GridItemType, GridPageType, putToCell} from "./GridItemUtils";
     import GridPage from "./GridPage.svelte";
     import {state} from "./GridState";
@@ -61,7 +61,7 @@
     
     //
     document.addEventListener("long-press", (ev)=>{
-        if (ev.target.matches(".ux-grid-item[data-type=\"items\"]")) {
+        if (MOC(ev.target, ".ux-grid-item[data-type=\"items\"]")) {
             grabItem(ev.detail);
         }
     });
@@ -134,7 +134,7 @@
     
     //
     document.addEventListener("m-dragend", (ev)=>{
-        if (ev.target.matches(".ux-grid-item[data-type=\"backup\"]")) {
+        if (MOC(ev.target, ".ux-grid-item[data-type=\"backup\"]")) {
             placeElement(ev.detail);
         }
     });

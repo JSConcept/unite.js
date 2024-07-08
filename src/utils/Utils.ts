@@ -179,3 +179,13 @@ export const isMobile = () => {
         /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
     return regex.test(navigator.userAgent);
 };
+
+//
+export const MOC = (element: HTMLElement, selector: string): boolean => {
+    return (!!element.matches(selector) || !!element.closest(selector));
+};
+
+//
+export const MOCElement = (element: HTMLElement, selector: string): HTMLElement | null => {
+    return ((!!element.matches(selector) ? element : null) || element.closest(selector));
+};
