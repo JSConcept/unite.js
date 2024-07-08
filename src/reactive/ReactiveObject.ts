@@ -2,9 +2,13 @@ const bindCtx = (target, fx) => {
     return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
 }
 
+//
+type keyType = string | number | symbol;
+
+///
 export default class ReactiveObject {
-    subscribers: Map<string | number | symbol, Set<(value: any, prop: string | number | symbol) => void>>;
-    listeners: Set<(value: any, prop: string | number | symbol) => void>;
+    subscribers: Map<keyType, Set<(value: any, prop: keyType) => void>>;
+    listeners: Set<(value: any, prop: keyType) => void>;
 
     //
     constructor() {
@@ -13,7 +17,7 @@ export default class ReactiveObject {
     }
 
     //
-    ["@subscribe"](cb: (value: any, prop: string | number | symbol) => void, prop: string | number | symbol) {
+    ["@subscribe"](cb: (value: any, prop: keyType) => void, prop: keyType) {
         if (prop) {
             if (this.subscribers.has(prop)) {
                 this.subscribers.get(prop)?.add?.(cb);
@@ -26,7 +30,7 @@ export default class ReactiveObject {
     }
 
     //
-    get(target, name: string | number | symbol, ctx) {
+    get(target, name: keyType, ctx) {
         if (name == "@subscribe") {
             return (prop: string, cb: (value: any) => void) => {
                 cb?.(Reflect.get(target, prop, ctx));
@@ -45,7 +49,7 @@ export default class ReactiveObject {
     }
 
     //
-    has(target, prop: string | number | symbol) {
+    has(target, prop: keyType) {
         if (prop == "@subscribe") {return false;};
         if (prop == "@extract") {return false;};
         return Reflect.has(target, prop);
@@ -57,16 +61,16 @@ export default class ReactiveObject {
     }
 
     //
-    set(target, name: string | number | symbol, value) {
-        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, name));
-        Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, name));
+    set(target, name: keyType, value) {
+        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, name));
+        Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, name));
         return Reflect.set(target, name, value);
     }
 
     //
-    deleteProperty(target, name: string | number | symbol) {
-        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(null, name));
-        Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(null, name));
+    deleteProperty(target, name: keyType) {
+        Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(null, name));
+        Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(null, name));
         return Reflect.deleteProperty(target, name);
     }
 }

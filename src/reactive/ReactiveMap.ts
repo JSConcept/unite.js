@@ -2,9 +2,13 @@ const bindCtx = (target, fx) => {
     return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
 }
 
+//
+type keyType = string | number | symbol;
+
+//
 export default class ReactiveMap {
-    subscribers: Map<string | number | symbol, Set<(value: any, prop: string | number | symbol) => void>>;
-    listeners: Set<(value: any, prop: string | number | symbol) => void>;
+    subscribers: Map<keyType, Set<(value: any, prop: keyType) => void>>;
+    listeners: Set<(value: any, prop: keyType) => void>;
 
     //
     constructor() {
@@ -13,7 +17,7 @@ export default class ReactiveMap {
     }
 
     //
-    ["@subscribe"](cb: (value: any, prop: string | number | symbol) => void, prop: string | number | symbol) {
+    ["@subscribe"](cb: (value: any, prop: keyType) => void, prop: keyType) {
         if (prop) {
             if (this.subscribers.has(prop)) {
                 this.subscribers.get(prop)?.add?.(cb);
@@ -26,16 +30,16 @@ export default class ReactiveMap {
     }
 
     //
-    has(target, prop: string | number | symbol) {
+    has(target, prop: keyType) {
         if (prop == "@subscribe") {return false;};
         if (prop == "@extract") {return false;};
         return Reflect.has(target, prop);
     }
 
     //
-    get(target, name: string | number | symbol, ctx) {
+    get(target, name: keyType, ctx) {
         if (name == "@subscribe") {
-            return (cb: (value: any, prop: string | number | symbol) => void, prop: string | number | symbol) => {
+            return (cb: (value: any, prop: keyType) => void, prop: keyType) => {
                 if (target.has(prop) || !prop) {
                     cb?.(target.get(prop), prop);
                 }
@@ -51,8 +55,8 @@ export default class ReactiveMap {
         //
         if (name == "delete") {
             return (prop, value = null) => {
-                Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
-                Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
+                Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
+                Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
                 return bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
             };
         }
@@ -60,8 +64,8 @@ export default class ReactiveMap {
         //
         if (name == "set") {
             return (prop, value) => {
-                Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
-                Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
+                Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
+                Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
                 return bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
             };
         }

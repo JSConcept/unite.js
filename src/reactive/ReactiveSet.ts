@@ -2,6 +2,10 @@ const bindCtx = (target, fx) => {
     return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
 }
 
+//
+type keyType = string | number | symbol;
+
+//
 export default class ReactiveSet {
     subscribers: Map<any, Set<(value: any) => void>>;
     listeners: Set<(value: any) => void>;
@@ -26,14 +30,14 @@ export default class ReactiveSet {
     }
 
     //
-    has(target, prop: string | number | symbol) {
+    has(target, prop: keyType) {
         if (prop == "@subscribe") {return false;};
         if (prop == "@extract") {return false;};
         return Reflect.has(target, prop);
     }
 
     //
-    get(target, name: string | number | symbol, ctx) {
+    get(target, name: keyType, ctx) {
         if (name == "@subscribe") {
             return (cb: (value: any) => void, value: string) => {
                 if (target.has(value)) {
