@@ -70,6 +70,9 @@
             display: inline-block;
             inline-size: max-content;
             block-size: max-content;
+            
+            //
+            writing-mode: horizontal-tb;
         
             //
             transform: rotate(calc(0deg - var(--pfrot, 0deg))) translate(var(--translate-x), var(--translate-y));
@@ -78,6 +81,9 @@
         //
         .ux-grid-item {
             @include calculateMetric();
+            
+            // unsupported
+            //writing-mode: horizontal-tb;
             
             //
             &:where([data-type="backup"]) {
@@ -132,6 +138,11 @@
             //
             inline-size: var(--icon-size);
             block-size: var(--icon-size);
+            
+            //
+            &:where([data-type="labels"], [data-type="items"]) {
+                writing-mode: horizontal-tb;
+            }
             
             //
             &:where([data-type="labels"], [data-type="bucket"]) {

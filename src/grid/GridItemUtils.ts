@@ -1,4 +1,6 @@
-//
+//import {get} from "node:http";
+import type {inherits} from "node:util";
+
 import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
 import {getCorrectOrientation, isMobile} from "../utils/Utils.ts";
 
