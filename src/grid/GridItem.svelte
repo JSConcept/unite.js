@@ -6,11 +6,11 @@
 
     // @ts-ignore
     export let gridItem: GridItemType = {};
-    export let type = "";
+    export let type = "items";
     
     //
     let target: HTMLElement | null = null;
-    let icon = "";
+    let icon = gridItem.icon;
 
     //
     $: gridItem?.["@subscribe"]?.((v)=>{
@@ -29,6 +29,8 @@
     //
     onMount(()=>{
         const gest = new GestureControl(target);
+        
+        //
         gest.longPress({
             anyPointer: true,
             mouseImmediate: true,
@@ -39,6 +41,9 @@
         //
         target?.style?.setProperty?.("--cell-x", (gridItem?.cell?.[0] || 0) as unknown as string, "")
         target?.style?.setProperty?.("--cell-y", (gridItem?.cell?.[1] || 0) as unknown as string, "")
+        
+        //
+        whenMount();
     });
 </script>
 

@@ -4,7 +4,7 @@
     
     // @ts-ignore
     export let gridItem: GridItemType = {};
-    export let type = "";
+    export let type = "labels";
     
     //
     let target: HTMLElement | null = null;
@@ -25,7 +25,14 @@
     export let whenMount = ()=>{};
     
     //
-    onMount(whenMount);
+    onMount(()=>{
+        //
+        target?.style?.setProperty?.("--cell-x", (gridItem?.cell?.[0] || 0) as unknown as string, "")
+        target?.style?.setProperty?.("--cell-y", (gridItem?.cell?.[1] || 0) as unknown as string, "")
+        
+        //
+        whenMount();
+    });
 </script>
 
 <!-- -->
