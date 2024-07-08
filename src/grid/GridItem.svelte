@@ -39,7 +39,7 @@
 </script>
 
 <!-- -->
-<div bind:this={target} data-id={gridItem.id} data-type={type} class="ux-grid-item">
+<div bind:this={target} data-id={gridItem.id} data-type={type} class="ux-grid-item wavy-shaped">
     <!--<slot></slot>-->
     <LucideIcon name={icon}></LucideIcon>
 </div>

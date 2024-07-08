@@ -1,0 +1,199 @@
+//@use "@scss/fonts/xo_caliburn" as dFont;
+@use "./classlets";
+
+//
+@layer ux-normalize {
+
+    //
+    html::view-transition {
+        position: fixed;
+        inset: 0;
+    }
+
+    //
+    @media (prefers-reduced-motion: reduce) {
+        :where(*),
+        ::after,
+        ::before {
+            animation-delay: -1ms !important;
+            animation-duration: 1ms !important;
+            animation-iteration-count: 1 !important;
+            background-attachment: initial !important;
+            scroll-behavior: auto !important;
+            transition-delay: 0s !important;
+            transition-duration: 0s !important;
+        }
+    }
+
+    //
+    @mixin HQRendering($importance: null) {
+        -webkit-font-smoothing: subpixel-antialiased #{$importance};
+        -moz-osx-font-smoothing: auto #{$importance};
+        text-rendering: optimizeLegibility #{$importance};
+        text-rendering: geometricPrecision #{$importance};
+        font-smooth: auto #{$importance};
+    }
+
+    @mixin LQRendering($importance: null) {
+        -webkit-font-smoothing: none #{$importance};
+        -moz-osx-font-smoothing: grayscale#{$importance};
+        text-rendering: optimizeSpeed #{$importance};
+        font-smooth: 0px #{$importance};
+        font-smooth: never #{$importance};
+    }
+
+    //
+    :where(div, span) {
+        background-color: transparent;
+    }
+
+    //
+    :where(html, body) {
+        padding: 0px;
+        margin: 0px;
+        inset: 0px;
+        border: none 0px transparent;
+        background-color: transparent;
+
+        //
+        @include HQRendering();
+        //@include dFont.applyFont(0.9rem);
+    }
+
+    //
+    head {
+        @extend .pe-none;
+        @extend .no-user-select !optional;
+    
+        //
+        display: none !important;
+        pointer-events: none !important;
+    }
+
+    //
+    html {
+        background-color: transparent;
+        inline-size: max-content;
+        block-size: max-content;
+        overflow: hidden;
+        position: fixed;
+        display: contents;
+    }
+
+    //
+    body {
+        //@extend .vp-exclude-keyboard;
+        @extend .fit-viewport;
+
+        //
+        background-color: #000000 !important;
+
+        //
+        overflow: hidden;
+        position: relative;
+        
+        //
+        background-color: transparent;
+        //zoom: var(--scaling, 1);
+
+        // if needs viewport
+        container-type: size;
+        contain: strict;
+        
+        //
+        will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
+    }
+
+    //
+    :where(canvas, img, picture, video) {
+        @extend .pe-none;
+        @extend .no-user-select !optional;
+        
+        //
+        overflow: hidden !important;
+    }
+    
+    //
+    :where(picture) {
+        display: contents;
+    }
+
+    //
+    :where(*) {
+        @extend .no-user-select;
+        
+        //
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+        -webkit-box-shadow: none;
+        -webkit-tap-highlight-color: transparent;
+        -moz-tap-highlight-color: transparent;
+        box-shadow: none;
+        
+        //
+        touch-action: pan-y pan-x;
+    }
+    
+    //
+    :where(.lucide) {
+        @extend .stretch;
+        @extend .pe-none;
+    
+        //
+        display: block;
+        contain-intrinsic-width: 24px;
+        contain-intrinsic-height: 24px;
+        contain: size;
+        aspect-ratio: 1 / 1;
+        position: relative;
+        
+        //
+        object-fit: contain;
+        object-position: center center;
+        
+        //
+        inset: 0px;
+        translate: 0px 0px;
+        visibility: visible;
+        opacity: 1;
+        
+        //
+        stroke: var(--current-glyph-color);
+    }
+
+    //
+    :where([inert], *[inert]) {
+        @extend .pointer-events-none
+    }
+
+    //
+    :where(canvas):is([is="w-canvas"]) {
+        @extend .stretch;
+        @extend .align-center;
+
+        //
+        align-items: start;
+        align-content: start;
+        align-self: start;
+
+        //
+        aspect-ratio: auto;
+        display: flex;
+
+        //
+        image-rendering: auto;
+        image-rendering: optimizeQuality;
+        image-rendering: smooth;
+        image-rendering: high-quality;
+
+        //
+        object-fit: cover;
+        object-position: center;
+
+        //
+        position: fixed;
+        inset: 0px;
+    }
+
+}

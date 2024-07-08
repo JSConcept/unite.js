@@ -22,31 +22,77 @@
 }
 
 //
-.ux-grid {
-    //
-    grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
-    grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+@layer ux-grid {
 
     //
-    --c-gap: 1;
-    --r-gap: 1;
-
-    //
-    padding-inline: calc(var(--c-gap) * 0.5rem);
-    padding-block : calc(var(--r-gap) * 0.5rem);
-
-    //
-    column-gap: calc(var(--c-gap) * 1rem);
-    row-gap: calc(var(--r-gap) * 1rem);
+    .ux-grid {
+        container-name: ux-grid;
+        container-type: size;
+        contain: content;
+        overflow: visible;
     
-    //
-    place-items: center;
-    place-content: space-around;
+        //
+        grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
+        grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
     
-    //
-    .ux-grid-item {
-        @include calculateMetric();
-        grid-column: var(--fc-cell-x);
-        grid-row: var(--fc-cell-y);
+        //
+        --c-gap: 1;
+        --r-gap: 1;
+    
+        //
+        padding-inline: calc(var(--c-gap) * 0.5rem);
+        padding-block : calc(var(--r-gap) * 0.5rem);
+    
+        //
+        column-gap: calc(var(--c-gap) * 1rem);
+        row-gap: calc(var(--r-gap) * 1rem);
+        
+        //
+        place-items: center;
+        place-content: space-around;
+        
+        //
+        .ux-grid-item {
+            @include calculateMetric();
+            
+            //
+            grid-column: var(--fc-cell-x);
+            grid-row: var(--fc-cell-y);
+            
+            //
+            touch-action: none !important; 
+            user-select: none;
+            -webkit-user-drag: none;
+            -moz-user-drag: none;
+    
+            //
+            will-change: translate, transform, --translate-x, --translate-y;
+            transform: rotate(calc(0deg - var(--pfrot, 0deg))) translate(var(--translate-x), var(--translate-y));
+            
+            //
+            aspect-ratio: 1 / 1;
+            
+            //
+            clip-path: var(--clip-path);
+            padding: calc(var(--icon-size) * 0.3);
+            border-radius: calc(var(--icon-size) * 0.5);
+            
+            //
+            --icon-size: calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem);
+            
+            //
+            max-inline-size: var(--icon-size);
+            max-block-size: var(--icon-size);
+            
+            //
+            inline-size: var(--icon-size);
+            block-size: var(--icon-size);
+            
+            //
+            &:where([data-type="labels"], [data-type="bucket"]) {
+                pointer-events: none;
+            }
+        }
     }
+
 }

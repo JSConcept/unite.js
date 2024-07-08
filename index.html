@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta nativeui="true">
+        <!---->
+        <title>IDC-LS</title>
+        <!---->
+        <meta property="og:locale" content="en">
+        <meta http-equiv="content-language" content="en-us">
+        <!--<meta http-equiv="Content-Security-Policy" content="script-src 'self';">-->
+        <!---->
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover, interactive-widget=overlays-content, shrink-to-fit=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="mobile-web-app-capable" content="yes">
+        <!---->
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+        <meta name="theme-color" content="#000000">
+        <!---->
+        <meta name="browsermode" content="application">
+        <meta name="layoutmode" content="fitscreen">
+        <meta name="full-screen" content="yes">
+        <!---->
+        <meta name="application-name" content="IDC-LX0">
+        <meta name="author" content="intendant, unit-404, community">
+        <meta name="designer" content="intendant, unit-404, community, Google">
+        <meta name="publisher" content="intendant, unit-404, community, Github">
+        <!---->
+        <meta name="distribution" content="web">
+        <meta name="dcterms.audience" content="Global">
+        <meta name="generator" content="Webpack, Svelte, SCSS">
+        <meta name="referrer" content="origin-when-cross-origin">
+        <meta name="keywords"
+            content="pwa, source, project, intendant, idc, software, experimental, nextgen, ng, 2024, 2025, future, wip, portfolio">
+
+        <!-- -->
+        <title>Unite.js Test</title>
+
+        <!-- webpackIgnore: true-->
+        <link rel="manifest" href="./src/manifest-pwa.json">
+
+        <style type="text/css">
+        @viewport {
+            zoom: auto;
+            viewport-fit: cover;
+            min-zoom: auto;
+            max-zoom: auto;
+            user-zoom: fixed;
+            orientation: auto;
+            virtual-keyboard: overlays-content;
+		}
+        
+        :root, :where(body) {
+            user-select: none;
+            touch-action: none;
+            background-color: black;
+            background-color: var(--theme-base-color, black);
+        }
+        
+        ::view-transition {
+            navigation: auto;
+            background-color: black;
+            background-color: var(--theme-base-color, black);
+        }
+        </style>
+        
+        <link rel="icon" type="image/png" href="./favicon.png">
+        <!--<link rel="stylesheet" type="text/css" href="./src/main.scss">-->
+
+        <style></style>
+    </head>
+    <body>
+        <noscript>Please enable JavaScript to view this application.</noscript>
+        <script type="module" src="./tests/main.ts"></script>
+    </body>
+</html>

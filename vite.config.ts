@@ -1,19 +1,29 @@
-// @ts-nocheck
 
 //
 const useBabel = true;
 const sourceMapsInProduction = true;
 
 //
+import {svelte} from "@sveltejs/vite-plugin-svelte";
 import legacy from "@vitejs/plugin-legacy";
-import {type UserConfig} from "vite";
+import autoprefixer from "autoprefixer";
+import path from "node:path";
+import sveltePreprocess from "svelte-preprocess";
+import {defineConfig, type UserConfig} from "vite";
+import VitePluginBrowserSync from 'vite-plugin-browser-sync';
+import prefetchPlugin from 'vite-plugin-bundle-prefetch';
+import {compression} from "vite-plugin-compression2";
+import {nodePolyfills} from "vite-plugin-node-polyfills";
+import {VitePWA} from "vite-plugin-pwa";
+import {viteStaticCopy} from "vite-plugin-static-copy";
 import certificate from "./https/certificate.mjs";
 import pkg from "./package.json";
+import tsconfig from "./tsconfig.json";
 
 //
 const __dirname = import.meta.dirname;
 
-
+//
 const r = (s) => {
     return s;
 };
@@ -27,8 +37,11 @@ const r = (s) => {
 const production = process.env.NODE_ENV === 'production';
 const config = <UserConfig>defineConfig({
     root: "./",
-    alias: {
-        "@": r("/src"),
+    resolve: {
+        alias: {
+            "@": r("/src"),
+            "@src": r("/src"),
+        },
     },
     plugins: [
         //analyzer(),
@@ -75,7 +88,6 @@ const config = <UserConfig>defineConfig({
     ],
     server: {
         cors: true,
-        proxy: false,
         host: "0.0.0.0",
         port: 8000,
         https: {
@@ -141,4 +153,5 @@ for (const alias in aliases) {
     }
 }
 
+//
 export default config;

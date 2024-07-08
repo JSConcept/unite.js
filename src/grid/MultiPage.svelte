@@ -157,7 +157,7 @@
 </script>
 
 <!-- -->
-<div bind:this={target} class="ux-grid-pages">
+<div bind:this={target} class="ux-grid-pages stretch grid-based-box">
     <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
     <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
     <GridPage list={backup} gridPage={"backup"} items={items} type="backup"></GridPage>
