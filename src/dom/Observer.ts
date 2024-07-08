@@ -43,8 +43,8 @@ export const observeBySelector = (element, selector, cb) => {
             if (mutation.type == "childList") {
                 cb({
                     ...mutation,
-                    addedNodes: Array.from(mutation.addedNodes || []).filter((el) => (<HTMLElement>el).matches(selector)),
-                    removedNodes: Array.from(mutation.removedNodes || []).filter((el) => (<HTMLElement>el).matches(selector)),
+                    addedNodes: Array.from(mutation.addedNodes || []).filter((el) => (<HTMLElement>el)?.matches?.(selector)),
+                    removedNodes: Array.from(mutation.removedNodes || []).filter((el) => (<HTMLElement>el)?.matches?.(selector)),
                 }, observer);
             }
         }

@@ -1,3 +1,7 @@
+const bindCtx = (target, fx) => {
+    return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
+}
+
 export default class ReactiveObject {
     subscribers: Map<string | number | symbol, Set<(value: any, prop: string | number | symbol) => void>>;
     listeners: Set<(value: any, prop: string | number | symbol) => void>;
@@ -5,6 +9,7 @@ export default class ReactiveObject {
     //
     constructor() {
         this.subscribers = new Map();
+        this.listeners = new Set();
     }
 
     //
@@ -31,7 +36,7 @@ export default class ReactiveObject {
         if (name == "@extract") {
             return target;
         }
-        return Reflect.get(target, name, ctx);
+        return bindCtx(target, Reflect.get(target, name, ctx));
     }
 
     //

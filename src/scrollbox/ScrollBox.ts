@@ -1,10 +1,20 @@
+//
 import {zoomOf} from "../utils/Utils.ts";
 
 // @ts-ignore
-import styles from "./scrollbox.scss?inline";
+import styles from "./ScrollBox.scss?inline";
 
 // @ts-ignore
-import html from "./scrollbox.html?raw";
+const html = `<template>
+    <slot></slot>
+    <div class="scrollbar-x" part="scrollbar-x" draggable="false">
+        <div part="thumb-x" class="thumb" draggable="false"></div>
+    </div>
+    <div class="scrollbar-y" part="scrollbar-y" draggable="false">
+        <div part="thumb-y" class="thumb" draggable="false"></div>
+    </div>
+</template>`;
+
 
 //
 interface ScrollBarStatus {

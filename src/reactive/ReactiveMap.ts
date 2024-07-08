@@ -1,3 +1,7 @@
+const bindCtx = (target, fx) => {
+    return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
+}
+
 export default class ReactiveMap {
     subscribers: Map<string | number | symbol, Set<(value: any, prop: string | number | symbol) => void>>;
     listeners: Set<(value: any, prop: string | number | symbol) => void>;
@@ -5,6 +9,7 @@ export default class ReactiveMap {
     //
     constructor() {
         this.subscribers = new Map();
+        this.listeners = new Set();
     }
 
     //
@@ -48,7 +53,7 @@ export default class ReactiveMap {
             return (prop, value = null) => {
                 Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
-                (Reflect.get(target, name, ctx))(prop, value);
+                return bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
             };
         }
 
@@ -57,12 +62,22 @@ export default class ReactiveMap {
             return (prop, value) => {
                 Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: string | number | symbol) => void) => cb(value, prop));
-                (Reflect.get(target, name, ctx))(prop, value);
+                return bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
             };
         }
 
         //
-        return Reflect.get(target, name, ctx);
+        return bindCtx(target, Reflect.get(target, name, ctx));
+    }
+
+    //
+    construct(target, args, newT) {
+        return Reflect.construct(target, args, newT);
+    }
+
+    //
+    apply(target, ctx, args) {
+        return Reflect.apply(target, ctx, args);
     }
 }
 

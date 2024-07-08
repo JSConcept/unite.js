@@ -1,4 +1,4 @@
-<script type="ts">
+<script type="ts" lang="ts">
     import * as icons from 'lucide-svelte';
     
     //
@@ -19,4 +19,4 @@
     import {propsFilter} from "../utils/Utils.ts";
 </script>
 
-<svelte:component inert=true class="ux-icon" this={icons[fup(camelize(name))]} {...propsFilter($$props)} />
+<svelte:component inert={true} class="ux-icon" this={icons[fup(camelize(name))]} {...propsFilter($$props)} />

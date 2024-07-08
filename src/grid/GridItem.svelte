@@ -1,8 +1,8 @@
-<script type="ts">
-    import LucideIcon from "design/LucideIcon.svelte";
+<script type="ts" lang="ts">
     import {onMount} from 'svelte';
-    import GestureControl from "../interact/Gesture";
-    import {GridItemType} from "./GridItemUtils";
+    import LucideIcon from "../design/LucideIcon.svelte";
+    import GestureControl from "../interact/Gesture.ts";
+    import {GridItemType} from "./GridItemUtils.ts";
 
     // @ts-ignore
     export let gridItem: GridItemType = {};
@@ -35,6 +35,10 @@
             minHoldTime: 60 * 3600,
             maxHoldTime: 100
         });
+        
+        //
+        target?.style?.setProperty?.("--cell-x", (gridItem?.cell?.[0] || 0) as unknown as string, "")
+        target?.style?.setProperty?.("--cell-y", (gridItem?.cell?.[1] || 0) as unknown as string, "")
     });
 </script>
 

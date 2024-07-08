@@ -1,14 +1,14 @@
-import * as JSOX from 'jsox';
+import {JSOX} from 'jsox';
 
 //
-import {createReactiveMap} from "reactive/ReactiveMap";
-import {makeReactiveObject} from "reactive/ReactiveObject";
-import {makeReactiveSet} from "reactive/ReactiveSet";
+import {createReactiveMap} from "../reactive/ReactiveMap.ts";
+import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
+import {createReactiveSet} from "../reactive/ReactiveSet.ts";
 import {GridItemType, GridPageType} from "./GridItemUtils.ts";
 
 //
 export const toMapSet = <K, V>(list) => {
-    return createReactiveMap<K, V>(list.map(([id, list]) => [id, makeReactiveSet(list)]));
+    return createReactiveMap<K, V>(list.map(([id, list]) => [id, createReactiveSet(list)]));
 };
 
 //
@@ -33,7 +33,33 @@ export const state: {
 });
 
 //
-state.lists = toMapSet(Array.from(state.grids.values()).map((gs) => [gs.id, gs.list]));
+state.grids.set("backup", {
+    id: "backup",
+    size: [0, 0],
+    layout: [4, 8],
+    list: []
+});
+
+//
+state.grids.set("main", {
+    id: "main",
+    size: [0, 0],
+    layout: [4, 8],
+    list: ["github"]
+});
+
+//
+state.items.set("github", {
+    id: "github",
+    cell: [0, 0],
+    icon: "github",
+    label: "GitHub",
+    pointerId: -1
+});
+
+
+//
+state.lists = toMapSet(Array.from(state.grids?.values?.() || []).map((gs) => [gs.id, gs.list]));
 
 //
 state.lists?.["@subscribe"]?.((v, prop) => {

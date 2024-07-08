@@ -8,6 +8,7 @@ export interface GridItemType {
     id: string;
     label: string;
     pointerId: number;
+    icon: string;
 };
 
 //
@@ -171,7 +172,7 @@ export const animationSequence = () => {
             "--translate-y": "calc(var(--drag-y) * 1px)",
             gridColumn: "var(--fp-cell-x)",
             gridRow: "var(--fp-cell-y)",
-            easing: "step-start",
+            easing: "step-end",
             offset: 0.0,
         },
         {
@@ -186,7 +187,7 @@ export const animationSequence = () => {
             gridColumn: "var(--fp-cell-x)",
             gridRow: "var(--fp-cell-y)",
             ...getOrientedPoint(),
-            easing: "step-end",
+            easing: "step-start",
             offset: 0.99,
         },
         {
@@ -194,7 +195,9 @@ export const animationSequence = () => {
             gridRow: "var(--fc-cell-y)",
             "--drag-x": 0,
             "--drag-y": 0,
-            easing: "step-end",
+            "--translate-x": "0px",
+            "--translate-y": "0px",
+            easing: "step-start",
             offset: 1,
         },
     ];
@@ -217,7 +220,7 @@ export const putToCell = (gridArgs: GridArgsType, $coord: [number, number]) => {
     const oxBox = gridArgs.page.size;
 
     //
-    if (orientation.startsWith("landscape")) oxBox.reverse();
+    //if (orientation.startsWith("landscape")) oxBox.reverse();
 
     //
     const inBox = [oxBox[0] / gridArgs.page.layout[0], oxBox[1] / gridArgs.page.layout[1]];

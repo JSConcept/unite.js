@@ -1,0 +1,42 @@
+{
+    "manifest_version": 3,
+    "name": "idc-lx",
+    "short_name": "IDC-LX0",
+    "version": "0.0.1",
+    "start_url": "/",
+    "author": "idc-lc",
+    "id": "/",
+    "scope": "/",
+    "display": "fullscreen",
+    "display_override": ["window-controls-overlay", "borderless", "fullscreen", "standalone"],
+    "description": "A readable Hacker News app.",
+    "theme_color": "#000000",
+    "background_color": "#000000",
+    "orientation": "any",
+    "categories": ["personalization", "education", "entertainment", "lifestyle"],
+    "permissions": [
+        "window-management",
+        "fullscreen",
+        "theme"
+    ],
+    "icons": {
+        "512": "./assets/icons/gpt/512x.png",
+        "256": "./assets/icons/gpt/256x.png",
+        "128": "./assets/icons/gpt/128x.png"
+    },
+    "related_applications": [
+        {"platform": "play", "id": "*", "url": "*://*/*"},
+        {"platform": "itunes", "id": "*", "url": "*://*/*"},
+        {"platform": "windows", "id": "*", "url": "*://*/*"},
+        {"platform": "chrome_web_store", "id": "*", "url": "*://*/*"},
+        {"platform": "chromeos_play", "id": "*", "url": "*://*/*"},
+        {"platform": "webapp", "id": "*", "url": "*://*/*"},
+        {"platform": "f-droid", "id": "*", "url": "*://*/*"},
+        {"platform": "amazon", "id": "*", "url": "*://*/*"}
+    ],
+    "content_scripts": [],
+    "incognito": "split",
+    "chrome_url_overrides": {
+        "newtab": "index.html"
+    }
+}

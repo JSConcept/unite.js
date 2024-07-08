@@ -1,4 +1,4 @@
-<script type="ts">
+<script type="ts" lang="ts">
     import {onMount} from 'svelte';
     import {GridItemType} from "./GridItemUtils";
     
@@ -8,7 +8,7 @@
     
     //
     let target: HTMLElement | null = null;
-    let label = null;
+    let label = gridItem?.label || "";
 
     //
     $: gridItem?.["@subscribe"]?.((v)=>{

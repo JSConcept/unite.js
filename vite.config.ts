@@ -19,6 +19,7 @@ import {viteStaticCopy} from "vite-plugin-static-copy";
 import certificate from "./https/certificate.mjs";
 import pkg from "./package.json";
 import tsconfig from "./tsconfig.json";
+import dts from "vite-plugin-dts";
 
 //
 const __dirname = import.meta.dirname;
@@ -40,7 +41,7 @@ const config = <UserConfig>defineConfig({
     resolve: {
         alias: {
             "@": r("/src"),
-            "@src": r("/src"),
+            "@src": r("/src")
         },
     },
     plugins: [
@@ -84,7 +85,7 @@ const config = <UserConfig>defineConfig({
                     dest: "./https/", // 2️⃣
                 },
             ],
-        }),
+        }), dts()
     ],
     server: {
         cors: true,

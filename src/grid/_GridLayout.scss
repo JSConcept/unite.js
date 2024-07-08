@@ -32,6 +32,12 @@
         overflow: visible;
     
         //
+        pointer-events: none;
+    
+        //
+        background-color: transparent;
+    
+        //
         grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
         grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
     
@@ -48,12 +54,51 @@
         row-gap: calc(var(--r-gap) * 1rem);
         
         //
-        place-items: center;
-        place-content: space-around;
+        place-items: center !important;
+        place-content: space-around !important;
+        
+        //
+        & > :where(*) {
+            place-self: center !important;
+        }
+        
+        //
+        .ux-grid-item-label {
+            --icon-size: calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem);
+            
+            //
+            display: inline-block;
+            inline-size: max-content;
+            block-size: max-content;
+        
+            //
+            transform: rotate(calc(0deg - var(--pfrot, 0deg))) translate(var(--translate-x), var(--translate-y));
+        }
         
         //
         .ux-grid-item {
             @include calculateMetric();
+            
+            //
+            &:where([data-type="backup"]) {
+                --translate-x: calc(var(--drag-x, 0) * 1px);
+                --translate-y: calc(var(--drag-y, 0) * 1px);
+                
+                //
+                grid-column: var(--fp-cell-x);
+                grid-row: var(--fp-cell-y);
+            }
+            
+            //
+            &:where([data-type="items"]) {
+                pointer-events: auto;
+                pointer-events: bounding-box;
+                cursor: pointer;
+            }
+            
+            //
+            background-color: white;
+            overflow: hidden;
             
             //
             grid-column: var(--fc-cell-x);
@@ -66,7 +111,7 @@
             -moz-user-drag: none;
     
             //
-            will-change: translate, transform, --translate-x, --translate-y;
+            will-change: translate, transform, --translate-x, --translate-y, --drag-x, --drag-y;
             transform: rotate(calc(0deg - var(--pfrot, 0deg))) translate(var(--translate-x), var(--translate-y));
             
             //
@@ -74,11 +119,11 @@
             
             //
             clip-path: var(--clip-path);
-            padding: calc(var(--icon-size) * 0.3);
+            padding: calc(var(--icon-size) * 0.2);
             border-radius: calc(var(--icon-size) * 0.5);
             
             //
-            --icon-size: calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem);
+            --icon-size: min(calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem), 4rem);
             
             //
             max-inline-size: var(--icon-size);

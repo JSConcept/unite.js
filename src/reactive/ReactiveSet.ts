@@ -1,3 +1,7 @@
+const bindCtx = (target, fx) => {
+    return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
+}
+
 export default class ReactiveSet {
     subscribers: Map<any, Set<(value: any) => void>>;
     listeners: Set<(value: any) => void>;
@@ -5,6 +9,7 @@ export default class ReactiveSet {
     //
     constructor() {
         this.subscribers = new Map();
+        this.listeners = new Set();
     }
 
     //
@@ -48,7 +53,7 @@ export default class ReactiveSet {
             return (value) => {
                 Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
-                (Reflect.get(target, name, ctx))(value, value);
+                return bindCtx(target, Reflect.get(target, name, ctx))(value, value);
             };
         }
 
@@ -57,12 +62,22 @@ export default class ReactiveSet {
             return (value) => {
                 Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
-                (Reflect.get(target, name, ctx))(value, value);
+                return bindCtx(target, Reflect.get(target, name, ctx))(value, value);
             };
         }
 
         //
-        return Reflect.get(target, name, ctx);
+        return bindCtx(target, Reflect.get(target, name, ctx));
+    }
+
+    //
+    construct(target, args, newT) {
+        return Reflect.construct(target, args, newT);
+    }
+
+    //
+    apply(target, ctx, args) {
+        return Reflect.apply(target, ctx, args);
     }
 }
 

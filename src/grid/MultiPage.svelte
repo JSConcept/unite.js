@@ -1,15 +1,15 @@
-<script type="ts">
-    import {observeBySelector} from "dom/Observer";
-    import GridPage from "grid/GridPage.svelte";
-    import {createReactiveSet} from "reactive/ReactiveSet";
+<script type="ts" lang="ts">
     import {onMount} from 'svelte';
+    import {observeBySelector} from "../dom/Observer.ts";
     import {grabForDrag} from "../interact/PointerAPI";
+    import {createReactiveSet} from "../reactive/ReactiveSet";
     import {zoomOf} from "../utils/Utils";
     import {animationSequence, GridItemType, GridPageType, putToCell} from "./GridItemUtils";
+    import GridPage from "./GridPage.svelte";
     import {state} from "./GridState";
     
     //
-    export let current = "";
+    export let current = "main";
     
     //
     export let lists = state.lists;
@@ -25,6 +25,8 @@
         ev?.stopPropagation?.();
         if (ev.target?.dataset?.id) {
             backup.add(ev.target.dataset.id as string);
+            const item = items.get(ev.target.dataset.id);
+            if (item) { item.pointerId = ev.pointerId; }
             
             // may broke multi-touch dragging! (if unsupported partial redraw)
             backup = backup; // trigger re-draw
@@ -78,24 +80,31 @@
         const item: GridItemType = items.get(id) as unknown as GridItemType;
         const page: GridPageType = grids.get(current) as unknown as GridPageType;
         
-        // 
+        //
         putToCell({ items, item, page }, xy);
+        if (item) { item.pointerId = -1; }
         
         //
         el.style.setProperty("--p-cell-x", prev[0], "");
         el.style.setProperty("--p-cell-y", prev[1], "");
+        el.style.setProperty("--cell-x", (item?.cell?.[0] || 0) as unknown as string, "");
+        el.style.setProperty("--cell-y", (item?.cell?.[1] || 0) as unknown as string, "");
         
         //
         await el.animate(animationSequence(), {
-            fill: "none",
-            duration: 100,
+            fill: "forwards",
+            duration: 150,
             rangeStart: "cover 0%",
             rangeEnd: "cover 100%",
         }).finished;
         
         //
-        const real = target?.querySelector?.(".ux-grid-item[data-type=\"item\"][data-id=\"" + el.dataset.id + "\"]");
-        real?.classList?.remove("ux-hidden");
+        const real = target?.querySelector?.(".ux-grid-item[data-type=\"items\"][data-id=\"" + el.dataset.id + "\"]") as HTMLElement;
+        if (real) {
+            real.classList.remove("ux-hidden");
+            real.style.setProperty("--cell-x", (item?.cell?.[0] || 0) as unknown as string, "");
+            real.style.setProperty("--cell-y", (item?.cell?.[1] || 0) as unknown as string, "");
+        }
         
         //
         if (!lists?.get?.(current)?.has?.(id)) {
@@ -110,6 +119,7 @@
                 
                 // trigger re-draw
                 lists = lists;
+                items = items;
             }
         }
 
@@ -137,7 +147,16 @@
                 if (!real?.classList?.contains?.("ux-hidden")) {
                     real?.classList?.add?.("ux-hidden");
                 }
-                grabForDrag(el, items.get(el.dataset.id));
+                
+                //
+                const item = items.get(el.dataset.id);
+                grabForDrag(el, item);
+                
+                //
+                el.style.setProperty("--cell-x", item?.cell[0] || 0, "");
+                el.style.setProperty("--cell-y", item?.cell[1] || 0, "");
+                el.style.setProperty("--p-cell-x", item?.cell[0] || 0, "");
+                el.style.setProperty("--p-cell-y", item?.cell[1] || 0, "");
             });
         });
         
@@ -160,5 +179,5 @@
 <div bind:this={target} class="ux-grid-pages stretch grid-based-box">
     <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
     <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
-    <GridPage list={backup} gridPage={"backup"} items={items} type="backup"></GridPage>
+    <GridPage list={backup} items={items} type="backup"></GridPage>
 </div>

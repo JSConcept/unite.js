@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
+        "types": ["./global.d.ts"],
         "paths": {
-            "@src": ["./"],
+            "@src": ["./"]
         },
         "composite": true,
         "lib": ["dom", "esnext", "webworker"],

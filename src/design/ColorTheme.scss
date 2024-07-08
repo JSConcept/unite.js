@@ -2,8 +2,8 @@
  * There is color constants (of dynamic colors)
  */
 
-@use "./color-utils" as cu;
-@use "./color-vars" as cl;
+@use "./ColorUtils" as cu;
+@use "./ColorVars" as cl;
 
 //
 @layer ux-colors {
