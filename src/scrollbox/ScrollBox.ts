@@ -5,16 +5,7 @@ import {zoomOf} from "../utils/Utils.ts";
 import styles from "./ScrollBox.scss?inline";
 
 // @ts-ignore
-const html = `<template>
-    <slot></slot>
-    <div class="scrollbar-x" part="scrollbar-x" draggable="false">
-        <div part="thumb-x" class="thumb" draggable="false"></div>
-    </div>
-    <div class="scrollbar-y" part="scrollbar-y" draggable="false">
-        <div part="thumb-y" class="thumb" draggable="false"></div>
-    </div>
-</template>`;
-
+import html from "./ScrollBox.html?raw";
 
 //
 interface ScrollBarStatus {
