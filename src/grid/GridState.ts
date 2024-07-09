@@ -22,6 +22,10 @@ export const fromMap = <K, V>(map: Map<K, V>): V[] => {
 };
 
 //
+export const layout: [number, number] = makeReactiveObject([4, 8]);
+export const size: [number, number] = makeReactiveObject([0, 0]);
+
+//
 export const state: {
     grids: Map<string, GridPageType>;
     items: Map<string, GridItemType>;
@@ -35,18 +39,24 @@ export const state: {
 //
 state.grids.set("backup", {
     id: "backup",
-    size: [0, 0],
-    layout: [4, 8],
+    size: size,
+    layout: layout,
     list: []
 });
 
 //
 state.grids.set("main", {
     id: "main",
-    size: [0, 0],
-    layout: [4, 8],
+    size: size,
+    layout: layout,
     list: ["github"]
 });
+
+//
+for (const gp of state.grids.values()) {
+    gp.size = size;
+    gp.layout = layout;
+};
 
 //
 state.items.set("github", {
