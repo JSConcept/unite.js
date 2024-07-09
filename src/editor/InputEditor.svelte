@@ -3,6 +3,7 @@
     import { MOC, propsFilter } from "../utils/Utils.ts";
     import LucideIcon from "../design/LucideIcon.svelte";
     import {writable} from "svelte/store";
+    import {onMount} from "svelte";
 
     //
     const TextInputSelector = "input[type=\"text\"]";
@@ -18,8 +19,7 @@
 
     //
     const isInputOrIn = (el)=>{
-        // @ts-ignore
-        return (el && MOC(el, InputValidSelector)) || (document?.activeElement && (MOC(document?.activeElement, InputValidSelector)));
+        return (el && MOC(el, InputValidSelector)) || (document?.activeElement && (MOC(document?.activeElement as HTMLElement, InputValidSelector)));
     }
 
     //
@@ -34,18 +34,30 @@
     });
 
     //
+    onMount(()=>{
+        if (fieldEdit) {
+            input ||= fieldEdit?.querySelector("input") || null;
+            copyButton ||= fieldEdit?.querySelector(".field-copy") || null;
+            pasteButton ||= fieldEdit?.querySelector(".field-paste") || null;
+            
+            //
+            if (document.activeElement != input) { input?.focus?.(); }
+        }
+    });
+
+    //
     const unfocus = (target: HTMLInputElement | null)=>{
         if (!isInputOrIn(target || targetInput)) {
 
             // @ts-ignore
             navigator?.virtualKeyboard?.hide?.();
-            
-            // @ts-ignore
-            document.activeElement?.blur?.();
-            
+
+            //
+            (document.activeElement as HTMLElement)?.blur?.();
+
             //
             input?.blur?.();
-            
+
             //
             targetInput = null;
             input = null;
