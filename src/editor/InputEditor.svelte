@@ -53,9 +53,33 @@
     }
 
     //
+    const reflectInEdit = ()=>{
+        if (input && targetInput) {
+            const value = targetInput?.value || "";
+            const range: [number, number] = [
+                (targetInput?.selectionStart ?? input?.selectionStart) || 0, 
+                (targetInput?.selectionEnd ?? input?.selectionEnd) || 0
+            ];
+
+            //
+            const oldValue = input?.value || "";
+            if (input && oldValue != value) { input.value = value; }
+
+            //
+            const prevActive = document.activeElement;
+            if (prevActive != input) { input?.focus?.() }
+
+            //
+            if (document.activeElement == input && prevActive == targetInput) {
+                input?.setSelectionRange?.(...range);
+            }
+        }
+    }
+    
+    //
     const refocus = (from)=>{
         //if (target?.matches("input"))
-        if (input && document.activeElement == input) return;
+        //if (input && document.activeElement == input) return;
         
         //
         if (matchMedia("(hover: none) and (pointer: coarse)").matches) {
@@ -65,15 +89,8 @@
         }
         
         //
-        requestAnimationFrame(()=>{
-            if (input && targetInput) {
-                input.value = targetInput?.value || "";
-                input.setSelectionRange(targetInput.selectionStart, targetInput.selectionEnd);
-                if (document.activeElement != input) { 
-                    input.focus();
-                }
-            }
-        });
+        //reflectInEdit();
+        requestAnimationFrame(reflectInEdit);
     }
     
     //
@@ -121,6 +138,10 @@
         
         //
         if (MOC(target, IsEditorInputSelector)) { input = target as HTMLInputElement; }
+        if ([input, copyButton, pasteButton].indexOf(target as any) >= 0 || MOC(target, InputValidSelector)) {
+            ev.preventDefault();
+            ev.stopPropagation();
+        }
         
         //
         if (stillInFocus(target)) {
@@ -133,42 +154,34 @@
         }
         
         //
-        if ([input, copyButton, pasteButton].indexOf(target as any) >= 0 || MOC(target, InputValidSelector)) {
-            ev.preventDefault();
-            ev.stopPropagation();
-        }
-        
-        //
-        requestAnimationFrame(()=>{
-            if (input && targetInput && targetInput != input) {
-                if (target == copyButton && (input?.selectionStart||0) < (input?.selectionEnd||0)) {
-                    navigator.clipboard.writeText(input.value.substring(input.selectionStart||0, input.selectionEnd||0));
-                }
-                
-                // 
-                if (target == pasteButton && (input?.selectionStart||0) <= (input?.selectionEnd||0)) {
-                    navigator.clipboard.readText().then(
-                        (clipText) => {
-                            const oldStart = input?.selectionStart||0;
-                            const paste = (input?.value?.substring(0, input?.selectionStart||0)||"") + (clipText || "") + (input?.value?.substring?.(input?.selectionEnd||0)||"");
-                            if (input) { input.value = paste; };
-
-                            //
-                            input?.setSelectionRange(
-                                oldStart + clipText.length, 
-                                oldStart + clipText.length
-                            );
-
-                            //
-                            input?.dispatchEvent(new Event("input", {
-                                bubbles: false,
-                                cancelable: true,
-                            }))
-                        },
-                    );
-                }
+        if (input && targetInput && targetInput != input) {
+            if (target == copyButton && (input?.selectionStart||0) < (input?.selectionEnd||0)) {
+                navigator.clipboard.writeText(input.value.substring(input.selectionStart||0, input.selectionEnd||0));
             }
-        })
+            
+            // 
+            if (target == pasteButton && (input?.selectionStart||0) <= (input?.selectionEnd||0)) {
+                navigator.clipboard.readText().then(
+                    (clipText) => {
+                        const oldStart = input?.selectionStart||0;
+                        const paste = (input?.value?.substring(0, input?.selectionStart||0)||"") + (clipText || "") + (input?.value?.substring?.(input?.selectionEnd||0)||"");
+                        if (input) { input.value = paste; };
+
+                        //
+                        input?.setSelectionRange(
+                            oldStart + clipText.length, 
+                            oldStart + clipText.length
+                        );
+
+                        //
+                        input?.dispatchEvent(new Event("input", {
+                            bubbles: false,
+                            cancelable: true,
+                        }))
+                    },
+                );
+            }
+        }
         
     });
 
