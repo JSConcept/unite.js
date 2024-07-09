@@ -66,9 +66,12 @@
         
         //
         requestAnimationFrame(()=>{
-            if (input && document.activeElement != input) {
+            if (input && targetInput) {
                 input.value = targetInput?.value || "";
-                input.focus();
+                input.setSelectionRange(targetInput.selectionStart, targetInput.selectionEnd);
+                if (document.activeElement != input) { 
+                    input.focus();
+                }
             }
         });
     }
@@ -201,4 +204,5 @@
 {/if}
 
 <!-- TEST ONLY! -->
+<input type="text" name="text" />
 <input type="text" name="text" />
