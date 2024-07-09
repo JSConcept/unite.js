@@ -4,20 +4,23 @@
     import {grabForDrag} from "../interact/PointerAPI";
     import {createReactiveSet} from "../reactive/ReactiveSet";
     import {MOC, zoomOf} from "../utils/Utils";
-    import {animationSequence, GridItemType, GridPageType, putToCell} from "./GridItemUtils";
+    import {animationSequence, GridItemType, GridPageType, GridsStateType, putToCell} from "./GridItemUtils";
     import GridPage from "./GridPage.svelte";
     
     // TODO! make it optional...
     // Make it as `export`s!
-    import {state} from "./GridState";
+    //import {state} from "./GridState";
+    
+    //
+    export let state: GridsStateType | null = null;
     
     //
     export let current = "main";
     
     //
-    export let lists = state.lists;
-    export let grids = state.grids;
-    export let items = state.items;
+    export let lists = state?.lists;
+    export let grids = state?.grids;
+    export let items = state?.items;
     export let backup = createReactiveSet<string>([]);
     
     //
@@ -28,7 +31,7 @@
         ev?.stopPropagation?.();
         if (ev.target?.dataset?.id) {
             backup.add(ev.target.dataset.id as string);
-            const item = items.get(ev.target.dataset.id);
+            const item = items?.get(ev.target.dataset.id);
             if (item) { item.pointerId = ev.pointerId; }
             
             // may broke multi-touch dragging! (if unsupported partial redraw)
@@ -80,11 +83,11 @@
         
         //
         const prev = [...(items?.get?.(id)?.cell || [0, 0])];
-        const item: GridItemType = items.get(id) as unknown as GridItemType;
-        const page: GridPageType = grids.get(current) as unknown as GridPageType;
+        const item: GridItemType = items?.get(id) as unknown as GridItemType;
+        const page: GridPageType = grids?.get(current) as unknown as GridPageType;
         
         //
-        putToCell({ items, item, page }, xy);
+        if (items) { putToCell({ items, item, page }, xy); }
         if (item) { item.pointerId = -1; }
         
         //
@@ -111,7 +114,7 @@
         
         //
         if (!lists?.get?.(current)?.has?.(id)) {
-            const oldList = Array.from(lists.values()).find((L)=>{
+            const oldList = Array.from(lists?.values()||[]).find((L)=>{
                 return L.has(id);
             });
             
@@ -152,7 +155,7 @@
                 }
                 
                 //
-                const item = items.get(el.dataset.id);
+                const item = items?.get(el.dataset.id);
                 grabForDrag(el, item);
                 
                 //
@@ -180,7 +183,9 @@
 
 <!-- -->
 <div bind:this={target} class="ux-grid-pages stretch grid-based-box ux-transparent">
-    <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
-    <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
-    <GridPage list={backup} items={items} type="backup"></GridPage>
+    {#if lists && grids}
+        <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
+        <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
+        <GridPage list={backup} gridPage={grids.get("backup")} items={items} type="backup"></GridPage>
+    {/if}
 </div>

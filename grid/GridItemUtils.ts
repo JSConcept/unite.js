@@ -27,6 +27,14 @@ export interface GridArgsType {
 };
 
 //
+export interface GridsStateType {
+    grids: Map<string, GridPageType>;
+    items: Map<string, GridItemType>;
+    lists: Map<string, Set<string>>;
+};
+
+
+//
 export const getParent = (e) => {
     const parent = e.parentNode || e.parentElement || e?.getRootNode?.()?.host;
     return parent.shadowRoot && e.slot != null

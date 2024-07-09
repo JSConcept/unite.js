@@ -4,7 +4,7 @@ import {JSOX} from 'jsox';
 import {createReactiveMap} from "../reactive/ReactiveMap.ts";
 import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
 import {createReactiveSet} from "../reactive/ReactiveSet.ts";
-import {GridItemType, GridPageType} from "./GridItemUtils.ts";
+import {GridsStateType} from "../grid/GridItemUtils.ts";
 
 //
 export const toMapSet = <K, V>(list) => {
@@ -26,11 +26,7 @@ export const layout: [number, number] = makeReactiveObject([4, 8]);
 export const size: [number, number] = makeReactiveObject([0, 0]);
 
 //
-export const state: {
-    grids: Map<string, GridPageType>;
-    items: Map<string, GridItemType>;
-    lists: Map<string, Set<string>>;
-} = makeReactiveObject({
+export const state: GridsStateType = makeReactiveObject({
     grids: toMap(JSOX.parse(localStorage.getItem("@gridsState") || "[]")),
     items: toMap(JSOX.parse(localStorage.getItem("@itemsState") || "[]")),
     lists: new Map<string, Set<string>>()

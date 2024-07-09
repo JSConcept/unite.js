@@ -4,10 +4,10 @@
     import GridItem from "./GridItem.svelte";
     import GridItemLabel from "./GridItemLabel.svelte";
     import type {GridItemType, GridPageType} from "./GridItemUtils.ts";
-    import {state} from "./GridState";
+    //import {state} from "./GridState";
     
     //
-    export let gridPage: GridPageType | undefined = state.grids.get("backup");
+    export let gridPage: GridPageType | undefined | null = null;//state.grids.get("backup");
     
     //
     export let items = new Map<string, GridItemType>([]);
