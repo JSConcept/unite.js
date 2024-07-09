@@ -25,21 +25,33 @@
 @layer ux-grid {
 
     //
-    .ux-grid {
+    .ux-grid-page {
         container-name: ux-grid;
         container-type: size;
         contain: content;
         overflow: visible;
-    
+
         //
         pointer-events: none;
-    
+
         //
         background-color: transparent;
-    
+
         //
-        grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
-        grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+        //grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
+        //grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+        
+        //
+        @media (orientation: portrait) {
+            grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
+            grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+        }
+        
+        //
+        @media (orientation: landscape) {
+            grid-template-columns: repeat(var(--rows), minmax(0px, 1fr));
+            grid-template-rows: repeat(var(--columns), minmax(0px, 1fr));
+        }
     
         //
         --c-gap: 1;
@@ -72,10 +84,10 @@
             block-size: max-content;
             
             //
-            writing-mode: horizontal-tb;
+            //writing-mode: horizontal-tb;
         
             //
-            transform: rotate(calc(0deg - var(--pfrot, 0deg))) translate(var(--translate-x), var(--translate-y));
+            transform: translate(var(--translate-x), var(--translate-y));
         }
         
         //
@@ -91,8 +103,8 @@
                 --translate-y: calc(var(--drag-y, 0) * 1px);
                 
                 //
-                grid-column: var(--fp-cell-x);
-                grid-row: var(--fp-cell-y);
+                --grid-column: var(--fp-cell-x);
+                --grid-row: var(--fp-cell-y);
             }
             
             //
@@ -107,8 +119,8 @@
             overflow: hidden;
             
             //
-            grid-column: var(--fc-cell-x);
-            grid-row: var(--fc-cell-y);
+            --grid-column: var(--fc-cell-x);
+            --grid-row: var(--fc-cell-y);
             
             //
             touch-action: none !important; 
@@ -118,7 +130,7 @@
     
             //
             will-change: translate, transform, --translate-x, --translate-y, --drag-x, --drag-y;
-            transform: rotate(calc(0deg - var(--pfrot, 0deg))) translate(var(--translate-x), var(--translate-y));
+            transform: translate(var(--translate-x), var(--translate-y));
             
             //
             aspect-ratio: 1 / 1;
@@ -141,7 +153,7 @@
             
             //
             &:where([data-type="labels"], [data-type="items"]) {
-                writing-mode: horizontal-tb;
+                //writing-mode: horizontal-tb;
             }
             
             //

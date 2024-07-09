@@ -59,8 +59,15 @@ export const redirectCell = (gridArgs: GridArgsType, $preCell: [number, number])
     }
 
     //
-    const columns = gridArgs.page.layout[0] || 4;
-    const rows = gridArgs.page.layout[1] || 8;
+    const orientation = getCorrectOrientation();
+    const layout = [...gridArgs.page.layout];
+    if (orientation.startsWith("landscape")) {
+        //layout.reverse();
+    }
+
+    //
+    const columns = layout[0] || 4;
+    const rows = layout[1] || 8;
 
     //
     const variants: [number, number][] = [
@@ -170,29 +177,29 @@ export const animationSequence = () => {
         {
             "--translate-x": "calc(var(--drag-x) * 1px)",
             "--translate-y": "calc(var(--drag-y) * 1px)",
-            gridColumn: "var(--fp-cell-x)",
-            gridRow: "var(--fp-cell-y)",
+            "--grid-column": "var(--fp-cell-x)",
+            "--grid-row": "var(--fp-cell-y)",
             easing: "step-end",
             offset: 0.0,
         },
         {
             "--translate-x": "calc(var(--drag-x) * 1px)",
             "--translate-y": "calc(var(--drag-y) * 1px)",
-            gridColumn: "var(--fp-cell-x)",
-            gridRow: "var(--fp-cell-y)",
+            "--grid-column": "var(--fp-cell-x)",
+            "--grid-row": "var(--fp-cell-y)",
             easing: "linear",
             offset: 0.01,
         },
         {
-            gridColumn: "var(--fp-cell-x)",
-            gridRow: "var(--fp-cell-y)",
+            "--grid-column": "var(--fp-cell-x)",
+            "--grid-row": "var(--fp-cell-y)",
             ...getOrientedPoint(),
             easing: "step-start",
             offset: 0.99,
         },
         {
-            gridColumn: "var(--fc-cell-x)",
-            gridRow: "var(--fc-cell-y)",
+            "--grid-column": "var(--fc-cell-x)",
+            "--grid-row": "var(--fc-cell-y)",
             "--drag-x": 0,
             "--drag-y": 0,
             "--translate-x": "0px",
@@ -217,13 +224,20 @@ export const putToCell = (gridArgs: GridArgsType, $coord: [number, number]) => {
 
     //
     const orientation = getCorrectOrientation();
-    const oxBox = gridArgs.page.size;
+    const oxBox = [...gridArgs.page.size];
 
     //
-    //if (orientation.startsWith("landscape")) oxBox.reverse();
+    //if (orientation.startsWith("landscape")) oxBox.toReversed();
 
     //
-    const inBox = [oxBox[0] / gridArgs.page.layout[0], oxBox[1] / gridArgs.page.layout[1]];
+    const layout = [...gridArgs.page.layout];
+    if (orientation.startsWith("landscape")) {
+        //layout.reverse();
+        oxBox.reverse();
+    }
+
+    //
+    const inBox = [oxBox[0] / layout[0], oxBox[1] / layout[1]];
     let preCell: [number, number] = [...gridArgs.item.cell];
 
     //

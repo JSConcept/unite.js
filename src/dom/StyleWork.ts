@@ -88,6 +88,20 @@ export const WavyShapedCircle = () => {
 //
 const properties = [
     {
+        name: "--grid-column",
+        syntax: "<integer>",
+        inherits: true,
+        initialValue: 0,
+    },
+    {
+        name: "--grid-row",
+        syntax: "<integer>",
+        inherits: true,
+        initialValue: 0,
+    },
+
+
+    {
         name: "--visual-width",
         syntax: "<length-percentage>",
         inherits: true,
@@ -194,6 +208,7 @@ const properties = [
 ];
 
 // define properties
+// @ts-ignore
 properties.map((o) => CSS?.registerProperty?.(o));
 
 //
@@ -234,6 +249,29 @@ const displayLandscape180deg = {
 const displayLandscape270deg = CSS.supports("writing-mode", "sideways-lr")
     ? {"--lwm": "sideways-lr", "--ldir": "ltr", "--lfrot": "0deg"}
     : {"--lwm": "vertical-lr", "--ldir": "rtl", "--lfrot": "0deg"};
+
+
+
+//
+const realCellOriented = {
+    "portrait-primary": {
+        "grid-column": "var(--grid-column)",
+        "grid-row": "var(--grid-row)",
+    },
+    "landscape-primary": {
+        "grid-column": "var(--grid-row)",
+        "grid-row": "calc(var(--columns) - var(--grid-column) + 1)",
+    },
+    "portrait-secondary": {
+        "grid-column": "calc(var(--rows) - var(--grid-row) + 1)",
+        "grid-row": "calc(var(--columns) - var(--grid-column) + 1)",
+    },
+    "landscape-secondary": {
+        "grid-column": "calc(var(--rows) - var(--grid-row) + 1)",
+        "grid-row": "var(--grid-column)",
+    }
+}
+
 
 //
 const portrait0deg = {"--prot": "0deg"};
@@ -290,6 +328,9 @@ const ptransPortrait = {
 */
 
 //
+const currentCellLayout = {...realCellOriented[getCorrectOrientation()]};
+
+//
 const landscape = Object.assign({}, landscape0deg);
 const portrait = Object.assign({}, portrait90deg);
 
@@ -314,6 +355,9 @@ const availSize = {
 
 //
 const updateOrientation = (_) => {
+    Object.assign(currentCellLayout, realCellOriented[getCorrectOrientation()]);
+
+    //
     Object.assign(availSize, {
         "--avail-width":
             Math.min(screen.availWidth || 0, screen.width || 0) + "px",
@@ -388,6 +432,7 @@ const classes: StyleTuple[] = [
     [":root, :host, :scope", lts],
     [":root, :host, :scope", pts],
     [":root, :host, :scope", availSize],
+    [":where(.ux-grid-item), :where(.ux-grid-page > *)", currentCellLayout]
 ];
 
 //
