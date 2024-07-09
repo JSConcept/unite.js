@@ -35,17 +35,17 @@ if (typeof navigator != "undefined") {
 
 // use workers
 const loading = Promise.allSettled([
-    import("../src/scrollbox/ScrollBox.ts"),
-    import("../src/dom/StyleWork.ts"),
-    import("../src/design/WCanvas.ts").then(
-        (_) => import("../src/design/ColorTheme.ts")
+    import("../scrollbox/ScrollBox.ts"),
+    import("../dom/StyleWork.ts"),
+    import("../design/WCanvas.ts").then(
+        (_) => import("../design/ColorTheme.ts")
     ),
 ]);
 
 // @ts-ignore
-//import App from "../src/grid/MultiPage.svelte";
-//import App from "../src/editor/InputEditor.svelte";
-import App from "../src/appframe/AppFrame.svelte";
+//import App from "../grid/MultiPage.svelte";
+//import App from "../editor/InputEditor.svelte";
+import App from "../appframe/AppFrame.svelte";
 
 //
 export default loading.then(() => {

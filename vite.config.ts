@@ -40,8 +40,8 @@ const config = <UserConfig>defineConfig({
     root: "./",
     resolve: {
         alias: {
-            "@": r("/src"),
-            "@src": r("/src")
+            "@": r("./"),
+            "@src": r("./")
         },
     },
     plugins: [
@@ -77,7 +77,7 @@ const config = <UserConfig>defineConfig({
                     dest: "./assets", // 2️⃣
                 },
                 {
-                    src: "./src/copying/*",
+                    src: "./copying/*",
                     dest: "./", // 2️⃣
                 },
                 {
