@@ -76,7 +76,8 @@
                 @extend .stretch;
                 
                 //
-                display: flex;
+                //display: flex;
+                display: contents;
                 flex-direction: row;
                 min-block-size: 3rem;
                 

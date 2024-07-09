@@ -1,0 +1,92 @@
+@use "./ColorVars" as cl;
+@use "./ColorUtils" as cu;
+@use "../core/ClassLets";
+@use "../core/Utils" as u;
+
+//
+@layer ux-decors {
+    .block-decor {
+        //
+        @extend .align-center;
+        @extend .inline-stretch;
+    
+        //
+        display: grid;
+        box-sizing: border-box;
+        
+        //
+        grid-template-columns: minmax(2rem, max-content) minmax(0px, 1fr) minmax(2rem, max-content);
+        grid-template-rows: minmax(2rem, max-content);
+        
+        //
+        padding: 0px;
+        margin: 0px;
+        
+        //
+        min-block-size: 2rem;
+
+        //
+        background-color: var(--current-surface-color);
+        accent-color: var(--current-glyph-color);
+        color: var(--current-glyph-color);
+
+        //
+        & > :where(.icon-wrap, .label-box, .in-element) {
+            @extend .align-center;
+            @extend .pe-none;
+            
+            //
+            box-sizing: border-box;
+            background-clip: border-box;
+            background-origin: content-box;
+            background-color: transparent;
+            background-image: none;
+            padding: 0.8rem;
+            box-sizing: border-box;
+        }
+        
+        //
+        & > .in-element {
+            @extend .align-center;
+        }
+        
+        //
+        & > :where(.icon-wrap) {
+            //background-color: var(--current-surface-color);
+            //background-color: transparent;
+            color: var(--current-glyph-color);
+        }
+        
+        //rangeSlider
+        & > .icon-wrap  { @extend .stretch; grid-column: 1 / 1; grid-row: 1 / 1; }
+        & > .label-box  { @extend .stretch; grid-column: 2 / 2; grid-row: 1 / 1; }
+        & > .in-element { @extend .stretch; grid-column: 3 / 3; grid-row: 1 / 1; }
+        
+        //
+        & > .label-box {
+			@extend .align-inline-left;
+			@extend .no-wrap;
+        }
+        
+        //
+        &.layout-alt {
+            grid-template-columns: minmax(2rem, max-content) minmax(0px, 1fr);
+            grid-template-rows: minmax(2rem, max-content) minmax(2rem, max-content);
+            
+            //
+            & > .icon-wrap  { grid-column: 1 / 1; grid-row: 1 / span 2; }
+            & > .in-element { grid-column: 2 / 2; grid-row: 2 / 2; }
+            & > .label-box  { grid-column: 2 / 2; grid-row: 1 / 1; justify-self: start; }
+        }
+        
+        //
+        & > .icon-wrap > .icon-box {
+            @include u.clamped-width(2rem, max-content, stretch);
+            @include u.clamped-height(2rem, max-content, stretch);
+
+            //
+            padding: 0.25rem;
+            aspect-ratio: 1 / 1;
+        }
+    }
+}
