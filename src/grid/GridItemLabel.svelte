@@ -36,6 +36,6 @@
 </script>
 
 <!-- -->
-<div bind:this={target} data-id={gridItem.id} data-type={type} class="ux-grid-item-label">
+<div bind:this={target} data-id={gridItem.id} data-type={type} class="ux-grid-item-label ux-transparent">
     {label||""}
 </div>

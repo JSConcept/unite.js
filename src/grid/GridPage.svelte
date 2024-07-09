@@ -79,7 +79,7 @@
 </script>
 
 <!-- -->
-<div bind:this={target} data-id={gridPage?.id||""} class="ux-grid-page stretch grid-based-box">
+<div bind:this={target} data-id={gridPage?.id||""} class="ux-grid-page stretch grid-based-box ux-transparent">
     
     {#each list as L (L)}
         {#if type == "labels"}

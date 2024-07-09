@@ -203,11 +203,11 @@
 {#if targetInput}
     <div 
         bind:this={fieldEdit} 
-        class="ux-editor fixed" 
+        class="ux-editor ux-transparent fixed" 
         {...propsFilter($$props)}
     >
-        <div class="field-content stretch solid apply-color-theme" style="grid-row: field-edit;">
-            <div class="field-wrap solid apply-color-theme">
+        <div class="field-content stretch ux-solid ux-default-theme" style="grid-row: field-edit;">
+            <div class="field-wrap ux-solid">
                 <input 
                     autofocus={true}
                     on:click={reflect}
@@ -218,10 +218,10 @@
                     type="text"
                 />
             </div>
-            <button type="button" tabindex="-1" bind:this={copyButton} class="field-copy solid hl-1 hl-2h apply-color-theme pe-enable">
+            <button type="button" tabindex="-1" bind:this={copyButton} class="field-copy solid hl-1 hl-2h pe-enable">
                 <LucideIcon name="copy" tabindex="-1" inert={true}></LucideIcon>
             </button>
-            <button type="button" tabindex="-1" bind:this={pasteButton} class="field-paste solid hl-1 hl-2h apply-color-theme pe-enable">
+            <button type="button" tabindex="-1" bind:this={pasteButton} class="field-paste solid hl-1 hl-2h pe-enable">
                 <LucideIcon name="clipboard" tabindex="-1" inert={true}></LucideIcon>
             </button>
         </div>

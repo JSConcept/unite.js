@@ -21,4 +21,4 @@
 </script>
 
 <!-- -->
-<svelte:component inert={true} class="ux-icon" this={icons[fup(camelize(name))]} {...propsFilter($$props)} />
+<svelte:component inert={true} class="ux-icon ux-transparent" this={icons[fup(camelize(name))]} {...propsFilter($$props)} />

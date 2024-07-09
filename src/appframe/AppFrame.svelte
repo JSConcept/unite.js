@@ -5,7 +5,7 @@
 	import {fade} from "svelte/transition";
 
 	//
-	export let hashIdName = $$props.hashIdName || "#";
+	export let hashIdName = $$props.hashIdName || "#app";
 	
 	//
 	let pointerIdDrag = -1;
@@ -98,26 +98,26 @@
 </script>
 
 <!-- -->
-{#if $readableHash == hashIdName}
-	<div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame" transition:fade={{ delay: 0, duration: 100 }}>
+{#if $readableHash == hashIdName || location.hash == hashIdName}
+	<div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme" transition:fade={{ delay: 0, duration: 100 }}>
 
-		<div class="titlebar accent apply-color-theme hl-1">
-			<div class="back-button accent hl-2 hl-3h apply-color-theme" style="grid-column: back-button; aspect-ratio: 1 / 1;">
+		<div class="titlebar ux-transparent hl-1">
+			<div class="back-button hl-2 hl-3h ux-transparent" style="grid-column: back-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
 			</div>
-			<div class="title-label" style="grid-column: title-label;">
+			<div class="title-label ux-transparent" style="grid-column: title-label;">
 				<slot name="title-name"></slot>
 			</div>
-			<div class="menu-button accent hl-2 hl-3h apply-color-theme" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
+			<div class="menu-button accent hl-2 hl-3h ux-transparent" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"menu"}/>
 			</div>
 		</div>
 		
-		<div class="content-box apply-color-theme">
+		<div class="content-box ux-transparent">
 			<slot></slot>
 		</div>
 
-		<div class="resize">
+		<div class="resize ux-transparent">
 			
 		</div>
 

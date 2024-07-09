@@ -179,7 +179,7 @@
 </script>
 
 <!-- -->
-<div bind:this={target} class="ux-grid-pages stretch grid-based-box">
+<div bind:this={target} class="ux-grid-pages stretch grid-based-box ux-transparent">
     <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
     <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
     <GridPage list={backup} items={items} type="backup"></GridPage>
