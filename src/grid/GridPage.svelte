@@ -35,6 +35,16 @@
     }, "layout");
     
     //
+    $: gridPage?.size?.["@subscribe"]?.((v, idx)=>{
+        target?.style?.setProperty?.(["--grid-w", "--grid-h"][idx], v || 0, "")
+    });
+    
+    //
+    $: gridPage?.layout?.["@subscribe"]?.((v, idx)=>{
+        target?.style?.setProperty?.(["--columns", "--rows"][idx], v || [4, 8][idx] || 0, "")
+    });
+    
+    //
     onMount(()=>{
         //
         const idc = matchMedia("(orientation: portrait)").matches ? 0 : 1;
