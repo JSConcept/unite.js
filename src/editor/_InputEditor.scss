@@ -1,7 +1,7 @@
 @use "../core/ClassLets";
 
 //
-@layer ux-inputs {
+@layer ux-editor {
 
     //
     .ux-editor {
@@ -56,6 +56,19 @@
                 //
                 display: flex;
                 padding: 1rem !important;
+                
+                //
+                background-color: transparent;
+                background-image: none;
+                
+                //
+                cursor: pointer;
+                
+                //
+                // debug
+                & svg {
+                    stroke: white;
+                }
             }
 
             //
@@ -68,15 +81,25 @@
                 min-block-size: 3rem;
                 
                 //
+                background-color: transparent;
+                background-image: none;
+                
+                //
                 input {
                     @extend .stretch;
                     @extend .pe-enable;
                     
-                    @include dFont.applyFont(1.8rem);
+                    //
+                    font-size: 1.6rem;
+                    
+                    //@include dFont.applyFont(1.8rem);
                 
                     //
                     background-color: transparent;
                     background-image: none;
+                    
+                    // debug
+                    color: white;
                 
                     //
                     padding-inline: 1rem;

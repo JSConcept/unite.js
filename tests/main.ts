@@ -43,7 +43,8 @@ const loading = Promise.allSettled([
 ]);
 
 // @ts-ignore
-import App from "../src/grid/MultiPage.svelte";
+//import App from "../src/grid/MultiPage.svelte";
+import App from "../src/editor/InputEditor.svelte";
 
 //
 export default loading.then(() => {

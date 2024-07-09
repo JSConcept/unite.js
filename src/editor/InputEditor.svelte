@@ -5,24 +5,29 @@
     import {writable} from "svelte/store";
 
     //
+    const TextInputSelector = "input[type=\"text\"]";
+    const InputValidSelector = ".ux-editor, input";
+    const IsEditorInputSelector = ".ux-editor input";
+
+    //
     let input: HTMLInputElement | null = null, copyButton: HTMLButtonElement | null = null, pasteButton: HTMLButtonElement | null = null, fieldEdit: HTMLDivElement | null = null;
 
     //
     export let targetInput: HTMLInputElement | null = null;
     export let value = writable("");
-    
+
     //
     const stillInFocus = (el)=>{
         // @ts-ignore
-        return el && MOC(el, ".ux-editor, input") && (!document?.activeElement || MOC(document?.activeElement, ".ux-editor, input"));
+        return (el && MOC(el, InputValidSelector)) || (document?.activeElement && (MOC(document?.activeElement, InputValidSelector)));
     }
 
     //
     observeBySelector(document.documentElement, ".ux-editor", (mut)=>{
-        fieldEdit = mut.addedNodes[0];
-        input = fieldEdit?.querySelector("input") || null;
-        copyButton = fieldEdit?.querySelector(".field-copy") || null;
-        pasteButton = fieldEdit?.querySelector(".field-paste") || null;
+        fieldEdit ||= mut.addedNodes[0];
+        input ||= fieldEdit?.querySelector("input") || null;
+        copyButton ||= fieldEdit?.querySelector(".field-copy") || null;
+        pasteButton ||= fieldEdit?.querySelector(".field-paste") || null;
         
         //
         if (document.activeElement != input) { input?.focus?.(); }
@@ -43,6 +48,7 @@
             
             //
             targetInput = null;
+            input = null;
         }
     }
 
@@ -52,8 +58,10 @@
         if (input && document.activeElement == input) return;
         
         //
-        if ((from as HTMLElement)?.matches?.("input:is([type=\"text\"])") && targetInput != input && from != input) {
-            targetInput = from;
+        if (matchMedia("(hover: none) and (pointer: coarse)").matches) {
+            if ((from as HTMLElement)?.matches?.(TextInputSelector) && (!input || from != input) && !MOC(from as HTMLElement, IsEditorInputSelector)) {
+                targetInput = from;
+            }
         }
         
         //
@@ -66,8 +74,11 @@
     }
     
     //
-    const reflect = ()=>{
-        if (input && targetInput) {
+    const reflect = (ev)=>{
+        if (ev.target.matches(TextInputSelector) && !input) {
+            input = ev.target;
+        }
+        if (input && targetInput && targetInput != input) {
             targetInput.value = input.value;
             targetInput.dispatchEvent(new Event("input", {
                 bubbles: false,
@@ -77,21 +88,37 @@
     }
 
     //
-    document.addEventListener("focusout", ({target})=>{
-        if (target == input) { unfocus(target as HTMLInputElement); }
+    document.addEventListener("focusout", (ev)=>{
+        const {target} = ev;
+        if (target != input && !((target as HTMLElement)?.matches?.(TextInputSelector)) && !MOC(target as HTMLElement, InputValidSelector)) { 
+            ev.preventDefault();
+            ev.stopPropagation();
+            unfocus(target as HTMLInputElement);
+        }
     });
 
     //
-    document.addEventListener("focusin", ({target})=>{
-        if ((target as HTMLElement)?.matches?.("input:is([type=\"text\"])") && target != input) {
+    document.addEventListener("focusin", (ev)=>{
+        const {target} = ev;
+        
+        //
+        if (MOC(target as HTMLElement, IsEditorInputSelector)) { 
+            input = target as HTMLInputElement;
+        } else 
+        if ((target as HTMLElement)?.matches?.(TextInputSelector) && (target != input || !input)) {
+            ev.preventDefault();
+            ev.stopPropagation();
             refocus(target);
         }
     });
 
     //
     document.addEventListener("click", (ev)=>{
-        const target = ev.target;
-
+        const target = ev.target as HTMLElement;
+        
+        //
+        if (MOC(target, IsEditorInputSelector)) { input = target as HTMLInputElement; }
+        
         //
         if (stillInFocus(target)) {
             refocus(target);
@@ -103,13 +130,14 @@
         }
         
         //
-        if ([input, copyButton, pasteButton].indexOf(document?.activeElement as any) >= 0) {
+        if ([input, copyButton, pasteButton].indexOf(target as any) >= 0 || MOC(target, InputValidSelector)) {
             ev.preventDefault();
+            ev.stopPropagation();
         }
         
         //
         requestAnimationFrame(()=>{
-            if (input && document.activeElement == input) {
+            if (input && targetInput && targetInput != input) {
                 if (target == copyButton && (input?.selectionStart||0) < (input?.selectionEnd||0)) {
                     navigator.clipboard.writeText(input.value.substring(input.selectionStart||0, input.selectionEnd||0));
                 }
@@ -153,13 +181,14 @@
         <div class="field-content stretch solid apply-color-theme" style="grid-row: field-edit;">
             <div class="field-wrap solid apply-color-theme">
                 <input 
-                autofocus={true}
-                on:input={reflect}
-                on:change={reflect}
-                bind:value={$value}
-                bind:this={input} 
-                type="text"
-            />
+                    autofocus={true}
+                    on:click={reflect}
+                    on:input={reflect}
+                    on:change={reflect}
+                    bind:value={$value}
+                    bind:this={input} 
+                    type="text"
+                />
             </div>
             <button type="button" tabindex="-1" bind:this={copyButton} class="field-copy solid hl-1 hl-2h apply-color-theme pe-enable">
                 <LucideIcon name="copy" tabindex="-1" inert={true}></LucideIcon>
@@ -170,3 +199,6 @@
         </div>
     </div>
 {/if}
+
+<!-- TEST ONLY! -->
+<input type="text" name="text" />
