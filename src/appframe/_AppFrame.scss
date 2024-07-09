@@ -1,0 +1,186 @@
+@use "../design/ColorVars" as cl;
+@use "../design/ColorUtils" as cu;
+
+//
+@use "../core/Utils" as u;
+@use "../core/ClassLets";
+@use "../design/ColorTheme";
+
+//
+@mixin whenMobile {
+    //
+    & .titlebar {
+        --padding: 0.5rem;
+        
+        //
+        & > :where(.back-button, .menu-button) {
+            border-radius: 0.125rem;
+        }
+    }
+}
+
+//
+@layer ux-app-frame {
+    
+    //
+    .ux-app-frame {
+        //
+        @extend .contain-size;
+        @extend .align-center;
+        @extend .stretch !optional;
+
+        //
+        --rx: 0px;
+        --ry: 0px;
+
+        //
+        --rx: calc(var(--drag-x, 0) * 1px);
+        --ry: calc(var(--drag-y, 0) * 1px);
+
+        //
+        //--translate-x: clamp(0px, calc(calc(50cqi - 50%) + var(--rx, 0px)), calc(100cqi - 100%));
+        //--translate-y: clamp(0px, calc(calc(50cqb - 50%) + var(--ry, 0px)), calc(100cqb - 100%));
+        
+        //
+        --translate-x: clamp(0px, var(--rx, 0px), calc(100cqi - 100%));
+        --translate-y: clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
+
+        //
+        translate: var(--translate-x) var(--translate-y);
+
+        //
+        @media all and (width >= 9in) {
+            border-radius: 0.25rem;
+            box-shadow: 0px 0px 1rem 1px #00000070;
+            
+            //
+            @include u.clamped-width(min(64rem, 100cqi), calc(80rem + var(--resize-x, 0) * 1px), 100cqi);
+            @include u.clamped-height(min(36rem, 100cqb), calc(45rem + var(--resize-y, 0) * 1px), 100cqb);
+        }
+        
+        //
+        inset: 0px;
+        position: fixed;
+        z-index: 99999;
+    
+        //
+        contain: content;
+        container-type: size;
+        container-name: ux-windowed;
+        display: grid;
+        overflow: hidden;
+
+        //
+        grid-template-columns: minmax(0px, 1fr);
+        grid-template-rows: 
+            [titlebar] minmax(3rem, max-content) 
+            [content-b] minmax(0px, 1fr);
+
+        //
+        .resize {
+            position: absolute;
+            inset: auto;
+            inset-inline-end: 0px;
+            inset-block-end: 0px;
+            inline-size: 1rem;
+            block-size: 1rem;
+            
+            //
+            background-color: transparent;
+            cursor: nwse-resize;
+        }
+
+        //
+        .titlebar {
+            @extend .align-center;
+            @extend .stretch;
+            @extend .pe-enable;
+            
+            //
+            gap: 0px;
+            
+            //
+            --padding: 0rem;
+            --padding-top: var(--padding, 0rem);
+            --padding-top: calc(var(--padding, 0rem) + env(safe-area-inset-top, 0px));
+            --padding-left: calc(var(--padding) + env(safe-area-inset-left, 0px));
+            --padding-right: calc(var(--padding) + env(safe-area-inset-right, 0px));
+
+            //
+            box-sizing: border-box;
+            padding: var(--padding, 0px) !important;
+            block-size: calc(3rem + var(--padding-top) + var(--padding));
+            
+            //
+            border-block-end: solid 1px var(--current-surface-color);
+            padding-block-start: var(--padding-top) !important;
+            //padding-inline-start: var(--padding-left) !important;
+            //padding-inline-end: var(--padding-right) !important;
+
+            //
+            align-items: end;
+
+            //grid-column: 1 / 2;
+            grid-row: titlebar;
+            min-block-size: max-content;
+            
+            //
+            display: grid;
+            grid-template-columns: 
+                [menu-button] minmax(3rem, max-content)
+                [title-label] minmax(0px, 1fr)
+                [back-button] minmax(3rem, max-content);
+            grid-template-rows: minmax(0px, 1fr);
+            
+            //
+            & > .title-label {
+                @extend .stretch;
+                @extend .align-center;
+                @extend .no-wrap;
+                @extend .align-inline-left;
+                @extend .pe-enable;
+
+                //
+                display: flex;
+
+                //
+                flex-direction: row;
+                padding: 0.5rem;
+                padding-inline: 1rem;
+                min-inline-size: max-content;
+                cursor: grab;
+            }
+            
+            //
+            & > * {
+                @extend .align-center;
+                @extend .stretch;
+                
+                //
+                display: flex;
+                grid-row: 1 / 1 span;
+                padding: 1rem;
+            }
+            
+            //
+            & > :where(.back-button, .menu-button) {
+                padding: 0.75rem;
+                cursor: pointer;
+                
+                //
+                max-inline-size: 3rem;
+                max-block-size: 3rem;
+            }
+        }
+        
+        //
+        @container ux-windowed (width < 9in) {
+            @include whenMobile;
+        }
+        
+        //
+        .content {
+            @extend .stretch;
+        }
+    }
+}

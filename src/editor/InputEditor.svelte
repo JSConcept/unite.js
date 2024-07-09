@@ -1,7 +1,7 @@
 <script type="ts" lang="ts">
     import { observeBySelector} from "../dom/Observer.ts";
     import { MOC, propsFilter } from "../utils/Utils.ts";
-    import LucideIcon from "../design/LucideIcon.svelte";
+    import LucideIcon from "../design/WLucideIcon.svelte";
     import {writable} from "svelte/store";
     import {onMount} from "svelte";
 

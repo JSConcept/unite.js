@@ -1,0 +1,129 @@
+<script type="ts" lang="ts">
+	import {readableHash} from '../reactive/ReadAbles.ts';
+	import LucideIcon from '../design/WLucideIcon.svelte';
+	import AxGesture from "../interact/Gesture.ts";
+	import {fade} from "svelte/transition";
+
+	//
+	export let hashIdName = $$props.hashIdName || "#";
+	
+	//
+	let pointerIdDrag = -1;
+	let frameElement: HTMLElement | null = null;
+	
+	//
+	document.documentElement.addEventListener("m-dragging", (ev)=>{
+		const dt = ev.detail;
+		if (frameElement && frameElement?.parentNode && dt.pointer.id == pointerIdDrag && (dt.holding.element.deref() == frameElement)) {
+			const wDiff = ((frameElement?.parentNode as HTMLElement|null)?.offsetWidth || 0) - frameElement.clientWidth;
+			const hDiff = ((frameElement?.parentNode as HTMLElement|null)?.offsetHeight || 0) - frameElement.clientHeight;
+
+			// change drag-state (correction)
+			dt.holding.modified[0] = Math.min(Math.max(dt.holding.shifting[0], -wDiff/2), wDiff/2);
+			dt.holding.modified[1] = Math.min(Math.max(dt.holding.shifting[1], -hDiff/2), hDiff/2);
+		}
+	});
+	
+	//
+	document.documentElement.addEventListener("click", (ev)=>{
+		const target = ev.target as HTMLElement;
+		if (target.matches(".back-button")) {
+			
+			//
+			const content = frameElement?.querySelector?.(".ux-content");
+			if (content) {
+                const event = new CustomEvent("ux-back", {
+                    cancelable: true,
+                    bubbles: true,
+                    detail: {}
+                });
+
+                //
+                content.addEventListener('x-back', (event) => {
+                    if (!event.defaultPrevented) {
+                        history.back();
+                    }
+                });
+			
+			    //
+                content.dispatchEvent(event);
+			}
+		}
+	})
+
+	//
+	let gestureControl: AxGesture | null = null;
+
+    //
+    const observer = new MutationObserver((mutationsList, _)=>{
+        for (let mutation of mutationsList) {
+            if (mutation.type == "childList") {
+                const validOf = Array.from(mutation.addedNodes).filter((n)=>(n == frameElement)) as HTMLElement[];
+                for (const frameElement of validOf) {
+					gestureControl = new AxGesture(frameElement);
+					
+					if (gestureControl) {
+						gestureControl.draggable({
+							handler: frameElement.querySelector(".title-label")
+						});
+						
+						//
+						gestureControl.resizable({
+							handler: frameElement.querySelector(".resize")
+						});
+						
+						// TODO! fix typescript typing
+						// center manually
+						
+						// @ts-ignore
+						frameElement.style.setProperty("--drag-x", -(frameElement.clientWidth / 2) + frameElement.parentNode.offsetWidth / 2, "");
+						
+						// @ts-ignore
+						frameElement.style.setProperty("--drag-y", -(frameElement.clientHeight / 2) + frameElement.parentNode.offsetHeight / 2, "");
+					}
+                }
+            }
+        }
+    });
+    
+    //
+    observer.observe(document.body, {
+		childList: true,
+		subtree: true
+	});
+</script>
+
+<script context="module">
+    import {propsFilter} from "../utils/Utils.ts";
+</script>
+
+<!-- -->
+{#if $readableHash == hashIdName}
+	<div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame" transition:fade={{ delay: 0, duration: 100 }}>
+
+		<div class="titlebar accent apply-color-theme hl-1">
+			<div class="back-button accent hl-2 hl-3h apply-color-theme" style="grid-column: back-button; aspect-ratio: 1 / 1;">
+				<LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
+			</div>
+			<div class="title-label" style="grid-column: title-label;">
+				<slot name="title-name"></slot>
+			</div>
+			<div class="menu-button accent hl-2 hl-3h apply-color-theme" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
+				<LucideIcon inert={true} slot="icon" name={"menu"}/>
+			</div>
+		</div>
+		
+		<div class="content-box apply-color-theme">
+			<slot></slot>
+		</div>
+
+		<div class="resize">
+			
+		</div>
+
+	</div>
+{/if}
+
+<style type="scss">
+	
+</style>

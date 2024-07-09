@@ -1,0 +1,13 @@
+//
+@mixin clamped-width ($min: 0px, $value: stretch, $max: none) {
+    inline-size: #{$value};
+    max-inline-size: #{$max};
+    min-inline-size: #{$min};
+}
+
+//
+@mixin clamped-height ($min: 0px, $value: stretch, $max: none) {
+    block-size: #{$value};
+    max-block-size: #{$max};
+    min-block-size: #{$min};
+}

@@ -15,8 +15,10 @@
     }
 </script>
 
+<!-- -->
 <script context="module">
     import {propsFilter} from "../utils/Utils.ts";
 </script>
 
+<!-- -->
 <svelte:component inert={true} class="ux-icon" this={icons[fup(camelize(name))]} {...propsFilter($$props)} />

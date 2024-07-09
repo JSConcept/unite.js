@@ -6,6 +6,9 @@
     import {MOC, zoomOf} from "../utils/Utils";
     import {animationSequence, GridItemType, GridPageType, putToCell} from "./GridItemUtils";
     import GridPage from "./GridPage.svelte";
+    
+    // TODO! make it optional...
+    // Make it as `export`s!
     import {state} from "./GridState";
     
     //
