@@ -17,7 +17,7 @@
     export let value = writable("");
 
     //
-    const stillInFocus = (el)=>{
+    const isInputOrIn = (el)=>{
         // @ts-ignore
         return (el && MOC(el, InputValidSelector)) || (document?.activeElement && (MOC(document?.activeElement, InputValidSelector)));
     }
@@ -35,7 +35,7 @@
 
     //
     const unfocus = (target: HTMLInputElement | null)=>{
-        if (!stillInFocus(target || targetInput)) {
+        if (!isInputOrIn(target || targetInput)) {
 
             // @ts-ignore
             navigator?.virtualKeyboard?.hide?.();
@@ -144,10 +144,10 @@
         }
         
         //
-        if (stillInFocus(target)) {
+        if (isInputOrIn(target)) {
             refocus(target);
         } else 
-        if (stillInFocus(document?.activeElement)) {
+        if (isInputOrIn(document?.activeElement)) {
             refocus(document?.activeElement);
         } else {
             unfocus(target as HTMLInputElement);
