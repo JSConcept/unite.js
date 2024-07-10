@@ -1,5 +1,7 @@
 <script type="ts" lang="ts">
-    import ItemEdit from "../forms/ItemEdit.svelte";
+    import {writable} from "svelte/store";
+    import Frame from "../design/Frame.svelte";
+import ItemEdit from "../forms/ItemEdit.svelte";
     import type {Field} from "../forms/ItemEdit.ts";
     import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
 //import ContextMenu from "../contextmenu/ContextMenu.svelte";
@@ -7,6 +9,9 @@
 //import InputEditor from "../editor/InputEditor.svelte";
 //import AppFrame from "../appframe/AppFrame.svelte";
 //import {state} from "./GridState"
+
+    //
+    const isFocused = writable(true);
 
     //
     const testObj = makeReactiveObject({
@@ -31,4 +36,6 @@
 <ContextMenu></ContextMenu>
 -->
 
-<ItemEdit whatEdit={testObj} fields={fieldSet}></ItemEdit>
+<Frame focused={isFocused}>
+    <ItemEdit whatEdit={testObj} fields={fieldSet}></ItemEdit>
+</Frame>

@@ -43,6 +43,12 @@
         stroke: var(--current-glyph-color);
         
         //
+        ::selection {
+            background: var(--current-glyph-color);
+            color: var(--current-surface-color);
+        }
+        
+        //
         & :where(svg) {
             stroke: var(--current-glyph-color);
         }

@@ -210,6 +210,7 @@
             <div class="field-wrap ux-solid">
                 <input 
                     autofocus={true}
+                    autocomplete="off"
                     on:click={reflect}
                     on:input={reflect}
                     on:change={reflect}
