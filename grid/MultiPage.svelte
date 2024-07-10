@@ -22,7 +22,7 @@
     export let grids = state?.grids;
     export let items = state?.items;
     export let backup = createReactiveSet<string>([]);
-    export let actionList: Map<string, Function> = new Map<string, Function>([]);
+    export let actionMap: Map<string, Function> = new Map<string, Function>([]);
     
     //
     let target: HTMLElement | null = null;
@@ -153,7 +153,7 @@
         if (target.matches(".ux-grid-pages *[data-type=\"items\"][data-action]")) {
             ev.stopPropagation();
             ev.preventDefault();
-            actionList?.get?.(target.dataset.action as string)?.({
+            actionMap?.get?.(target.dataset.action as string)?.({
                 initiator: target
             });
         }

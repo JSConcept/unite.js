@@ -6,7 +6,7 @@
 
     //
     export let ctxName: string = "default";
-    export let actionList: Map<string, Function> = new Map<string, Function>([]);
+    export let actionMap: Map<string, Function> = new Map<string, Function>([]);
     export let ctxList = [{
         icon: "wallpaper",
         name: "Test",
@@ -56,7 +56,7 @@
         if (target.matches(".ux-context-menu *[data-action]")) {
             ev.stopPropagation();
             ev.preventDefault();
-            actionList?.get?.(target.dataset.action as string)?.({
+            actionMap?.get?.(target.dataset.action as string)?.({
                 initiator
             });
         }
