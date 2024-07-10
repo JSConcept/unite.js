@@ -1,0 +1,117 @@
+@use "../core/ClassLets";
+@use "../design/ColorTheme";
+@use "../design/ColorVars" as cl;
+@use "../design/ColorUtils" as cu;
+@use "../core/Utils" as u;
+
+//
+@layer ux-inputs {
+    :where(.ux-switch) {
+        @extend .align-center;
+        @extend .stretch;
+        @extend .pe-enable;
+
+        //
+        container-type: size;
+        contain: none;
+
+        //
+        display: flex;
+        overflow: visible;
+        position: relative;
+        border-radius: 0.25rem;
+        box-sizing: border-box;
+        aspect-ratio: 1 / 1;
+
+        //
+        @include u.clamped-width(max-content, 5rem, none);
+        @include u.clamped-height(max-content, 1.5rem, 2.5rem);
+        
+        //
+        background-color: var(--current-surface-color);
+        accent-color: var(--current-glyph-color);
+        color: var(--current-glyph-color);
+        
+        //
+        .thumb {
+            @extend .pe-none;
+        }
+        
+        //
+        --thumb-size: 1rem;
+        --space-size: 1.25rem;
+        --value-mod: 0;
+        
+        //
+        .icon-sign {
+            @extend .align-center;
+            @extend .pe-none;
+            
+            
+            display: flex;
+            stroke: var(--current-glyph-color);
+            
+            //
+            translate: calc(calc(var(--space-size) * 0.5) + calc(100cqi - var(--space-size)) * var(--value-mod) - 50%) calc(50cqb - 50%);
+            transition: translate 100ms linear;
+            
+            //
+            position: absolute;
+            inset: 0px;
+            //opacity: 0;
+            padding: 0.125rem;
+            border-radius: calc(var(--thumb-size) * 0.45);
+            //aspect-ratio: 1 / 1;
+            
+            //
+            inline-size: var(--thumb-size);
+            block-size: 110cqmin;
+            max-inline-size: var(--thumb-size);
+            max-block-size: 110cqmin;
+            
+            //
+            & > * {
+                @extend .stretch;
+                stroke-width: 0.25rem;
+                position: relative;
+                inset: 0px;
+                translate: 0px 0px;
+                stroke: var(--current-glyph-color);
+            }
+        }
+        
+        //
+        & .track {
+            @extend .stretch;
+            @extend .inverse;
+            @extend .pe-none;
+            
+            //
+            border-radius: 0.25rem 0px 0px 0.25rem;
+            
+            //
+            position: absolute;
+            inset: 0px;
+            inline-size: calc(calc(100cqi - var(--thumb-size) * 0.5) * var(--value-mod));
+            transition: inline-size 100ms linear;
+            
+            //
+            background-color: var(--current-surface-color);
+            color: var(--current-glyph-color);
+        }
+
+        //
+        input {
+            @extend .stretch;
+            @extend .pe-enable;
+            
+            //
+            position: absolute;
+            inset: 0px;
+            opacity: 0;
+            padding: 0px;
+            cursor: pointer;
+        }
+    }
+
+}
