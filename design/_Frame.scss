@@ -1,0 +1,54 @@
+@use "../design/ColorVars" as cl;
+@use "../design/ColorUtils" as cu;
+
+//
+@use "../core/Utils" as u;
+@use "../core/ClassLets";
+@use "../design/ColorTheme";
+
+//
+@layer ux-modal-frame {
+    .ux-modal-frame {
+        @extend .align-center;
+        @extend .pe-enable;
+
+        //
+        inset: 0px;
+        position: fixed;
+        padding: 0.5rem;
+        overflow: hidden;
+        border-radius: 0.25rem;
+        box-sizing: border-box;
+        
+        //
+        z-index: 99999;
+
+        //
+        --rx: 0px;
+        --ry: 0px;
+
+        //
+        &.ux-context-menu {
+            --rx: calc(var(--click-x, 0) * 1px - calc(50cqi - 50%));
+            --ry: calc(var(--click-y, 0) * 1px - calc(50cqb - 50%));
+    
+            //
+            @media (hover: none) and (pointer: coarse) {
+                --rx: calc(var(--click-x, 0) * 1px - 50cqi);
+                --ry: calc(var(--click-y, 0) * 1px - 50cqb);
+            }
+        }
+
+        //
+        --translate-x: clamp(0px, calc(calc(50cqi - 50%) + var(--rx)), calc(100cqi - 100%));
+        --translate-y: clamp(0px, calc(calc(50cqb - 50%) + var(--ry)), calc(100cqb - 100%));
+
+        //
+        translate: var(--translate-x) var(--translate-y);
+        box-shadow: 0px 0px 1rem 1px #00000070;
+        
+        //
+        @include u.clamped-width(max-content, 16rem, 80cqi);
+        @include u.clamped-height(max-content, max-content, 80cqb);
+    }
+}

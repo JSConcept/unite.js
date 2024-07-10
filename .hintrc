@@ -10,7 +10,8 @@
         "ignore": [
           "@viewport",
           "user-select",
-          "contain"
+          "contain",
+          "backdrop-filter"
         ]
       }
     ]
