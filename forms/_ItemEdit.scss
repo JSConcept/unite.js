@@ -1,0 +1,97 @@
+
+@use "../core/ClassLets";
+@use "../design/ColorTheme";
+@use "../core/Utils" as u;
+
+//
+@layer ux-item-edit {
+    
+    //
+    .ux-edit-form {
+        @extend .stretch;
+        
+        //
+        min-inline-size: max-content;
+        min-block-size: max-content;
+        
+        //
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        
+        //
+        justify-items: stretch;
+        container-type: size;
+        contain: strict;
+        
+        //
+        & > * {
+            flex: 1;
+        }
+        
+        //
+        .ux-edit-desc {
+            //grid-column: 1 / 2 span;
+            display: flex;
+            place-items: center;
+            place-content: center;
+        }
+        
+        //
+        .ux-field-block {
+            @extend .stretch;
+            
+            //
+            grid-template-columns: minmax(max-content, 1fr) minmax(max-content, 1fr);
+            grid-template-rows: minmax(0px, max-content);
+            gap: 1rem;
+            
+            //
+            place-items: center;
+            place-content: space-between;
+            
+            //
+            min-inline-size: max-content;
+            min-block-size: max-content;
+            
+            //
+            block-size: max-content;
+            
+            //
+            max-inline-size: stretch;
+            max-block-size: stretch;
+            
+            //
+            .field-label {
+                justify-self: start;
+                display: inline-block;
+                
+                //
+                inline-size: max-content;
+                block-size: max-content;
+                
+                //
+                max-inline-size: stretch;
+                max-block-size: stretch;
+            }
+            
+            //
+            .field-input {
+                justify-self: end;
+                display: inline-block;
+                
+                //
+                inline-size: max-content;
+                block-size: max-content;
+                
+                //
+                max-inline-size: stretch;
+                max-block-size: stretch;
+                
+                //
+                user-select: auto;
+            }
+        }
+    }
+
+}

@@ -14,7 +14,7 @@ export const zoomOf = () => {
     ///
     if ("currentCSSZoom" in document.documentElement) {
         return (
-            ((document.documentElement.currentCSSZoom as number) || 1) / (isFirefox ? 1 : devicePixelRatio)
+            ((document.documentElement.currentCSSZoom as number) || 1) / 1//(isFirefox ? 1 : devicePixelRatio)
         );
     }
 

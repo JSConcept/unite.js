@@ -1,6 +1,8 @@
 <script lang="ts" type="ts">
     import Block from "../design/Block.svelte";
     import WLucideIcon from "../design/WLucideIcon.svelte";
+    import Frame from "../design/Frame.svelte";
+    import {writable} from "svelte/store";
 
     //
     export let ctxName: string = "default";
@@ -13,7 +15,12 @@
     
     //
     let initiator: HTMLElement | null = null;
-    let ctxMenu: HTMLElement | null = null;
+    let hasInitiator = writable(!!initiator);
+    
+    //
+    hasInitiator.subscribe((v)=>{
+        if (!v) { initiator = null; }
+    });
     
     //
     document.addEventListener("contextmenu", (ev)=>{
@@ -29,9 +36,12 @@
         if (target.matches("*[data-ctx=\""+ctxName+"\"]")) {
             ev.stopPropagation();
             ev.preventDefault();
-            initiator = target
+            initiator = target;
+            hasInitiator.set(!!initiator);
             
+            //
             requestAnimationFrame(()=>{
+                const ctxMenu: HTMLElement | null = document.querySelector(".ux-context-menu[data-ctx-name=\""+ctxName+"\"]");
                 if (ctxMenu) {
                     ctxMenu.style.setProperty("--click-x", ev.clientX as unknown as string, "");
                     ctxMenu.style.setProperty("--click-y", ev.clientY as unknown as string, "");
@@ -52,23 +62,20 @@
         }
         
         //
-        if (!(target.matches(".ux-context-menu") || target.closest(".ux-context-menu") || target == ctxMenu) || target.matches("*[data-action]")) {
+        if (!(target.matches(".ux-context-menu") || target.closest(".ux-context-menu")) || target.matches("*[data-action]")) {
             initiator = null;
+            hasInitiator.set(!!initiator);
         }
     });
 
 </script>
 
-{#if initiator}
-    <div class="ux-modal-frame ux-context-menu" bind:this={ctxMenu}>
-        <div class="cut-space">
-            {#each ctxList as L}
-                <Block style="--decor-size: 1rem" data-action={L.action}>
-                    <WLucideIcon name={L.icon} slot="icon"></WLucideIcon>
-                    <span>{L.name}</span>
-                    <div slot="element"></div>
-                </Block>
-            {/each}
-        </div>
-    </div>
-{/if}
+<Frame focused={hasInitiator} data-ctx-name={ctxName} class="ux-modal-frame ux-context-menu">
+    {#each ctxList as L}
+        <Block style="--decor-size: 1rem" data-action={L.action}>
+            <WLucideIcon name={L.icon} slot="icon"></WLucideIcon>
+            <span>{L.name}</span>
+            <div slot="element"></div>
+        </Block>
+    {/each}
+</Frame>

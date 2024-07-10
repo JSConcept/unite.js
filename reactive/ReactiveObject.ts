@@ -32,8 +32,8 @@ export default class ReactiveObject {
     //
     get(target, name: keyType, ctx) {
         if (name == "@subscribe") {
-            return (prop: string, cb: (value: any) => void) => {
-                cb?.(Reflect.get(target, prop, ctx));
+            return (cb: (value: any, prop: keyType) => void, prop: keyType) => {
+                if (prop) {cb?.(Reflect.get(target, prop, ctx), prop);};
                 this["@subscribe"](cb, prop);
             };
         }
