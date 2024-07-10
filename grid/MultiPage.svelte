@@ -4,7 +4,8 @@
     import {grabForDrag} from "../interact/PointerAPI";
     import {createReactiveSet} from "../reactive/ReactiveSet";
     import {MOC, zoomOf} from "../utils/Utils";
-    import {animationSequence, GridItemType, GridPageType, GridsStateType, putToCell} from "./GridItemUtils";
+    import {animationSequence, putToCell} from "./GridItemUtils";
+    import type {GridItemType, GridPageType, GridsStateType} from "./GridItemUtils";
     import GridPage from "./GridPage.svelte";
     
     // TODO! make it optional...
@@ -197,7 +198,7 @@
 </script>
 
 <!-- -->
-<div bind:this={target} class="ux-grid-pages stretch grid-based-box ux-transparent">
+<div bind:this={target} data-current-page={current} class="ux-grid-pages stretch grid-based-box ux-transparent">
     {#if lists && grids}
         <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
         <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>

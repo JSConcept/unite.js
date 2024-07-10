@@ -40,8 +40,9 @@ const config = <UserConfig>defineConfig({
     root: "./",
     resolve: {
         alias: {
-            "@": r("./"),
-            "@src": r("./")
+            "@": path.resolve("./"),
+            "@src": path.resolve("./"),
+            "@unite": path.resolve("./")
         },
     },
     plugins: [

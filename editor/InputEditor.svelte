@@ -230,5 +230,5 @@
 {/if}
 
 <!-- TEST ONLY! -->
-<input type="text" name="text" />
-<input type="text" name="text" />
+<!--<input type="text" name="text" />
+<input type="text" name="text" />-->

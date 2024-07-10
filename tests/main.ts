@@ -44,10 +44,9 @@ const loading = Promise.allSettled([
 
 //
 import App from "./Test.svelte";
+import {mount} from 'svelte';
 
 //
 export default loading.then(() => {
-    return (new App({
-        target: document.body,
-    }));
+    mount(App, {target: document.body});
 });

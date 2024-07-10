@@ -1,18 +1,22 @@
 {
+    "include": ["./**/*"],
+    "exclude": ["./node_modules", "../node_modules"],
     "compilerOptions": {
         "types": ["./global.d.ts"],
         "paths": {
             "@": ["./"],
-            "@src": ["./"]
+            "@src": ["./"],
+            "@unite": ["./"]
         },
         "composite": true,
         "lib": ["dom", "esnext", "webworker"],
         "module": "ESNext",
-        "target": "esnext",
-        "baseUrl": ".",
+        "target": "ES2021",
+        "baseUrl": "./",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
-        "moduleResolution": "node",
+        "moduleResolution": "Bundler",
+        "verbatimModuleSyntax": true,
         "allowArbitraryExtensions": true,
         "allowImportingTsExtensions": true,
         "esModuleInterop": true,
