@@ -56,8 +56,15 @@
         background-color: transparent;
 
         //
+        font-family: Calibri, Carlito, Caliburn, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+
+        //
         @include HQRendering();
         //@include dFont.applyFont(0.9rem);
+    }
+    
+    :where(body) {
+        font-size: 0.9rem;
     }
 
     //

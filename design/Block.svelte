@@ -2,7 +2,7 @@
     import {propsFilter} from "../utils/Utils.ts";
 </script>
 
-<div class="ux-block-decor ux-default-theme" {...propsFilter($$props)}>
+<div class="ux-block-decor ux-default-theme hl-1 hl-2h" {...propsFilter($$props)}>
     <div class="icon-wrap hl-1" inert={true}>
         <slot name="icon"></slot>
     </div>
