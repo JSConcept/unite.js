@@ -78,8 +78,8 @@
         }
     
         //
-        --c-gap: 0.125;
-        --r-gap: 0.125;
+        --c-gap: 1;
+        --r-gap: 1;
     
         //
         padding-inline: calc(var(--c-gap) * 0.5rem);
@@ -172,7 +172,7 @@
             border-radius: calc(var(--icon-size) * 0.5);
             
             //
-            --icon-size: min(calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem), 4rem);
+            --icon-size: min(calc(100cqmin / min(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem), 4rem);
             
             //
             max-inline-size: var(--icon-size);
