@@ -50,7 +50,7 @@ export const redirectCell = (gridArgs: GridArgsType, $preCell: [number, number])
     //const items = gridItems;
     const preCell: [number, number] = [...$preCell]; // make non-conflict copy
     const icons =
-        gridArgs.page.list?.map((id) => gridArgs.items.get(id)).filter((m) => !!m) || [];
+        [...gridArgs.page.list]?.map((id) => gridArgs.items.get(id)).filter((m) => !!m) || [];
 
     //
     const checkBusy = (cell) => {

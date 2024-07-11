@@ -52,7 +52,7 @@
         {#each fields as F(F.name)}
             <div class="ux-field-block">
                 <div inert={true} class="field-label">{F.label}</div>
-                <input autocomplete="off" bind:value={F.value} name={F.name} data-name={F.name} on:change={confirm} class="field-input hl-1 hl-2h"/>
+                <input type="text" autocomplete="off" bind:value={F.value} name={F.name} data-name={F.name} on:change={confirm} class="field-input hl-1 hl-2h"/>
             </div>
         {/each}
     </form>

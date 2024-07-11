@@ -96,6 +96,7 @@
         //
         if (matchMedia("(hover: none) and (pointer: coarse)").matches) {
             if ((from as HTMLElement)?.matches?.(TextInputSelector) && (!input || from != input) && !MOC(from as HTMLElement, IsEditorInputSelector)) {
+                
                 targetInput = from;
             }
         }
@@ -219,10 +220,10 @@
                     type="text"
                 />
             </div>
-            <button type="button" tabindex="-1" bind:this={copyButton} class="field-copy solid hl-1 hl-2h pe-enable">
+            <button type="button" tabindex="-1" bind:this={copyButton} class="field-copy ux-solid hl-1 hl-2h pe-enable">
                 <LucideIcon name="copy" tabindex="-1" inert={true}></LucideIcon>
             </button>
-            <button type="button" tabindex="-1" bind:this={pasteButton} class="field-paste solid hl-1 hl-2h pe-enable">
+            <button type="button" tabindex="-1" bind:this={pasteButton} class="field-paste ux-solid hl-1 hl-2h pe-enable">
                 <LucideIcon name="clipboard" tabindex="-1" inert={true}></LucideIcon>
             </button>
         </div>
