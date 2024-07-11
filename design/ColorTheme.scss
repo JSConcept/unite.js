@@ -7,6 +7,14 @@
 
 //
 @layer ux-colors {
+
+    :root, :where(html) {
+        --theme-is-dark: 0; color-scheme: light;
+        @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; }
+        @media (prefers-color-scheme: dark)  { --theme-is-dark: 1; color-scheme: dark; }
+    }
+    
+    //
     :root, :host, :scope, :where(html, body, .ux-solid) {
         --theme-glyph-color: #{cl.$glyphColor};
         --theme-surface-color: #{cl.$surfaceColor};
@@ -16,11 +24,34 @@
     }
     
     //
+    :root, :host, :scope, :where(*) {
+        --theme-chroma-mod: oklch(from #{cl.$baseColor} l 0.99 h);
+        --theme-black-mod: oklch(from #{cl.$baseColor} 0.01 0.01 h);
+        --theme-white-mod: oklch(from #{cl.$baseColor} 0.99 0.01 h);
+
+        //
+        --theme-dark-down-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{cl.$baseColor});
+        --theme-dark-up-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{cl.$baseColor});
+
+        //
+        --theme-light-down-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{cl.$baseColor});
+        --theme-light-up-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{cl.$baseColor});
+    }
+    
+    //
     :root, :host, :scope, :where(html, body, *) {
         --current-glyph-color: var(--theme-glyph-color);
         --current-surface-color: #{cu.theme-mod-down(var(--theme-surface-color), calc(var(--highlight-coefficient) * 1%))};
         --current-accent-color: var(--theme-accent-color);
         --current-chroma-color: var(--theme-chroma-color);
+        
+        //
+        @include cu.var-dependent();
+        
+        //
+        @supports(color: light-dark(white, black)) {
+            @include cu.scheme-dependent;
+        }
     }
     
     :root {
@@ -127,8 +158,8 @@
 	
     //
 	:where(.ux-accent-inverse) {
-        --theme-surface-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.1) h);
-        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(l - 0.5) * 0.5 + 0.5) calc(c * 0.1) h);
+        --theme-surface-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(l - 0.5) * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
 	}
 
 	//
@@ -148,5 +179,10 @@
         --theme-surface-color: transparent;
         background-color: transparent;
         stroke: var(--current-glyph-color);
+	}
+	
+	//
+	:where(x-scrollbox) {
+        --sb-color: #{cu.theme-mod-down(cu.theme-mod-up(cl.$baseColor, 80%), 20%)};
 	}
 }

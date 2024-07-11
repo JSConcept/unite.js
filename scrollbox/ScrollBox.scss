@@ -49,6 +49,7 @@
 
         contain: content;
         container-type: size;
+        background-color: transparent;
 
         scroll-timeline: --scroll-y block, --scroll-x inline;
         scrollbar-gutter: stable both-edges;

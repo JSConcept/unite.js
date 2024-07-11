@@ -3,6 +3,7 @@
 	import LucideIcon from '../design/WLucideIcon.svelte';
 	import AxGesture from "../interact/Gesture.ts";
 	import {fade} from "svelte/transition";
+	import { observeBySelector } from "../dom/Observer.ts";
 
 	//
 	export let hashIdName = $$props.hashIdName || "#app";
@@ -32,21 +33,16 @@
 			//
 			const content = frameElement?.querySelector?.(".ux-content");
 			if (content) {
-                const event = new CustomEvent("ux-back", {
+				const event = new CustomEvent("ux-back", {
                     cancelable: true,
                     bubbles: true,
                     detail: {}
                 });
-
-                //
-                content.addEventListener('x-back', (event) => {
-                    if (!event.defaultPrevented) {
-                        history.back();
-                    }
-                });
-			
+				
 			    //
-                content.dispatchEvent(event);
+                if (content.dispatchEvent(event)) {
+                    history.back();
+                }
 			}
 		}
 	})
@@ -62,6 +58,7 @@
                 for (const frameElement of validOf) {
 					gestureControl = new AxGesture(frameElement);
 					
+					//
 					if (gestureControl) {
 						gestureControl.draggable({
 							handler: frameElement.querySelector(".title-label")
@@ -85,6 +82,11 @@
             }
         }
     });
+    
+    //
+	observeBySelector(document.body, ".ux-app-frame:has(" + hashIdName + ")", ({addedNodes})=>{
+		frameElement ||= addedNodes[0];
+	});
     
     //
     observer.observe(document.body, {

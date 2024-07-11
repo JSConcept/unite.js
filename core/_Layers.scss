@@ -1,1 +1,4 @@
-@layer ux-core, ux-props, ux-classlets, ux-normalize, ux-zoom, ux-colors, ux-grid, ux-editor;
+
+@layer ux-layer-set {
+    @layer ux-core, ux-props, ux-classlets, ux-normalize, ux-zoom, ux-colors, ux-grid, ux-editor, ux-inputs;
+}

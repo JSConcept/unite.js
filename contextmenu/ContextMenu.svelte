@@ -3,6 +3,7 @@
     import WLucideIcon from "../design/WLucideIcon.svelte";
     import Frame from "../design/Frame.svelte";
     import {writable} from "svelte/store";
+    import {zoomOf} from "../utils/Utils.ts";
 
     //
     export let ctxName: string = "default";
@@ -43,8 +44,8 @@
             requestAnimationFrame(()=>{
                 const ctxMenu: HTMLElement | null = document.querySelector(".ux-context-menu[data-ctx-name=\""+ctxName+"\"]");
                 if (ctxMenu) {
-                    ctxMenu.style.setProperty("--click-x", ev.clientX as unknown as string, "");
-                    ctxMenu.style.setProperty("--click-y", ev.clientY as unknown as string, "");
+                    ctxMenu.style.setProperty("--click-x", (ev.clientX / zoomOf()) as unknown as string, "");
+                    ctxMenu.style.setProperty("--click-y", (ev.clientY / zoomOf()) as unknown as string, "");
                 }
             })
         }
@@ -78,7 +79,7 @@
 
 <Frame focused={hasInitiator} data-ctx-name={ctxName} class="ux-modal-frame ux-context-menu">
     {#each ctxList as L}
-        <Block style="--decor-size: 1.6rem" data-action={L.action}>
+        <Block class="ux-block-decor ux-default-theme hl-1h" style="--decor-size: 1.6rem" data-action={L.action}>
             <WLucideIcon name={L.icon} slot="icon"></WLucideIcon>
             <span>{L.name}</span>
             <div slot="element"></div>
