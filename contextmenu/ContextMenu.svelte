@@ -48,6 +48,12 @@
                 }
             })
         }
+        
+        //
+        if (!(target.matches("*[data-ctx=\""+ctxName+"\"]"))) {
+            initiator = null;
+            hasInitiator.set(!!initiator);
+        }
     });
     
     //
@@ -62,7 +68,7 @@
         }
         
         //
-        if (!(target.matches(".ux-context-menu") || target.closest(".ux-context-menu")) || target.matches("*[data-action]")) {
+        if (!(target.matches(".ux-context-menu[data-ctx-name=\"" + ctxName + "\"]") || target.closest(".ux-context-menu[data-ctx-name=\"" + ctxName + "\"]")) || target.matches("*[data-action]")) {
             initiator = null;
             hasInitiator.set(!!initiator);
         }

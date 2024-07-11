@@ -432,7 +432,7 @@ const classes: StyleTuple[] = [
     [":root, :host, :scope", lts],
     [":root, :host, :scope", pts],
     [":root, :host, :scope", availSize],
-    [":where(.ux-grid-item), :where(.ux-grid-page > *)", currentCellLayout]
+    [":where(.ux-grid-item), :where(.ux-grid-page > *), :where(.ux-grid-item-label)", currentCellLayout]
 ];
 
 //

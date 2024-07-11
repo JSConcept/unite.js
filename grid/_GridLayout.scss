@@ -41,6 +41,8 @@
         //grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
         //grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
         
+        filter: drop-shadow(0px 0px 0.25rem #00000060);
+        
         //
         @media (orientation: portrait) {
             grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
@@ -76,6 +78,8 @@
         
         //
         .ux-grid-item-label {
+            @include calculateMetric();
+        
             --icon-size: calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem);
             
             //
@@ -84,9 +88,14 @@
             block-size: max-content;
             
             //
+            --grid-column: var(--fc-cell-x);
+            --grid-row: var(--fc-cell-y);
+            
+            //
             //writing-mode: horizontal-tb;
         
             //
+            --translate-y: 2.5rem;
             transform: translate(var(--translate-x), var(--translate-y));
         }
         
@@ -115,7 +124,7 @@
             }
             
             //
-            background-color: white;
+            //background-color: white;
             overflow: hidden;
             
             //

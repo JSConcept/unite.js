@@ -54,14 +54,46 @@
         }
 	}
 	
-	//
-	:where(.ux-transparent, svg) {
-        --theme-surface-color: transparent;
-	}
 	
 	//
 	:where(svg) {
+        --theme-surface-color: transparent;
         background-color: transparent;
+        stroke: var(--current-glyph-color);
+	}
+	
+	// 
+    :where(.ux-solid) {
+        --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+        --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+    }
+    
+    // 
+    :where(.ux-inverse) {
+        --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+        --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+    }
+    
+    
+    
+    //
+	:where(.ux-accent-inverse) {
+        --theme-surface-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.1) h);
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(l - 0.5) * 0.5 + 0.5) calc(c * 0.1) h);
+	}
+    
+    
+    //
+	:where(.ux-accent) {
+        --theme-surface-color: #{cl.$baseColor};
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+	}
+    
+    
+	//
+	:where(.ux-transparent) {
+        --theme-surface-color: transparent;
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
 	}
 	
 	//
@@ -87,5 +119,33 @@
     .force-light { --theme-is-dark: 0; color-scheme: light; }
     .force-dark { --theme-is-dark: 1; color-scheme: dark; }
 
+	
+	//
+	:where(button) {
+        @extend .ux-accent;
+	
+        //
+        @extend .hl-2;
+        @extend .hl-3h;
+        
+        color: var(--current-glyph-color);
+        background-color: var(--current-surface-color);
+        
+        min-inline-size: max-content;
+        min-block-size: max-content;
+        
+        inline-size: auto;
+        block-size: auto;
+        
+        max-inline-size: stretch;
+        max-block-size: stretch;
+        
+        cursor: pointer;
+        pointer-events: auto;
+        pointer-events: bounding-box;
+        
+        padding: 0.35rem;
+        border-radius: 0.25rem;
+	}
 	
 }

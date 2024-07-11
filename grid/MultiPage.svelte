@@ -198,7 +198,7 @@
 </script>
 
 <!-- -->
-<div bind:this={target} data-current-page={current} class="ux-grid-pages stretch grid-based-box ux-transparent">
+<div bind:this={target} data-current-page={current} data-ctx="grid-space" class="ux-grid-pages stretch grid-based-box ux-transparent pe-enable">
     {#if lists && grids}
         <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
         <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>

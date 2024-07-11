@@ -27,7 +27,7 @@ import ItemEdit from "../forms/ItemEdit.svelte";
     //
     const fieldSet: Field[] = [
         {"name": "icon", "label": "Icon: ", "icon": "", "value": ""},
-        {"name": "label", "label": "Label: ", "icon": "", "value": "RX"},
+        {"name": "label", "label": "Label: ", "icon": "", "value": ""},
     ]
 </script>
 
