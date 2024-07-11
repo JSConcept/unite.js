@@ -55,18 +55,20 @@ export default class ReactiveSet {
         //
         if (name == "delete") {
             return (value) => {
+                const result = bindCtx(target, Reflect.get(target, name, ctx))(value, value);
                 Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
-                return bindCtx(target, Reflect.get(target, name, ctx))(value, value);
+                return result;
             };
         }
 
         //
         if (name == "add") {
             return (value) => {
+                const result = bindCtx(target, Reflect.get(target, name, ctx))(value, value);
                 Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
-                return bindCtx(target, Reflect.get(target, name, ctx))(value, value);
+                return result;
             };
         }
 

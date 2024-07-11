@@ -75,7 +75,7 @@
         
         //
         &:has(input:not(checked)) {
-            @extend .solid;
+            @extend .ux-solid;
             --value-mod: 0;
             
             //
@@ -89,14 +89,14 @@
             }
             
             .icon-sign, .icon-sign > * {
-                @extend .inverse;
+                @extend .ux-inverse;
                 stroke: var(--current-glyph-color);
             }
         }
         
         //
         &:has(input:checked) {
-            @extend .inverse;
+            @extend .ux-inverse;
             --value-mod: 1;
             
             //
@@ -110,7 +110,7 @@
             }
             
             .icon-sign, .icon-sign > * {
-                @extend .solid;
+                @extend .ux-solid;
                 stroke: var(--current-glyph-color);
             }
         }

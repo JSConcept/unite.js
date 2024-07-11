@@ -78,7 +78,7 @@
 
 <Frame focused={hasInitiator} data-ctx-name={ctxName} class="ux-modal-frame ux-context-menu">
     {#each ctxList as L}
-        <Block style="--decor-size: 1rem" data-action={L.action}>
+        <Block style="--decor-size: 1.6rem" data-action={L.action}>
             <WLucideIcon name={L.icon} slot="icon"></WLucideIcon>
             <span>{L.name}</span>
             <div slot="element"></div>

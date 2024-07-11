@@ -54,48 +54,6 @@
         }
 	}
 	
-	
-	//
-	:where(svg) {
-        --theme-surface-color: transparent;
-        background-color: transparent;
-        stroke: var(--current-glyph-color);
-	}
-	
-	// 
-    :where(.ux-solid) {
-        --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
-        --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
-    }
-    
-    // 
-    :where(.ux-inverse) {
-        --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
-        --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
-    }
-    
-    
-    
-    //
-	:where(.ux-accent-inverse) {
-        --theme-surface-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.1) h);
-        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(l - 0.5) * 0.5 + 0.5) calc(c * 0.1) h);
-	}
-    
-    
-    //
-	:where(.ux-accent) {
-        --theme-surface-color: #{cl.$baseColor};
-        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
-	}
-    
-    
-	//
-	:where(.ux-transparent) {
-        --theme-surface-color: transparent;
-        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
-	}
-	
 	//
     @media not ((hover: none) and (pointer: coarse)) {
         .hl-1h:hover { --highlight-coefficient: 6; }
@@ -148,4 +106,47 @@
         border-radius: 0.25rem;
 	}
 	
+	
+    //
+	:where(.ux-accent) {
+        --theme-surface-color: #{cl.$baseColor};
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+	}
+	
+    // 
+    :where(.ux-solid) {
+        --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+        --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+    }
+    
+    // 
+    :where(.ux-inverse) {
+        --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+        --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+    }
+	
+    //
+	:where(.ux-accent-inverse) {
+        --theme-surface-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.1) h);
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(l - 0.5) * 0.5 + 0.5) calc(c * 0.1) h);
+	}
+
+	//
+	:where(.ux-transparent) {
+        --theme-surface-color: transparent;
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+	}
+	
+	//
+	:where(.ux-solid-transparent) {
+        --theme-surface-color: transparent;
+        --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+	}
+	
+	//
+	:where(svg) {
+        --theme-surface-color: transparent;
+        background-color: transparent;
+        stroke: var(--current-glyph-color);
+	}
 }

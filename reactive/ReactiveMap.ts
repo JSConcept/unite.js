@@ -55,18 +55,20 @@ export default class ReactiveMap {
         //
         if (name == "delete") {
             return (prop, value = null) => {
+                const result = bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
                 Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                return bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
+                return result;
             };
         }
 
         //
         if (name == "set") {
             return (prop, value) => {
+                const result = bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
                 Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
                 Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                return bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
+                return result;
             };
         }
 

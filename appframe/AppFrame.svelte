@@ -8,11 +8,11 @@
 	export let hashIdName = $$props.hashIdName || "#app";
 	
 	//
-	let pointerIdDrag = -1;
+	//let pointerIdDrag = -1;
 	let frameElement: HTMLElement | null = null;
 	
-	//
-	document.documentElement.addEventListener("m-dragging", (ev)=>{
+	// outdated due gestures control
+	/*document.documentElement.addEventListener("m-dragging", (ev)=>{
 		const dt = ev.detail;
 		if (frameElement && frameElement?.parentNode && dt.pointer.id == pointerIdDrag && (dt.holding.element.deref() == frameElement)) {
 			const wDiff = ((frameElement?.parentNode as HTMLElement|null)?.offsetWidth || 0) - frameElement.clientWidth;
@@ -22,7 +22,7 @@
 			dt.holding.modified[0] = Math.min(Math.max(dt.holding.shifting[0], -wDiff/2), wDiff/2);
 			dt.holding.modified[1] = Math.min(Math.max(dt.holding.shifting[1], -hDiff/2), hDiff/2);
 		}
-	});
+	});*/
 	
 	//
 	document.documentElement.addEventListener("click", (ev)=>{
@@ -101,23 +101,23 @@
 {#if $readableHash == hashIdName || location.hash == hashIdName}
 	<div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme" transition:fade={{ delay: 0, duration: 100 }}>
 
-		<div class="titlebar ux-transparent hl-1">
-			<div class="back-button hl-2 hl-3h ux-transparent" style="grid-column: back-button; aspect-ratio: 1 / 1;">
+		<div class="titlebar ux-solid-transparent hl-1">
+			<div class="back-button hl-2 hl-3h ux-solid-transparent" style="grid-column: back-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
 			</div>
-			<div class="title-label ux-transparent" style="grid-column: title-label;">
+			<div class="title-label ux-solid-transparent" style="grid-column: title-label;">
 				<slot name="title-name"></slot>
 			</div>
-			<div class="menu-button accent hl-2 hl-3h ux-transparent" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
+			<div class="menu-button accent hl-2 hl-3h ux-solid-transparent" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"menu"}/>
 			</div>
 		</div>
 		
-		<div class="content-box ux-transparent">
+		<div class="content-box stretch ux-solid-transparent">
 			<slot></slot>
 		</div>
 
-		<div class="resize ux-transparent">
+		<div class="resize ux-solid-transparent">
 			
 		</div>
 

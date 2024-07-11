@@ -22,7 +22,7 @@
 
 <!-- -->
 <script context="module">
-    import {propsFilter} from "@unite/utils/utils.mjs";
+    import {propsFilter} from "../utils/Utils.ts";
 </script>
 
 <!-- -->

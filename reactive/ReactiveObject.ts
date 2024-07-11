@@ -62,16 +62,18 @@ export default class ReactiveObject {
 
     //
     set(target, name: keyType, value) {
+        const result = Reflect.set(target, name, value);
         Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, name));
         Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, name));
-        return Reflect.set(target, name, value);
+        return result;
     }
 
     //
     deleteProperty(target, name: keyType) {
+        const result = Reflect.deleteProperty(target, name);
         Array.from(this.subscribers.get(name)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(null, name));
         Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(null, name));
-        return Reflect.deleteProperty(target, name);
+        return result;
     }
 }
 
