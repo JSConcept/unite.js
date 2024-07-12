@@ -2,6 +2,7 @@
     import type {Readable, Writable} from "svelte/store";
     import {propsFilter} from "../utils/Utils.ts";
     import {writable} from "svelte/store";
+    import {fade} from "svelte/transition";
     
     //
     export let focused: Writable<boolean> | Readable<boolean> = writable(false);
@@ -38,7 +39,7 @@
 
 <!-- -->
 {#if $focused}
-    <div class="ux-modal-frame" bind:this={modalFrame} {...propsFilter($$props)}>
+    <div class="ux-modal-frame" transition:fade={{ delay: 0, duration: 100 }} bind:this={modalFrame} {...propsFilter($$props)}>
         <div class="cut-space">
             <slot></slot>
         </div>
