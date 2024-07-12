@@ -263,8 +263,8 @@ const realCellOriented = {
         "grid-row": "calc(var(--columns) - var(--grid-column) + 1)",
     },
     "portrait-secondary": {
-        "grid-column": "calc(var(--rows) - var(--grid-row) + 1)",
-        "grid-row": "calc(var(--columns) - var(--grid-column) + 1)",
+        "grid-column": "calc(var(--columns) - var(--grid-column) + 1)",
+        "grid-row": "calc(var(--rows) - var(--grid-row) + 1)",
     },
     "landscape-secondary": {
         "grid-column": "calc(var(--rows) - var(--grid-row) + 1)",
