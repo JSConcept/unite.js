@@ -7,10 +7,12 @@
     // @ts-ignore
     export let gridItem: GridItemType = {};
     export let type = "items";
-    
+
     //
     let target: HTMLElement | null = null;
-    let icon = gridItem.icon;
+    let icon = gridItem.icon || "";
+    let href = gridItem.href || "";
+    let action = gridItem.action || "";
 
     //
     $: gridItem?.["@subscribe"]?.((v)=>{
@@ -19,10 +21,10 @@
     }, "cell");
 
     //
-    $: gridItem?.["@subscribe"]?.((v)=>{
-        icon = v;
-    }, "icon");
-
+    $: gridItem?.["@subscribe"]?.((v)=>{ href = v; }, "href");
+    $: gridItem?.["@subscribe"]?.((v)=>{ icon = v; }, "icon");
+    $: gridItem?.["@subscribe"]?.((v)=>{ action = v; }, "action");
+    
     //
     export let whenMount = ()=>{};
     
@@ -48,7 +50,7 @@
 </script>
 
 <!-- -->
-<div bind:this={target} data-id={gridItem.id} data-action={gridItem.action||""} data-href={gridItem.href||""} data-type={type} data-ctx="grid-item" class="ux-grid-item wavy-shaped ux-accent-inverse">
+<div bind:this={target} data-id={gridItem.id} data-action={action||""} data-href={href||""} data-type={type} data-ctx="grid-item" class="ux-grid-item wavy-shaped ux-accent-inverse">
     <!--<slot></slot>-->
     <LucideIcon name={icon}></LucideIcon>
 </div>
