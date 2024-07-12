@@ -122,7 +122,8 @@ export const redirectCell = (gridArgs: GridArgsType, $preCell: [number, number])
     }
 
     //
-    return makeReactiveObject(preCell);
+    gridArgs.item.cell = makeReactiveObject(preCell);
+    return gridArgs.item.cell;
 };
 
 //
