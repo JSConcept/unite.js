@@ -8,6 +8,7 @@
     
     //
     const FocusSelector = ".ux-modal-frame, .ux-modal, .ux-editor, input";
+    const DNBSelector = "input[type=\"text\"], .ux-editor, input";
     
     //
     let modalFrame: HTMLElement | null = null;
@@ -27,7 +28,7 @@
         const target: HTMLElement = ev.target as HTMLElement;
         
         //
-        if (!(modalFrame == target || target.matches(FocusSelector) || target.closest(FocusSelector))) {
+        if (!(modalFrame == target || target.matches(FocusSelector) || target.closest(FocusSelector)) && !(document?.activeElement?.matches(DNBSelector) || target.matches(DNBSelector) || target.closest(DNBSelector))) {
             // @ts-ignore
             focused?.set?.(false);
         }
