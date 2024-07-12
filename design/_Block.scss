@@ -69,23 +69,26 @@
             min-inline-size: max-content;
             min-block-size: max-content;
             
-            // stretch or moz-available works buggy
-            @-moz-document url-prefix() {
-                inline-size: min(100%, 100cqi);
-                max-inline-size: min(100%, 100cqi);
-                max-block-size: min(100%, 100cqb);
-            }
-            
             //
             box-sizing: border-box;
             background-clip: border-box;
             background-origin: content-box;
             background-color: transparent;
             background-image: none;
-            padding: calc(var(--decor-size) * 0.4);
-            padding-block: calc(var(--decor-size) * 0.3);
-            box-sizing: border-box;
+            padding-inline: calc(var(--decor-size) * 0.4);
+            padding-block: calc(var(--decor-size) * 0.4);
             overflow: visible;
+            
+            // stretch or moz-available works buggy
+            @-moz-document url-prefix() {
+                inline-size: min(100%, 100cqi);
+                max-inline-size: min(100%, 100cqi);
+                max-block-size: min(100%, 100cqb);
+            }
+        }
+        
+        & > :where(.label-box) {
+            padding-inline: calc(var(--decor-size) * 0.2);
         }
         
         //
@@ -105,8 +108,8 @@
             //background-color: transparent;
             color: var(--current-glyph-color);
             aspect-ratio: 1 / 1;
-            max-inline-size: calc(var(--decor-size) * 1.5);
-            max-block-size: calc(var(--decor-size) * 1.5);
+            max-inline-size: calc(var(--decor-size) * 1.333);
+            max-block-size: calc(var(--decor-size) * 1.333);
         }
         
         //rangeSlider

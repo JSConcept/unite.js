@@ -12,6 +12,11 @@
         @extend .pe-enable;
 
         //
+        --thumb-size: 1rem;
+        --space-size: 1.25rem;
+        --value-mod: 0;
+
+        //
         container-type: size;
         contain: none;
 
@@ -36,11 +41,6 @@
         .thumb {
             @extend .pe-none;
         }
-        
-        //
-        --thumb-size: 1rem;
-        --space-size: 1.25rem;
-        --value-mod: 0;
         
         //
         .icon-sign {

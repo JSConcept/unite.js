@@ -32,6 +32,10 @@
         --padding-v: 1.5rem;
         
         //
+        overflow: visible !important;
+        contain: content !important;
+        
+        //
         padding-inline: var(--padding-h);
         padding-block: var(--padding-v);
         
@@ -46,10 +50,6 @@
             padding-inline: var(--padding-v);
             padding-block: var(--padding-h);
         }
-        
-        //
-        overflow: visible !important;
-        contain: content !important;
     }
 
     //
@@ -72,19 +72,7 @@
         //grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
         
         filter: drop-shadow(0px 0px 0.25rem #00000060);
-        
-        //
-        @media (orientation: portrait) {
-            grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
-            grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
-        }
-        
-        //
-        @media (orientation: landscape) {
-            grid-template-columns: repeat(var(--rows), minmax(0px, 1fr));
-            grid-template-rows: repeat(var(--columns), minmax(0px, 1fr));
-        }
-    
+
         //
         --c-gap: 1;
         --r-gap: 1;
@@ -100,6 +88,18 @@
         //
         place-items: center !important;
         place-content: space-around !important;
+        
+        //
+        @media (orientation: portrait) {
+            grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
+            grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+        }
+        
+        //
+        @media (orientation: landscape) {
+            grid-template-columns: repeat(var(--rows), minmax(0px, 1fr));
+            grid-template-rows: repeat(var(--columns), minmax(0px, 1fr));
+        }
         
         //
         & > :where(*) {
@@ -140,23 +140,6 @@
             
             // unsupported
             //writing-mode: horizontal-tb;
-            
-            //
-            &:where([data-type="backup"]) {
-                --translate-x: calc(var(--drag-x, 0) * 1px);
-                --translate-y: calc(var(--drag-y, 0) * 1px);
-                
-                //
-                --grid-column: var(--fp-cell-x);
-                --grid-row: var(--fp-cell-y);
-            }
-            
-            //
-            &:where([data-type="items"]) {
-                pointer-events: auto;
-                pointer-events: bounding-box;
-                cursor: pointer;
-            }
             
             //
             //background-color: white;
@@ -203,6 +186,23 @@
             //
             &:where([data-type="labels"], [data-type="bucket"]) {
                 pointer-events: none;
+            }
+            
+            //
+            &:where([data-type="backup"]) {
+                --translate-x: calc(var(--drag-x, 0) * 1px);
+                --translate-y: calc(var(--drag-y, 0) * 1px);
+                
+                //
+                --grid-column: var(--fp-cell-x);
+                --grid-row: var(--fp-cell-y);
+            }
+            
+            //
+            &:where([data-type="items"]) {
+                pointer-events: auto;
+                pointer-events: bounding-box;
+                cursor: pointer;
             }
         }
     }

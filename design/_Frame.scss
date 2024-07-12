@@ -29,18 +29,6 @@
         --ry: 0px;
 
         //
-        &.ux-context-menu {
-            --rx: calc(var(--click-x, 0) * 1px - calc(50cqi - 50%));
-            --ry: calc(var(--click-y, 0) * 1px - calc(50cqb - 50%));
-    
-            //
-            @media (hover: none) and (pointer: coarse) {
-                --rx: calc(var(--click-x, 0) * 1px - 50cqi);
-                --ry: calc(var(--click-y, 0) * 1px - 50cqb);
-            }
-        }
-
-        //
         --translate-x: clamp(0px, calc(calc(50cqi - 50%) + var(--rx)), calc(100cqi - 100%));
         --translate-y: clamp(0px, calc(calc(50cqb - 50%) + var(--ry)), calc(100cqb - 100%));
 
@@ -51,6 +39,18 @@
         //
         @include u.clamped-width(max-content, 12rem, 80cqi);
         @include u.clamped-height(max-content, max-content, 80cqb);
+        
+        //
+        &.ux-context-menu {
+            --rx: calc(var(--click-x, 0) * 1px - calc(50cqi - 50%));
+            --ry: calc(var(--click-y, 0) * 1px - calc(50cqb - 50%));
+    
+            //
+            @media (hover: none) and (pointer: coarse) {
+                --rx: calc(var(--click-x, 0) * 1px - 50cqi);
+                --ry: calc(var(--click-y, 0) * 1px - 50cqb);
+            }
+        }
         
         //
         .cut-space {

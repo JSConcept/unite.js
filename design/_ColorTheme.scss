@@ -46,15 +46,15 @@
         --current-chroma-color: var(--theme-chroma-color);
         
         //
+        @include cu.var-dependent();
+        
+        //
         :where(*) {
             --highlight-transition-duration: 0.2s;
             --highlight-transition-mode: linear;
             --highlight-transition-property: --highlight-coefficient;
             transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
         }
-        
-        //
-        @include cu.var-dependent();
         
         //
         @supports(color: light-dark(white, black)) {
