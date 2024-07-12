@@ -1,4 +1,4 @@
-//@use "@scss/fonts/xo_caliburn" as dFont;
+//@use "@scss/fonts/xo_cal;iburn" as dFont;
 @use "./classlets";
 
 //
@@ -143,14 +143,14 @@
     }
     
     //
-    :where(.lucide) {
+    :where(.lucide, svg) {
         @extend .stretch;
         @extend .pe-none;
     
         //
         display: block;
-        contain-intrinsic-width: 24px;
-        contain-intrinsic-height: 24px;
+        contain-intrinsic-width: calc(24px / var(--scaling));
+        contain-intrinsic-height: calc(24px  / var(--scaling));
         contain: size;
         aspect-ratio: 1 / 1;
         position: relative;

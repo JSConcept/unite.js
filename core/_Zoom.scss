@@ -3,14 +3,14 @@
 
 //
 .__exp-use-zoom {
-    zoom: var(--scaling, 1);
+    zoom: var(--zoom);
     font-size: initial !important;
     --zoom: var(--scaling, 1);
 }
 
 //
 .__use_font-size {
-    zoom: initial !important;
+    zoom: var(--zoom);
     font-size: calc(16px * var(--scaling, 1));
     --zoom: 1;
 }

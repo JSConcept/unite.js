@@ -27,18 +27,8 @@
     "permissions": ["window-management", "fullscreen", "theme"],
     "icons": [
         {
-            "src": "../assets/icons/gpt/512x.png",
+            "src": "../assets/icons/home/512x.png",
             "sizes": "512x512",
-            "type": "image/png"
-        },
-        {
-            "src": "../assets/icons/gpt/256x.png",
-            "sizes": "256x256",
-            "type": "image/png"
-        },
-        {
-            "src": "../assets/icons/gpt/128x.png",
-            "sizes": "128x128",
             "type": "image/png"
         }
     ],

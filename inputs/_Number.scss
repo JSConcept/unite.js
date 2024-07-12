@@ -25,6 +25,9 @@
         @extend .pe-enable;
         
         //
+        min-inline-size: max-content;
+        
+        //
         & .input-wrap {
             @extend .stretch;
             
