@@ -158,18 +158,14 @@ const getOrientedPoint = () => {
 
         case "landscape-primary":
             return {
-                "--translate-x": `calc(calc(calc(var(--grid-${isMobile() ? "h" : "w"
-                    }) / var(--f-row)) * var(--vect-y)) * 1px)`,
-                "--translate-y": `calc(calc(calc(var(--grid-${isMobile() ? "w" : "h"
-                    }) / var(--f-col)) * var(--vect-x)) * -1px)`,
+                "--translate-x": `calc(calc(calc(var(--grid-w) / var(--f-row)) * var(--vect-y)) * 1px)`,
+                "--translate-y": `calc(calc(calc(var(--grid-h) / var(--f-col)) * var(--vect-x)) * -1px)`,
             };
 
         case "landscape-secondary":
             return {
-                "--translate-x": `calc(calc(calc(var(--grid-${isMobile() ? "h" : "w"
-                    }) / var(--f-row)) * var(--vect-y)) * -1px)`,
-                "--translate-y": `calc(calc(calc(var(--grid-${isMobile() ? "w" : "h"
-                    }) / var(--f-col)) * var(--vect-x)) * 1px)`,
+                "--translate-x": `calc(calc(calc(var(--grid-w) / var(--f-row)) * var(--vect-y)) * -1px)`,
+                "--translate-y": `calc(calc(calc(var(--grid-h) / var(--f-col)) * var(--vect-x)) * 1px)`,
             };
 
         default:
