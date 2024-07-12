@@ -25,6 +25,15 @@
 		}
 	});*/
 	
+	document.documentElement.addEventListener("contextmenu", (ev)=>{
+		const target = ev.target as HTMLElement;
+		if ((target?.matches?.(".ux-app-frame") || target?.closest?.(".ux-app-frame")) && !target.matches("input[type=\"text\"]")) {
+			ev.stopPropagation();
+			ev.stopImmediatePropagation();
+			ev.preventDefault();
+		}
+	}, {capture: true});
+	
 	//
 	document.documentElement.addEventListener("click", (ev)=>{
 		const target = ev.target as HTMLElement;

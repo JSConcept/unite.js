@@ -1,4 +1,6 @@
 
+@use "../core/ClassLets";
+
 //
 @mixin virtualCell() {}
 
@@ -101,13 +103,18 @@
         //
         .ux-grid-item-label {
             @include calculateMetric();
+            @extend .no-wrap;
         
+            //
             --icon-size: calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem);
             
             //
             display: inline-block;
             inline-size: max-content;
             block-size: max-content;
+            
+            //
+            font-size: 0.8rem;
             
             //
             --grid-column: var(--fc-cell-x);

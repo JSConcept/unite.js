@@ -13,6 +13,16 @@
     let modalFrame: HTMLElement | null = null;
     
     //
+    document.documentElement.addEventListener("contextmenu", (ev)=>{
+		const target = ev.target as HTMLElement;
+		if ((target?.matches?.(".ux-modal-frame") || target?.closest?.(".ux-modal-frame")) && !target.matches("input[type=\"text\"]")) {
+			ev.stopPropagation();
+			ev.stopImmediatePropagation();
+			ev.preventDefault();
+		}
+	}, {capture: true});
+    
+    //
     document.addEventListener("click", (ev)=>{
         const target: HTMLElement = ev.target as HTMLElement;
         

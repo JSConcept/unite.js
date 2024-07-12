@@ -140,6 +140,11 @@
         backup = backup;
     }
     
+    
+    
+        
+    
+    
     //
     document.addEventListener("m-dragend", (ev)=>{
         if (MOC(ev.target, ".ux-grid-item[data-type=\"backup\"]")) {
@@ -195,6 +200,34 @@
             });
         });
     });
+    
+    
+    onMount(()=>{
+    
+        //
+        target?.addEventListener("dragenter", (ev)=>{
+            ev.preventDefault();
+        });
+        
+        //
+        target?.addEventListener("dragover", (ev)=>{
+            ev.preventDefault();
+        });
+        
+        //
+        target?.addEventListener("drop", (ev)=>{
+            ev.preventDefault();
+            const {dataTransfer} = ev;
+            const file = dataTransfer?.files?.[0];
+            if (file != null) {
+                const wallpaper = document.querySelector("canvas[is=\"w-canvas\"]");
+                wallpaper?.["$useImageAsSource"]?.(file);
+            }
+        });
+    
+    });
+    
+    
 </script>
 
 <!-- -->

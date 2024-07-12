@@ -9,7 +9,8 @@ export interface GridItemType {
     label: string;
     pointerId: number;
     icon: string;
-    href: string;
+    href?: string;
+    action?: string;
 };
 
 //

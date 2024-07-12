@@ -9,6 +9,7 @@
         //
         @extend .align-center;
         @extend .inline-stretch;
+        @extend .no-wrap;
 
         //
         --decor-size: 2rem;
@@ -47,6 +48,7 @@
         & > :where(.icon-wrap, .label-box, .in-element) {
             @extend .align-center;
             @extend .pe-none;
+            @extend .no-wrap;
             
             //
             box-sizing: border-box;
@@ -55,6 +57,7 @@
             background-color: transparent;
             background-image: none;
             padding: calc(var(--decor-size) * 0.4);
+            padding-block: calc(var(--decor-size) * 0.3);
             box-sizing: border-box;
         }
         

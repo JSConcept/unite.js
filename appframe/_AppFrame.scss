@@ -69,6 +69,9 @@
         container-name: ux-windowed;
         display: grid;
         overflow: hidden;
+        
+        //
+        font-size: 0.9rem;
 
         //
         grid-template-columns: minmax(0px, 1fr);
@@ -95,9 +98,12 @@
             @extend .align-center;
             @extend .stretch;
             @extend .pe-enable;
+            @extend .no-wrap;
             
             //
             gap: 0px;
+            font-size: 1rem;
+            font-weight: 600;
             
             //
             --padding: 0rem;

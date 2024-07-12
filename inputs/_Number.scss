@@ -16,6 +16,11 @@
         overflow: hidden;
         
         //
+        &, input {
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+        }
+        
+        //
         @extend .align-center;
         @extend .pe-enable;
         
@@ -28,19 +33,24 @@
             
             //
             background-color: var(--current-surface-color);
+            overflow: visible;
         }
         
         //
         & input {
             @extend .stretch;
+            @extend .no-wrap;
             
             //
-            min-inline-size: 2rem;
+            overflow: visible;
+            min-inline-size: 3em;
             display: inline-block;
             opacity: 1;
             text-align: center;
             background: transparent;
-            max-inline-size: 3rem;
+            inline-size: max-content;
+            max-inline-size: 4em;
+            
             appearance: textfield;
             visibility: visible;
             

@@ -74,7 +74,20 @@
         }
         
         //
-        &:has(input:not(checked)) {
+        input {
+            @extend .stretch;
+            @extend .pe-enable;
+            
+            //
+            position: absolute;
+            inset: 0px;
+            opacity: 0;
+            padding: 0px;
+            cursor: pointer;
+        }
+        
+        //
+        &:has(input:not(.checked)) {
             @extend .ux-solid;
             --value-mod: 0;
             
@@ -88,6 +101,7 @@
                 display: flex;
             }
             
+            //
             .icon-sign, .icon-sign > * {
                 @extend .ux-inverse;
                 stroke: var(--current-glyph-color);
@@ -95,7 +109,7 @@
         }
         
         //
-        &:has(input:checked) {
+        &:has(input:is(.checked)) {
             @extend .ux-inverse;
             --value-mod: 1;
             
@@ -109,24 +123,14 @@
                 display: none;
             }
             
+            //
             .icon-sign, .icon-sign > * {
                 @extend .ux-solid;
                 stroke: var(--current-glyph-color);
             }
         }
 
-        //
-        input {
-            @extend .stretch;
-            @extend .pe-enable;
-            
-            //
-            position: absolute;
-            inset: 0px;
-            opacity: 0;
-            padding: 0px;
-            cursor: pointer;
-        }
+        
     }
 
 }
