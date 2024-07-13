@@ -206,22 +206,30 @@
     
         //
         target?.addEventListener("dragenter", (ev)=>{
-            ev.preventDefault();
+            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas=[is=\"w-canvas\"]")) {
+                ev.preventDefault();
+            }
         });
         
         //
         target?.addEventListener("dragover", (ev)=>{
-            ev.preventDefault();
+            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas=[is=\"w-canvas\"]")) {
+                ev.preventDefault();
+            }
         });
         
         //
         target?.addEventListener("drop", (ev)=>{
-            ev.preventDefault();
-            const {dataTransfer} = ev;
-            const file = dataTransfer?.files?.[0];
-            if (file != null) {
-                const wallpaper = document.querySelector("canvas[is=\"w-canvas\"]");
-                wallpaper?.["$useImageAsSource"]?.(file);
+            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas=[is=\"w-canvas\"]")) {
+                ev.preventDefault();
+                
+                //
+                const {dataTransfer} = ev;
+                const file = dataTransfer?.files?.[0];
+                if (file != null) {
+                    const wallpaper = document.querySelector("canvas[is=\"w-canvas\"]");
+                    wallpaper?.["$useImageAsSource"]?.(file);
+                }
             }
         });
     
