@@ -206,21 +206,21 @@
     
         //
         target?.addEventListener("dragenter", (ev)=>{
-            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas=[is=\"w-canvas\"]")) {
+            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas[is=\"w-canvas\"]")) {
                 ev.preventDefault();
             }
         });
         
         //
         target?.addEventListener("dragover", (ev)=>{
-            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas=[is=\"w-canvas\"]")) {
+            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas[is=\"w-canvas\"]")) {
                 ev.preventDefault();
             }
         });
         
         //
         target?.addEventListener("drop", (ev)=>{
-            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas=[is=\"w-canvas\"]")) {
+            if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas[is=\"w-canvas\"]")) {
                 ev.preventDefault();
                 
                 //
