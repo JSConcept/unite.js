@@ -1,5 +1,5 @@
 <script type="ts" lang="ts">
-	import {readableHash} from '../reactive/ReadAbles.ts';
+	import {readableHash} from '../dom/Realtime.ts';
 	import LucideIcon from '../design/WLucideIcon.svelte';
 	import AxGesture from "../interact/Gesture.ts";
 	import {fade} from "svelte/transition";

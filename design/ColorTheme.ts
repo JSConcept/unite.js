@@ -5,7 +5,7 @@ import {hexFromArgb} from "@material/material-color-utilities";
 import {formatCss, formatHex, interpolate, oklch, parse} from "culori";
 
 //
-import {setStyleRule} from "../dom/StyleWork.ts";
+import {setStyleRule} from "../core/StyleWork.ts";
 import {sourceColorFromImage} from "./ColorMod.ts";
 
 //
