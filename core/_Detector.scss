@@ -1,0 +1,4 @@
+$isMobile: "screen and ((width < 9in) or (orientation: portrait))";
+$isTouch: "screen and (hover: none) and (pointer: coarse)";
+$isNotWide: "(width < 9in)";
+$isDesktop: "((hover: hover) or (pointer: fine)) and ((width >= 9in) or (orientation: landscape))";

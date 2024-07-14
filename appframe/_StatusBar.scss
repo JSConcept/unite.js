@@ -7,6 +7,9 @@
 @use "../design/ColorTheme";
 
 //
+@use "../core/Detector" as d;
+
+//
 @layer ux-app-frame {
     
     .ux-status-bar {
@@ -38,15 +41,8 @@
         //
         inset: auto;
         inset-block-end: 0px;
-        
-        //
-        @media only screen and (hover: none) and (pointer: coarse) and (max-width: 9in) {
-            inset: auto;
-            inset-block-start: 0px;
-        }
-        
-        //
         block-size: 2rem;
+        padding-inline: 1rem;
         
         //
         & > * {
@@ -60,9 +56,6 @@
         .left   { grid-column: 1 / 1 span; grid-row: 1 / 1 span; justify-self: start; gap: 0rem; }
         .center { grid-column: 2 / 2 span; grid-row: 2 / 2 span; justify-self: center; }
         .right  { grid-column: 3 / 3 span; grid-row: 3 / 3 span; justify-self: end; gap: 0rem; }
-        
-        //
-        padding-inline: 1rem;
         
         //
         .left, .right {
@@ -88,6 +81,13 @@
             display: inline-block;
             inline-size: max-content;
             block-size: max-content;
+        }
+        
+        //
+        @media #{d.$isMobile} 
+        {
+            inset: auto;
+            inset-block-start: 0px;
         }
     }
     

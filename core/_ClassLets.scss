@@ -187,13 +187,13 @@
         --vp-b-size: calc(100dvb / var(--zoom, 1));
 
         //
-        @media (hover: none) and (pointer: coarse) {
+        @media screen and ((hover: none) and (pointer: coarse)) {
             --vp-i-size: calc(var(--visual-width, 100dvi) / var(--zoom, 1));
             --vp-b-size: calc(var(--visual-height, 100dvb) / var(--zoom, 1));
         }
 
         //
-        @media all and ((display-mode: fullscreen) or (display-mode: standalone)) {
+        @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
             --vp-i-size: min(calc(var(--avail-width) / var(--zoom, 1)), calc(100lvi / var(--zoom, 1)));
             --vp-b-size: min(calc(var(--avail-height) / var(--zoom, 1)), calc(100lvb / var(--zoom, 1)));
         }
@@ -205,7 +205,7 @@
         --vp-b-size: calc(100dvb / var(--zoom, 1));
         
         //
-        @media all and ((display-mode: fullscreen) or (display-mode: standalone)) {
+        @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
             --vp-i-size: min(calc(var(--avail-width) / var(--zoom, 1)), calc(100dvi / var(--zoom, 1)));
             --vp-b-size: min(calc(var(--avail-height) / var(--zoom, 1)), calc(100dvb / var(--zoom, 1)));
         }

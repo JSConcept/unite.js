@@ -7,14 +7,14 @@ let battery = "battery-full";
 
 //
 const date = new Date();
-let timeMinutes = date.getMinutes();
-let timeHours = date.getUTCHours();
+let timeMinutes = `${date.getMinutes()}`.padStart(2,"0");
+let timeHours = `${date.getUTCHours()}`.padStart(2,"0");
 
 //
 setInterval(()=>{
     const date = new Date();
-    timeMinutes = date.getMinutes();
-    timeHours = date.getUTCHours();
+    timeMinutes = `${date.getMinutes()}`.padStart(2,"0");
+    timeHours = `${date.getUTCHours()}`.padStart(2,"0");
 }, 500);
 
 //

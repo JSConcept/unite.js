@@ -94,14 +94,14 @@
 	}
 	
 	//
-    @media not ((hover: none) and (pointer: coarse)) {
+    @media screen and ((hover: hover) or (pointer: fine)) {
         .hl-1h:hover { --highlight-coefficient: 6; }
         .hl-2h:hover { --highlight-coefficient: 10; }
         .hl-3h:hover { --highlight-coefficient: 16; }
     }
 
     //
-    @media (hover: none) and (pointer: coarse) {
+    @media screen and (hover: none) and (pointer: coarse) {
         .hl-1h:active { --highlight-coefficient: 6; }
         .hl-2h:active { --highlight-coefficient: 12; }
         .hl-3h:active { --highlight-coefficient: 16; }
