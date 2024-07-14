@@ -45,7 +45,8 @@
         --translate-y: clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
 
         //
-        translate: var(--translate-x) var(--translate-y);
+        translate: var(--translate-x) var(--translate-y) 0px;
+        will-change: translate, transform, inline-size, block-size, contents, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
         
         //
         inset: 0px;

@@ -55,8 +55,13 @@
         scrollbar-gutter: stable both-edges;
         scrollbar-width: none;
         
+        //
+        will-change: scroll-position, contents;
+        
+        //
         --sb-color: #101010;
 
+        //
         & :where(.scrollbar-x, .scrollbar-y) {
             user-select: none;
             pointer-events: none;

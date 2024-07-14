@@ -132,6 +132,9 @@
             //
             --translate-y: 2.5rem;
             transform: translate(var(--translate-x), var(--translate-y));
+            
+            //
+            will-change: translate, transform, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y;
         }
         
         //
@@ -156,8 +159,8 @@
             -moz-user-drag: none;
     
             //
-            will-change: translate, transform, --translate-x, --translate-y, --drag-x, --drag-y;
-            transform: translate(var(--translate-x), var(--translate-y));
+            transform: translate3d(var(--translate-x), var(--translate-y), 0px);
+            will-change: translate, transform, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
             
             //
             aspect-ratio: 1 / 1;

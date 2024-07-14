@@ -81,7 +81,7 @@ export const switchTheme = (isDark = false) => {
 
     //
     if (media) {
-        media.setAttribute("content", surfaceColorH);
+        media.setAttribute("content", baseColor);
     }
 };
 

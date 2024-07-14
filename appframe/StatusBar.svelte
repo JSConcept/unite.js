@@ -45,7 +45,7 @@ const batteryStatus = navigator.getBattery?.();
 
 //
 const changeBatteryStatus = ()=>{
-    batteryStatus.then((btr)=>{
+    batteryStatus?.then?.((btr)=>{
         if (btr.charging) 
             { battery = "battery-charging"; }  else
             { battery = byLevel(btr.level); };
@@ -53,7 +53,7 @@ const changeBatteryStatus = ()=>{
 }
 
 //
-batteryStatus.then((btr)=>{
+batteryStatus?.then?.((btr)=>{
     btr.addEventListener("chargingchange", changeBatteryStatus);
     btr.addEventListener("levelchange", changeBatteryStatus);
 });
