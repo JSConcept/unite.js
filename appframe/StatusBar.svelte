@@ -86,7 +86,7 @@ document.documentElement.addEventListener("contextmenu", (ev)=>{
 </script>
 
 <!-- -->
-<div class="ux-status-bar ux-transparent">
+<div class="ux-status-bar">
     <div class="left"></div>
     <div class="center"></div>
     <div class="right">

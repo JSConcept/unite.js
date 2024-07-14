@@ -189,7 +189,7 @@
 	//
 	:where(.ux-solid-transparent) {
         --theme-surface-color: transparent;
-        --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+        --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
 	}
 	
 	//

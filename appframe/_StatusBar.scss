@@ -12,13 +12,35 @@
 //
 @layer ux-app-frame {
     
-    .ux-status-bar {
+    //
+    @media #{d.$isMobile} {
+        //
+        body:has(:not(.ux-app-frame .ux-content)) .ux-status-bar {
+            --theme-surface-color: transparent;
+            --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+        }
+        
+        //
+        body:has(.ux-app-frame .ux-content) .ux-status-bar {
+            --theme-surface-color: transparent;
+            --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)} !important;
+        }
+    }
+    
+    //
+    :where(.ux-status-bar) {
         @extend .stretch;
         @extend .pe-none;
+        @extend .align-center;
+        @extend .ux-transparent !optional;
+    
+        //
+        //@extend .ux-transparent !optional;
     
         //
         display: grid;
         z-index: 99999;
+        overflow: hidden;
     
         //
         grid-template-columns: 
@@ -50,6 +72,7 @@
             display: flex;
             place-items: center;
             place-content: center;
+            background-color: transparent;
         }
         
         //
@@ -84,12 +107,15 @@
         }
         
         //
-        @media #{d.$isMobile} 
-        {
+        @media #{d.$isMobile} {
             inset: auto;
             inset-block-start: 0px;
         }
+        
     }
     
+
     
 }
+
+    
