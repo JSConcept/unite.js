@@ -148,7 +148,7 @@
         @extend .pe-none;
     
         //
-        display: block;
+        display: inline-block;
         contain-intrinsic-width: calc(24px / var(--scaling));
         contain-intrinsic-height: calc(24px  / var(--scaling));
         contain: size;
