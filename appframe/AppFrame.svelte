@@ -70,12 +70,12 @@
 					//
 					if (gestureControl) {
 						gestureControl.draggable({
-							handler: frameElement.querySelector(".title-label")
+							handler: frameElement.querySelector(".ux-title-handle")
 						});
 						
 						//
 						gestureControl.resizable({
-							handler: frameElement.querySelector(".resize")
+							handler: frameElement.querySelector(".ux-resize")
 						});
 						
 						// TODO! fix typescript typing
@@ -116,19 +116,21 @@
 			<div class="back-button hl-2 hl-3h ux-solid-transparent" style="grid-column: back-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
 			</div>
-			<div class="title-label ux-solid-transparent" style="grid-column: title-label;">
-				<slot name="title-name"></slot>
+			<div class="ux-title-handle ux-solid">
+				
 			</div>
 			<div class="menu-button accent hl-2 hl-3h ux-solid-transparent" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"menu"}/>
 			</div>
 		</div>
 		
-		<div class="content-box stretch ux-solid-transparent">
+		<slot></slot>
+		
+		<!--<div class="content-box stretch ux-solid-transparent">
 			<slot></slot>
-		</div>
+		</div>-->
 
-		<div class="resize ux-solid-transparent">
+		<div class="ux-resize ux-solid-transparent">
 			
 		</div>
 
