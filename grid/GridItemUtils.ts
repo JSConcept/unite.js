@@ -11,6 +11,7 @@ export interface GridItemType {
     icon: string;
     href?: string;
     action?: string;
+    detached?: boolean;
 };
 
 //
@@ -56,7 +57,7 @@ export const redirectCell = (gridArgs: GridArgsType, $preCell: [number, number])
     //
     const checkBusy = (cell) => {
         return icons
-            .filter((e) => e != gridArgs.item && e.id != gridArgs.item.id)
+            .filter((e) => e != gridArgs.item && e.id != gridArgs.item.id && (e.pointerId < 0 || e.pointerId == null))
             .find((one) => {
                 return one.cell[0] == cell[0] && one.cell[1] == cell[1];
             });
