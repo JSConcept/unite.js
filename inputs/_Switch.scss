@@ -5,6 +5,13 @@
 @use "../core/Utils" as u;
 
 //
+@property --value-mod {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+//
 @layer ux-inputs {
     :where(.ux-switch) {
         @extend .align-center;
@@ -13,15 +20,25 @@
 
         //
         --thumb-size: 1rem;
-        --space-size: 1.25rem;
         --value-mod: 0;
 
         //
         container-type: size;
         contain: none;
-
+        display: grid;
+        
         //
-        display: flex;
+        transition: --value-mod 100ms linear;
+        
+        //
+        grid-template-columns: 
+            [space-l] calc(var(--thumb-size) * 0.5) 
+            [fillT] calc(100% * var(--value-mod) - var(--thumb-size) * 0.5) 
+            [track] minmax(0px, 1fr) 
+            [space-r] calc(var(--thumb-size) * 0.5);
+        grid-template-rows: minmax(0px, 1fr);
+        
+        //
         overflow: visible;
         position: relative;
         border-radius: 0.25rem;
@@ -47,18 +64,19 @@
             @extend .align-center;
             @extend .pe-none;
             
+            //
+            justify-self: start;
+            grid-column: track;
+            grid-row: 1 / 1 span;
             
+            //
+            translate: calc(0px - 50%) 0px;
+            
+            //
             display: flex;
             stroke: var(--current-glyph-color);
-            
+
             //
-            translate: calc(calc(var(--space-size) * 0.5) + calc(100cqi - var(--space-size)) * var(--value-mod) - 50%) calc(50cqb - 50%);
-            transition: translate 100ms linear;
-            
-            //
-            position: absolute;
-            inset: 0px;
-            //opacity: 0;
             padding: 0.125rem;
             border-radius: calc(var(--thumb-size) * 0.45);
             //aspect-ratio: 1 / 1;
@@ -87,17 +105,33 @@
             @extend .pe-none;
             
             //
+            grid-column: fillT;
+            grid-row: 1 / 1 span;
+            
+            //
             border-radius: 0.25rem 0px 0px 0.25rem;
             
             //
-            position: absolute;
             inset: 0px;
-            inline-size: calc(calc(100cqi - var(--thumb-size) * 0.5) * var(--value-mod));
             transition: inline-size 100ms linear;
             
             //
             background-color: var(--current-surface-color);
             color: var(--current-glyph-color);
+        }
+        
+        //
+        input[type="range"]::-moz-range-thumb,
+        input[type="range"]::-webkit-slider-thumb{
+            -webkit-appearance: none;
+            block-size: stretch;
+            inline-size: var(--thumb-size);
+            
+            //
+            touch-action: manipulation;
+            -webkit-user-drag: auto;
+            -moz-user-drag: auto;
+            user-select: none;
         }
 
         //
@@ -106,8 +140,22 @@
             @extend .pe-enable;
             
             //
-            position: absolute;
-            inset: 0px;
+            padding: 0px;
+            border: none 0px transparent;
+            position: relative;
+            //inset-inline: var(--thumb-size);
+            
+            //
+            //touch-action: manipulation;
+            //-webkit-user-drag: auto;
+            //-moz-user-drag: auto;
+            //user-select: none;
+            
+            //
+            grid-column: 1 / 4 span;
+            grid-row: 1 / 1 span;
+            
+            //
             opacity: 0;
             padding: 0px;
             cursor: pointer;

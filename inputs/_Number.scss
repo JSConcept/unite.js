@@ -20,7 +20,7 @@
         grid-template-rows: minmax(var(--block-size), max-content);
         overflow: hidden;
         min-inline-size: max-content;
-        cursor: normal;
+        cursor: default;
         
         //
         &, input {
@@ -46,7 +46,7 @@
             
             //
             pointer-events: none;
-            cursor: normal;
+            cursor: default;
             
             //
             overflow: visible;

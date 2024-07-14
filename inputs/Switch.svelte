@@ -2,6 +2,7 @@
     import LucideIcon from '../design/WLucideIcon.svelte';
     import {onMount} from 'svelte';
     import {writable} from "svelte/store";
+    import RangeTouch from 'rangetouch';
 
     //
     export let fieldName = "";
@@ -20,6 +21,9 @@
     onMount(()=>{
         const el = element;
         container.style.setProperty("--value-mod", (el.valueAsNumber - el.min) / (el.max - el.min), "");
+        
+        //
+        const range = new RangeTouch('input[type="range"]', {  });
     });
 </script>
 
