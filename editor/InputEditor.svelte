@@ -218,6 +218,7 @@
                     bind:value={$value}
                     bind:this={input} 
                     type="text"
+                    maxlength="1024"
                 />
             </div>
             <button type="button" tabindex="-1" bind:this={copyButton} class="field-copy ux-solid hl-1 hl-2h pe-enable">
