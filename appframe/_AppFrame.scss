@@ -152,9 +152,16 @@
             
             //
             --padding-top: var(--padding, 0rem);
-            --padding-top: calc(var(--padding, 0rem) + env(safe-area-inset-top, 0px));
             --padding-left: calc(var(--padding) + env(safe-area-inset-left, 0px));
             --padding-right: calc(var(--padding) + env(safe-area-inset-right, 0px));
+
+            //
+            --padding-top: calc(var(--padding, 0rem) + env(safe-area-inset-top, 0px));
+
+            //
+            @media screen and (orientation: portrait) {
+                --padding-top: calc(var(--padding, 0rem) + max(env(safe-area-inset-top, 0px), 2rem));
+            }
 
             //
             box-sizing: border-box;
