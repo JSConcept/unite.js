@@ -8,7 +8,7 @@
 
 //
 @mixin whenMobile {
-    --padding: 0.5rem !important;
+    --padding: 0rem !important;
 
     //
     & .titlebar {
@@ -49,7 +49,11 @@
         
         //
         --padding-top: 0rem;
-        --padding-top: max(env(safe-area-inset-top, 0px), 2rem);
+        
+        //
+        @media (width < 9in) or (orientation: portrait) {
+            --padding-top: max(env(safe-area-inset-top, 0px), 2rem);
+        }
 
         //
         --padding-left: calc(var(--padding) + env(safe-area-inset-left, 0px));
