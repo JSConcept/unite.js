@@ -37,7 +37,7 @@ const batteryIcons = new Map([
 
 //
 const byLevel = (lv = 1.0)=>{
-    return batteryIcons.get(Math.round(lv / 0.25) * 25);
+    return batteryIcons.get(Math.ceil(lv / 0.25) * 25);
 }
 
 //
