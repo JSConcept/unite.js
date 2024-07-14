@@ -21,6 +21,9 @@
         [titlebar] minmax(3rem, max-content);
 
     //
+    padding-block-end: 0px !important;
+
+    //
     & .titlebar {
         & > :where(.back-button, .menu-button) {
             border-radius: 0.125rem;
@@ -61,11 +64,13 @@
         --padding-right: calc(var(--padding) + env(safe-area-inset-right, 0px));
 
         //
-        padding-block-start: var(--padding-top) !important;
+        outline: solid 0.25px oklch(from var(--current-glyph-color) l c h / 0.0);
+        transition: outline-color 200ms;
 
         //
         translate: var(--translate-x) var(--translate-y) 0px;
         will-change: translate, transform, inline-size, block-size, contents, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
+        overflow: hidden !important;
         
         //
         inset: 0px;
@@ -77,7 +82,7 @@
         container-type: size;
         container-name: ux-windowed;
         display: grid;
-        overflow: hidden;
+        box-sizing: border-box;
         
         //
         font-size: 0.9rem;
@@ -93,6 +98,15 @@
             [titlebar] minmax(3rem, max-content) 
             [content-b] minmax(0px, 1fr);
 
+        //
+        padding-block-start: var(--padding-top) !important;
+        padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem) !important;
+
+        //
+        &:hover {
+            outline: solid 0.5px oklch(from var(--current-glyph-color) l c h / 0.125);
+        }
+        
         //
         .ux-resize {
             position: absolute;
@@ -225,6 +239,9 @@
             //
             @include u.clamped-width(min(64rem, 100cqi), calc(80rem + var(--resize-x, 0) * 1px), 100cqi);
             @include u.clamped-height(min(36rem, 100cqb), calc(45rem + var(--resize-y, 0) * 1px), 100cqb);
+            
+            //
+            --padding-top: 0px;
         }
     }
 }
