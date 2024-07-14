@@ -40,7 +40,7 @@
         inset-block-end: 0px;
         
         //
-        @media only screen and (hover: none) and (pointer: coarse) and (max-width: 9in){
+        @media only screen and (hover: none) and (pointer: coarse) and (max-width: 9in) {
             inset: auto;
             inset-block-start: 0px;
         }

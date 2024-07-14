@@ -8,7 +8,7 @@
 
 //
 @mixin whenMobile {
-    --padding: 0.5rem;
+    --padding: 0.5rem !important;
 
     //
     & .titlebar {
@@ -43,6 +43,20 @@
         //
         --translate-x: clamp(0px, var(--rx, 0px), calc(100cqi - 100%));
         --translate-y: clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
+        
+        //
+        --padding: 0rem;
+        
+        //
+        --padding-top: 0rem;
+        --padding-top: max(env(safe-area-inset-top, 0px), 2rem);
+
+        //
+        --padding-left: calc(var(--padding) + env(safe-area-inset-left, 0px));
+        --padding-right: calc(var(--padding) + env(safe-area-inset-right, 0px));
+
+        //
+        padding-block-start: var(--padding-top) !important;
 
         //
         translate: var(--translate-x) var(--translate-y) 0px;
@@ -75,6 +89,14 @@
             [content-b] minmax(0px, 1fr);
 
         //
+        @media only screen and (hover: none) and (pointer: coarse) and (width < 9in) {
+            //
+            grid-template-rows: 
+                [content-b] minmax(0px, 1fr)
+                [titlebar] minmax(3rem, max-content);
+        }
+
+        //
         @media all and (width >= 9in) {
             border-radius: 0.25rem;
             box-shadow: 0px 0px 1rem 1px #00000070;
@@ -104,6 +126,7 @@
             @extend .align-center;
             @extend .align-inline-left;
             @extend .no-wrap;
+            @extend .ux-solid;
 
             //
             display: flex;
@@ -137,6 +160,16 @@
         }
 
         //
+        @container ux-windowed (width < 9in) {
+            @include whenMobile;
+        }
+        
+        //
+        @media (width < 9in) {
+            @include whenMobile;
+        }
+
+        //
         .titlebar {
             @extend .align-center;
             @extend .stretch;
@@ -152,29 +185,12 @@
             gap: 0px;
             
             //
-            --padding-top: var(--padding, 0rem);
-            --padding-left: calc(var(--padding) + env(safe-area-inset-left, 0px));
-            --padding-right: calc(var(--padding) + env(safe-area-inset-right, 0px));
-
-            //
-            --padding-top: calc(var(--padding, 0rem) + env(safe-area-inset-top, 0px));
-
-            //
-            @media screen and (orientation: portrait) {
-                --padding-top: calc(var(--padding, 0rem) + max(env(safe-area-inset-top, 0px), 2rem));
-            }
-
-            //
             box-sizing: border-box;
-            padding: var(--padding, 0px) !important;
-            block-size: calc(3rem + var(--padding-top) + var(--padding));
+            block-size: calc(3rem + var(--padding));
             
             //
             border-block-end: solid 1px var(--current-surface-color);
-            padding-block-start: var(--padding-top) !important;
-            //padding-inline-start: var(--padding-left) !important;
-            //padding-inline-end: var(--padding-right) !important;
-
+            
             //
             align-items: end;
 
@@ -184,6 +200,11 @@
             
             //
             display: grid;
+            
+            //
+            padding-block: var(--padding, 0px);
+            padding-inline: max(var(--padding-left), var(--padding)) max(var(--padding-right), var(--padding));
+
             
             //
             & > * {
@@ -208,13 +229,9 @@
         }
         
         //
-        @container ux-windowed (width < 9in) {
-            @include whenMobile;
-        }
-        
-        //
         .ux-content {
             @extend .stretch;
+            @extend .ux-solid;
             
             //
             grid-row: content-b;

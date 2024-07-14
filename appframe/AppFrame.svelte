@@ -110,16 +110,16 @@
 
 <!-- -->
 {#if $readableHash == hashIdName || location.hash == hashIdName}
-	<div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme" transition:fade={{ delay: 0, duration: 100 }}>
+	<div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-accent hl-1" transition:fade={{ delay: 0, duration: 100 }}>
 
-		<div class="titlebar ux-solid-transparent hl-1">
-			<div class="back-button hl-2 hl-3h ux-solid-transparent" style="grid-column: back-button; aspect-ratio: 1 / 1;">
+		<div class="titlebar ux-solid hl-1">
+			<div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
 			</div>
 			<div class="ux-title-handle ux-solid">
 				
 			</div>
-			<div class="menu-button accent hl-2 hl-3h ux-solid-transparent" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
+			<div class="menu-button accent hl-2 hl-3h ux-solid" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
 				<LucideIcon inert={true} slot="icon" name={"menu"}/>
 			</div>
 		</div>
