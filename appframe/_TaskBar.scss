@@ -110,6 +110,20 @@
             display: none !important;
         }
         
+        
+        //
+        &:not(:has(.ux-app-frame:not(.ux-detached))) {
+            grid-template-rows: 
+                //[titlebar] minmax(3rem, max-content) 
+                [content-b] minmax(0px, 1fr);
+        
+            //
+            & > .titlebar {
+                display: none;
+            }
+        }
+        
+        
         //
         & > .titlebar {
             @extend .align-center;

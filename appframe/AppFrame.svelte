@@ -5,6 +5,7 @@
     import {fade} from "svelte/transition";
     import { observeBySelector } from "../dom/Observer.ts";
     import {writable} from "svelte/store";
+    import {onMount} from "svelte";
 
     //
     export let hashIdName = $$props.hashIdName || "#app";
@@ -73,33 +74,40 @@
     let gestureControl: AxGesture | null = null;
 
     //
+    const makeControl = (frameElement)=>{
+        if (frameElement && !frameElement["@control"]) {
+            gestureControl = new AxGesture(frameElement);
+        }
+
+        //
+        if (gestureControl) {
+            gestureControl.draggable({
+                handler: frameElement.querySelector(".ux-title-handle")
+            });
+            
+            //
+            gestureControl.resizable({
+                handler: frameElement.querySelector(".ux-resize")
+            });
+            
+            // TODO! fix typescript typing
+            // center manually
+            
+            // @ts-ignore
+            frameElement.style.setProperty("--drag-x", -(frameElement.clientWidth / 2) + frameElement.parentNode.offsetWidth / 2, "");
+            
+            // @ts-ignore
+            frameElement.style.setProperty("--drag-y", -(frameElement.clientHeight / 2) + frameElement.parentNode.offsetHeight / 2, "");
+        }
+    }
+
+    //
     const observer = new MutationObserver((mutationsList, _)=>{
         for (let mutation of mutationsList) {
             if (mutation.type == "childList") {
                 const validOf = Array.from(mutation.addedNodes).filter((n)=>(n == frameElement)) as HTMLElement[];
-                for (const frameElement of validOf) {
-                    gestureControl = new AxGesture(frameElement);
-                    
-                    //
-                    if (gestureControl) {
-                        gestureControl.draggable({
-                            handler: frameElement.querySelector(".ux-title-handle")
-                        });
-                        
-                        //
-                        gestureControl.resizable({
-                            handler: frameElement.querySelector(".ux-resize")
-                        });
-                        
-                        // TODO! fix typescript typing
-                        // center manually
-                        
-                        // @ts-ignore
-                        frameElement.style.setProperty("--drag-x", -(frameElement.clientWidth / 2) + frameElement.parentNode.offsetWidth / 2, "");
-                        
-                        // @ts-ignore
-                        frameElement.style.setProperty("--drag-y", -(frameElement.clientHeight / 2) + frameElement.parentNode.offsetHeight / 2, "");
-                    }
+                if (validOf[0]) {
+                    makeControl(validOf[0]);
                 }
             }
         }
@@ -115,6 +123,11 @@
         childList: true,
         subtree: true
     });
+    
+    //
+    onMount(()=>{
+        makeControl(frameElement);
+    });
 </script>
 
 <script context="module">
@@ -123,7 +136,7 @@
 
 <!-- -->
 {#if !$isInactive}
-    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1 ux-maximized" transition:fade={{ delay: 0, duration: 100 }}>
+    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1 ux-detached" transition:fade={{ delay: 0, duration: 100 }}>
 
         <div class="titlebar ux-solid hl-1">
             <div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">

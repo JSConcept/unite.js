@@ -53,6 +53,7 @@ export default class AxGesture {
 
         //
         this.#holder = holder;
+        this.#holder["@control"] = this;
 
         //
         this.#observer = new ResizeObserver((entries) => {

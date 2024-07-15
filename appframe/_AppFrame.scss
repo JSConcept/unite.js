@@ -10,10 +10,12 @@
 @use "../core/Detector" as d;
 
 //
+
+
+//
 @layer ux-app-frame {
     
-    //
-    .ux-maximized {
+    @mixin maximized {
         display: contents !important;
         
         //
@@ -28,8 +30,13 @@
     }
     
     //
+    .ux-app-frame:not(.ux-detached) {
+        @include maximized();
+    }
+    
+    //
     @mixin whenMobile {
-        @extend .ux-maximized;
+        @include maximized();
     
         //
         --padding: 0rem;
