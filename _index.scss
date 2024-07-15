@@ -19,7 +19,6 @@
 //
 @use "./forms/ItemEdit";
 @use "./editor/InputEditor";
-@use "./appframe/AppFrame";
 
 //
 @use "./scrollbox/ScrollBox";
@@ -30,4 +29,6 @@
 @use "./inputs/Switch";
 
 //
+@use "./appframe/AppFrame";
 @use "./appframe/StatusBar";
+@use "./appframe/TaskBar";

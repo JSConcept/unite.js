@@ -2,11 +2,14 @@ import { makeReactiveSet } from "../reactive/ReactiveSet.ts"
 import { observeBySelector } from "../dom/Observer.ts";
 
 //
+import { writable } from "svelte/store"
+
+//
 export class WindowManager {
     constructor() {
-        this.priorityList = ["#settings"];
+        this.priorityList = [];
         this.tasks = makeReactiveSet(new Map([
-            ["#settings", { inactive: true }]
+            //["#settings", { inactive: writable(location.hash != "#settings") }]
         ]));
         
         //
@@ -19,27 +22,32 @@ export class WindowManager {
     };
 
     //
+    getTask(ID) {
+        return this.tasks.get(ID);
+    }
+
+    //
     getTasks() {
         return this.tasks;
     }
 
     //
     restoreTask(ID) {
-        this.tasks.get(ID).inactive = false;
+        this.tasks.get(ID)?.inactive?.set(false);
         this.focusTask(ID);
     }
 
     //
     minimizeTask(ID) {
-        this.tasks.get(ID).inactive = true;
+        this.tasks.get(ID)?.inactive?.set(true);
         this.orderLayers();
     }
 
     //
-    addTask(ID = "#settings") {
+    addTask(ID = "#settings", meta = {}) {
         if (!this.tasks.has(ID)) {
             this.priorityList.push(ID);
-            this.tasks.set(ID, {});
+            this.tasks.set(ID, { ...meta, inactive: writable(location.hash != ID) });
             location.hash = ID;
             this.orderLayers();
         }
@@ -57,12 +65,12 @@ export class WindowManager {
 
             //
             f?.style?.setProperty?.("--z-index", this.getTaskPriority(id), "");
-            f?.classList?.remove?.("ux-hidden");
+            //f?.classList?.remove?.("ux-hidden");
 
             //
-            if (S?.inactive) {
-                f?.classList?.add?.("ux-hidden");
-            }
+            //if (S?.inactive) {
+                //f?.classList?.add?.("ux-hidden");
+            //}
         });
     }
 
@@ -73,7 +81,7 @@ export class WindowManager {
             location.hash = ID;
             this.priorityList.splice(p, 1);
             this.priorityList.push(ID);
-            this.tasks.get(ID).inactive = false;
+            this.tasks.get(ID).inactive.set(false);
             this.orderLayers();
             return true;
         }

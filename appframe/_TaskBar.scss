@@ -41,6 +41,7 @@
         @extend .align-center;
         @extend .stretch !optional;
         @extend .ux-solid-transparent;
+        @extend .pe-none;
 
         //
         --rx: 0px;
@@ -68,6 +69,8 @@
         translate: var(--translate-x) var(--translate-y) 0px;
         will-change: translate, transform, inline-size, block-size, contents, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
         overflow: hidden !important;
+        
+        //
         position: fixed;
     
         //
@@ -95,11 +98,16 @@
 
         //
         padding-block-start: var(--padding-top) !important;
-        padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem) !important;
+        //padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem) !important;
 
         //
         &:hover {
             outline: solid 0.5px oklch(from var(--current-glyph-color) l c h / 0.125);
+        }
+        
+        //
+        &:not(:has(.ux-app-frame)) {
+            display: none !important;
         }
         
         //
@@ -113,6 +121,7 @@
             grid-row: titlebar;
             grid-column: 1 / 3 span;
             grid-template-columns: subgrid;
+            grid-template-rows: minmax(0px, 1fr);
             
             //
             gap: 0px;
@@ -149,21 +158,16 @@
                 //
                 display: flex;
                 grid-column: title-label;
-                grid-row: titlebar;
+                grid-row: 1 / 1 span;
     
                 //
                 flex-direction: row;
-                padding: 0.5rem;
-                padding-inline: 1rem;
+                padding: 0rem;
                 min-inline-size: max-content;
-                cursor: grab;
                 
                 //
                 font-weight: 600;
                 font-size: 1rem;
-                
-                //
-                padding-inline: 1rem;
             }
 
             //
@@ -189,6 +193,73 @@
             
             //
             box-shadow: 0px 0px 1rem 1px #00000070;
+            
+            
+            //
+            .ux-task-box {
+                @extend .align-center;
+                @extend .stretch;
+                @extend .pe-enable;
+                
+                //
+                cursor: pointer;
+                
+                //
+                display: grid;
+                max-inline-size: 8rem;
+                position: relative;
+                box-sizing: border-box;
+                
+                //
+                grid-template-columns: minmax(0px, 3rem) minmax(max-content, 1fr);
+                grid-template-rows: minmax(0px, 1fr) minmax(0px, 0.25rem);
+                
+                //
+                .ux-task-label, .ux-task-icon {
+                    grid-row: 1 / 2 span;
+                }
+                
+                //
+                .ux-task-icon {
+                    grid-column: 1 / 1 span;
+                }
+                
+                //
+                .ux-task-label {
+                    grid-column: 2 / 2 span;
+                    justify-self: start;
+                }
+                
+                //
+                &::after {
+                    @extend .stretch;
+                    @extend .pe-none;
+                
+                    //
+                    --theme-surface-color: #{cl.$baseColor};
+                    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+                    
+                    //
+                    padding: 0px;
+                    margin: 0px;
+                    line-height: 0px;
+                    
+                    //
+                    background-color: var(--theme-surface-color);
+                    grid-row: 2 / 2 span;
+                    grid-column: 1 / 2 span;
+                    
+                    //
+                    box-sizing: border-box;
+                    content: "";
+                    display: block;
+                    
+                    //position: absolute;
+                    //inset: 0px;
+                    //inset-block-start: auto;
+                    //inset-block-end: 0px;
+                }
+            }
         }
         
         //

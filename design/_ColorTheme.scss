@@ -24,7 +24,7 @@
     }
     
     //
-    :root, :host, :scope, :where(*) {
+    :root, :host, :scope, :where(*, *::before, *::after) {
         --theme-chroma-mod: oklch(from #{cl.$baseColor} l 0.99 h);
         --theme-black-mod: oklch(from #{cl.$baseColor} 0.01 0.01 h);
         --theme-white-mod: oklch(from #{cl.$baseColor} 0.99 0.01 h);
@@ -39,7 +39,7 @@
     }
     
     //
-    :root, :host, :scope, :where(html, body, *) {
+    :root, :host, :scope, :where(html, body, *, *::before, *::after) {
         --current-glyph-color: var(--theme-glyph-color);
         --current-surface-color: #{cu.theme-mod-down(var(--theme-surface-color), calc(var(--highlight-coefficient) * 1%))};
         --current-accent-color: var(--theme-accent-color);
@@ -49,12 +49,12 @@
         @include cu.var-dependent();
         
         //
-        :where(*) {
+        //:where(*) {
             --highlight-transition-duration: 0.2s;
             --highlight-transition-mode: linear;
             --highlight-transition-property: --highlight-coefficient;
             transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
-        }
+        //}
         
         //
         @supports(color: light-dark(white, black)) {
@@ -75,7 +75,7 @@
 		--range-float-text:      #{cu.theme-mod-up(cl.$baseColor, 100%)};; /* text color on floating label */
 	}
 	
-	:root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*) {
+	:root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*, *::before, *::after) {
         accent-color: var(--current-glyph-color);
         color: var(--current-glyph-color);
         background-color: var(--current-surface-color);

@@ -4,14 +4,21 @@
     import AxGesture from "../interact/Gesture.ts";
     import {fade} from "svelte/transition";
     import { observeBySelector } from "../dom/Observer.ts";
+    import {writable} from "svelte/store";
 
     //
     export let hashIdName = $$props.hashIdName || "#app";
     export let windowManager: any = null;
-    
+
     //
     //let pointerIdDrag = -1;
     let frameElement: HTMLElement | null = null;
+    let isInactive = writable(false);
+    
+    //
+    requestAnimationFrame(()=>{
+        isInactive = windowManager.getTask(hashIdName).inactive;
+    });
     
     // outdated due gestures control
     /*document.documentElement.addEventListener("m-dragging", (ev)=>{
@@ -115,8 +122,8 @@
 </script>
 
 <!-- -->
-<!-- {#if $readableHash == hashIdName || location.hash == hashIdName} -->
-    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1" transition:fade={{ delay: 0, duration: 100 }}>
+{#if !$isInactive}
+    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1 ux-maximized" transition:fade={{ delay: 0, duration: 100 }}>
 
         <div class="titlebar ux-solid hl-1">
             <div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
@@ -141,7 +148,7 @@
         </div>
 
     </div>
-<!-- {/if} -->
+{/if}
 
 <style type="scss">
     
