@@ -10,9 +10,6 @@
 @use "../core/Detector" as d;
 
 //
-
-
-//
 @layer ux-app-frame {
     
     @mixin maximized {
@@ -39,8 +36,8 @@
         @include maximized();
     
         //
-        --padding: 0rem;
-        --padding-top: max(env(safe-area-inset-top, 0px), 2rem);
+        //--padding: 0rem;
+        //--padding-top: max(env(safe-area-inset-top, 0px), 2rem);
     
         //
         grid-template-rows: 

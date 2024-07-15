@@ -16,6 +16,11 @@
     --padding-top: max(env(safe-area-inset-top, 0px), 2rem);
 
     //
+    --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+    --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+    --highlight-coefficient: 6;
+
+    //
     grid-template-rows: 
         [content-b] minmax(0px, 1fr)
         [titlebar] minmax(3rem, max-content);
@@ -107,22 +112,30 @@
         
         //
         &:not(:has(.ux-app-frame)) {
-            display: none !important;
-        }
-        
-        
-        //
-        &:not(:has(.ux-app-frame:not(.ux-detached))) {
-            grid-template-rows: 
-                //[titlebar] minmax(3rem, max-content) 
-                [content-b] minmax(0px, 1fr);
-        
+            //display: none !important;
+            visibility: collapse !important;
+            pointer-events: none !important;
+            
             //
-            & > .titlebar {
-                display: none;
+            & *:not(.ux-app-frame, .ux-content) {
+                visibility: collapse !important;
+                pointer-events: none !important;
             }
         }
         
+        //
+        @media #{d.$isDesktop} {
+            &:not(:has(.ux-app-frame:not(.ux-detached))) {
+                grid-template-rows: 
+                    //[titlebar] minmax(3rem, max-content) 
+                    [content-b] minmax(0px, 1fr);
+            
+                //
+                & > .titlebar {
+                    display: none;
+                }
+            }
+        }
         
         //
         & > .titlebar {
