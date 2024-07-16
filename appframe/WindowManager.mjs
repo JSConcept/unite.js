@@ -59,6 +59,10 @@ export class WindowManager {
         const p = this.priorityList.indexOf(ID);
         if (p >= 0) { this.priorityList.splice(p, 1); }
         this.tasks.get(ID)?.inactive?.set(true);
+        if (location.hash == ID) {
+            history.back();
+            location.hash = this.getCurrentTask()||"#"; 
+        };
         this.orderLayers();
     }
 
@@ -110,7 +114,7 @@ export class WindowManager {
     
     //
     getCurrentTask() {
-        return this.priorityList[this.priorityList.length-1] || location.hash;
+        return this.priorityList[this.priorityList.length-1] || "#";
     }
 
 }

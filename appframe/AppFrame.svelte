@@ -77,7 +77,7 @@
                 //
                 if (content.dispatchEvent(event)) {
                     windowManager?.minimizeTask?.("#" + content.id);
-                    history.back();
+                    //history.back();
                 }
             }
         }

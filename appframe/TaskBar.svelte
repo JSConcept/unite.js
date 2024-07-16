@@ -49,7 +49,7 @@
                 //
                 if (content.dispatchEvent(event)) {
                     windowManager?.minimizeTask?.("#" + content.id);
-                    history.back();
+                    //history.back();
                 }
             }
         }
@@ -74,16 +74,25 @@
         <div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
             <LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
         </div>
-        <div class="ux-title-handle ux-solid hl-1">
-            {#each $tasks.entries() as task}
-                <TaskBox windowManager={windowManager} id={task[0]} {...task[1]}></TaskBox>
-            {/each}
+        
+        <!-- mobile-only -->
+        <div class="ux-task-button ux-solid hl-1">
+            
         </div>
+        
         <div class="menu-button accent hl-2 hl-3h ux-solid" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
             <LucideIcon inert={true} slot="icon" name={"menu"}/>
         </div>
     </div>
+    
+    <!-- on-mobile is drop-list -->
+    <div class="ux-task-list ux-solid hl-1">
+        {#each $tasks.entries() as task}
+            <TaskBox windowManager={windowManager} id={task[0]} {...task[1]}></TaskBox>
+        {/each}
+    </div>
 
+    <!-- -->
     <slot></slot>
 
 </div>
