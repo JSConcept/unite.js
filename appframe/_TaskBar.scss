@@ -73,6 +73,11 @@
         //
         & .ux-task-box {
             max-inline-size: none;
+            
+            //
+            &.ux-focus {
+                display: none;
+            }
         }
     }
 
@@ -87,7 +92,18 @@
         
         //
         & > :where(.ux-task-button) {
-            display: flex;
+            display: flex !important;
+            
+            //
+            & .ux-task-box {
+                max-inline-size: none;
+                pointer-events: none;
+                
+                //
+                &:not(.ux-focus) {
+                    display: none;
+                }
+            }
         }
     }
     
@@ -176,7 +192,76 @@
                 z-index: 9999 + 1;
             }
         }
-    
+
+        //
+        & .ux-task-box {
+            @extend .align-center;
+            @extend .stretch;
+            @extend .pe-enable;
+            
+            //
+            //grid-column: title-label;
+            //grid-row: 1 / 1 span;
+            
+            //
+            cursor: pointer;
+            
+            //
+            display: grid;
+            max-inline-size: 8rem;
+            position: relative;
+            box-sizing: border-box;
+            
+            //
+            min-block-size: var(--min-taskbar-height);
+            max-block-size: var(--min-taskbar-height);
+            
+            //
+            grid-template-columns: minmax(0px, 3rem) minmax(max-content, 1fr);
+            grid-template-rows: minmax(0px, 1fr) minmax(0px, 0.25rem);
+            
+            //
+            .ux-task-label, .ux-task-icon {
+                grid-row: 1 / 2 span;
+            }
+            
+            //
+            .ux-task-icon {
+                grid-column: 1 / 1 span;
+            }
+            
+            //
+            .ux-task-label {
+                grid-column: 2 / 2 span;
+                justify-self: start;
+            }
+            
+            //
+            &::after {
+                @extend .stretch;
+                @extend .pe-none;
+
+                //
+                --theme-surface-color: #{cl.$baseColor};
+                --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+                
+                //
+                padding: 0px;
+                margin: 0px;
+                line-height: 0px;
+                
+                //
+                background-color: var(--theme-surface-color);
+                grid-row: 2 / 2 span;
+                grid-column: 1 / 2 span;
+                
+                //
+                box-sizing: border-box;
+                content: "";
+                display: block;
+            }
+        }
+        
         //
         & > .ux-task-list {
             @extend .stretch;
@@ -205,75 +290,6 @@
             //
             font-weight: 600;
             font-size: 1rem;
-            
-            //
-            & .ux-task-box {
-                @extend .align-center;
-                @extend .stretch;
-                @extend .pe-enable;
-                
-                //
-                //grid-column: title-label;
-                //grid-row: 1 / 1 span;
-                
-                //
-                cursor: pointer;
-                
-                //
-                display: grid;
-                max-inline-size: 8rem;
-                position: relative;
-                box-sizing: border-box;
-                
-                //
-                min-block-size: var(--min-taskbar-height);
-                max-block-size: var(--min-taskbar-height);
-                
-                //
-                grid-template-columns: minmax(0px, 3rem) minmax(max-content, 1fr);
-                grid-template-rows: minmax(0px, 1fr) minmax(0px, 0.25rem);
-                
-                //
-                .ux-task-label, .ux-task-icon {
-                    grid-row: 1 / 2 span;
-                }
-                
-                //
-                .ux-task-icon {
-                    grid-column: 1 / 1 span;
-                }
-                
-                //
-                .ux-task-label {
-                    grid-column: 2 / 2 span;
-                    justify-self: start;
-                }
-                
-                //
-                &::after {
-                    @extend .stretch;
-                    @extend .pe-none;
-
-                    //
-                    --theme-surface-color: #{cl.$baseColor};
-                    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
-                    
-                    //
-                    padding: 0px;
-                    margin: 0px;
-                    line-height: 0px;
-                    
-                    //
-                    background-color: var(--theme-surface-color);
-                    grid-row: 2 / 2 span;
-                    grid-column: 1 / 2 span;
-                    
-                    //
-                    box-sizing: border-box;
-                    content: "";
-                    display: block;
-                }
-            }
         }
         
         //

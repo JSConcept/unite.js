@@ -77,7 +77,9 @@
         
         <!-- mobile-only -->
         <div class="ux-task-button ux-solid hl-1">
-            
+            {#each $tasks.entries() as task}
+                <TaskBox windowManager={windowManager} id={task[0]} {...task[1]}></TaskBox>
+            {/each}
         </div>
         
         <div class="menu-button accent hl-2 hl-3h ux-solid" style="grid-column: menu-button; aspect-ratio: 1 / 1;">

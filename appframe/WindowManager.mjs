@@ -6,7 +6,7 @@ import { writable } from "svelte/store"
 
 
 //
-const switchClass = (el, cname, condition) => {
+const switchClassSingle = (el, cname, condition) => {
     //
     if (condition) {
         if (!el?.classList?.contains?.(cname)) {
@@ -19,6 +19,18 @@ const switchClass = (el, cname, condition) => {
     }
 }
 
+//
+const isArrayLike = (a) => {
+    return (Array.isArray(a) || (a!=null && typeof(a[Symbol.iterator])==='function' && typeof(a.length)==='number' &&typeof(a)!=='string'));
+}
+
+//
+const switchClass = (el, cname, condition)=>{
+    if (isArrayLike(el)) {
+        return Array.from(el).map((e)=>switchClassSingle(e, cname, condition));
+    }
+    return switchClassSingle(el, cname, condition);
+}
 
 //
 export class WindowManager {
@@ -85,7 +97,7 @@ export class WindowManager {
     orderLayers() {
         this.tasks.entries().forEach(([id,S])=>{
             const f = document.querySelector(id)?.closest?.(".ux-app-frame");
-            const t = document.querySelector(".ux-task-box[data-task=\"" + id + "\"]")
+            const t = document.querySelectorAll(".ux-task-box[data-task=\"" + id + "\"]")
 
             //
             const p = this.getTaskPriority(id);
