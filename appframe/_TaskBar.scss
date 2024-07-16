@@ -23,15 +23,20 @@
     //
     grid-template-rows: 
         [content-b] minmax(0px, 1fr)
-        [titlebar] minmax(0px, 3rem);
+        [titlebar] minmax(0px, var(--real-taskbar-height));
 
     //
     padding-block-end: 0px !important;
 
     //
+    & .ux-task-list {
+        align-self: end;
+    }
+
+    //
     & .titlebar {
         align-self: end;
-    
+        
         //
         & > :where(.back-button, .menu-button) {
             border-radius: 0.125rem;
@@ -40,9 +45,7 @@
     
     //
     &.ux-overlay {
-        grid-template-rows: 
-            [content-b] minmax(0px, 1fr)
-            [titlebar] 0px;
+        --real-taskbar-height: 0px;
     }
 }
 
@@ -69,6 +72,10 @@
         //
         --translate-x: 0px;//clamp(0px, var(--rx, 0px), calc(100cqi - 100%));
         --translate-y: 0px;//clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
+        
+        //
+        --min-taskbar-height: 3rem;
+        --real-taskbar-height: 3rem;
         
         //
         --padding: 0rem;
@@ -109,7 +116,7 @@
         //
         grid-template-rows: 
             //[titlebar] minmax(3rem, max-content) 
-            [titlebar] minmax(0px, 3rem)
+            [titlebar] minmax(0px, var(--real-taskbar-height))
             //[titlebar] 0px
             [content-b] minmax(0px, 1fr);
 
@@ -151,12 +158,7 @@
         
         //
         &.ux-overlay {
-            //
-            grid-template-rows: 
-                //[titlebar] minmax(3rem, max-content) 
-                //[titlebar] minmax(0px, 3rem)
-                [titlebar] 0px
-                [content-b] minmax(0px, 1fr);
+            --real-taskbar-height: 0px;
 
             //
             & > .titlebar {
@@ -166,7 +168,7 @@
             
             //
             & > .ux-task-list {
-                z-index: 999999;
+                z-index: 999999 + 1;
             }
         }
     
@@ -183,8 +185,18 @@
             padding: 0rem;
             display: flex;
             grid-column: title-label;
-            grid-row: 1 / 1 span;
-            overflow: hidden;
+            grid-row: titlebar;
+            overflow: visible;
+            align-self: start;
+            
+            //
+            block-size: max-content;
+            min-block-size: max-content;
+            max-block-size: none;
+            
+            // mobile
+            //align-items: start;
+            //align-self: start;
 
             //
             flex-direction: row;
@@ -193,24 +205,6 @@
             //
             font-weight: 600;
             font-size: 1rem;
-            
-            //
-            /*&.ux-mobile {
-                @extend .stretch;
-                
-                //
-                block-size: max-content;
-                min-block-size: max-content;
-                flex-direction: column;
-                align-self: end;
-                grid-row: 2 / 2 span;
-                
-                //
-                & .ux-task-box {
-                    max-inline-size: none;
-                    max-block-size: 3rem;
-                }
-            }*/
             
             //
             & .ux-task-box {
@@ -230,6 +224,10 @@
                 max-inline-size: 8rem;
                 position: relative;
                 box-sizing: border-box;
+                
+                //
+                min-block-size: var(--min-taskbar-height);
+                max-block-size: var(--min-taskbar-height);
                 
                 //
                 grid-template-columns: minmax(0px, 3rem) minmax(max-content, 1fr);
@@ -283,6 +281,29 @@
             }
             
             
+            //
+            &.ux-mobile {
+                @extend .stretch;
+                
+                //
+                translate: 0px calc(0px - var(--min-taskbar-height));
+                
+                //
+                block-size: max-content;
+                min-block-size: max-content;
+                flex-direction: column;
+                align-self: end;
+                
+                //
+                grid-row: 1 / 1 span;
+                
+                //
+                & .ux-task-box {
+                    max-inline-size: none;
+                }
+            }
+            
+            
             
         }
         
@@ -305,22 +326,19 @@
             gap: 0px;
             
             //
+            align-items: end;
             align-self: start;
             box-sizing: border-box;
             block-size: max-content;
-            
-            //
-            //border-block-end: solid 1px var(--current-surface-color);
-            
-            //
-            align-items: end;
 
             //grid-column: 1 / 2;
             grid-row: titlebar;
-            min-block-size: calc(3rem + var(--padding));
-            max-block-size: none;
             z-index: 9999;
             
+            //
+            min-block-size: var(--min-taskbar-height);
+            max-block-size: var(--min-taskbar-height);
+        
             //
             display: grid;
             
@@ -374,8 +392,8 @@
                 cursor: pointer;
                 
                 //
-                max-inline-size: 3rem;
-                max-block-size: 3rem;
+                max-inline-size: var(--min-taskbar-height);
+                max-block-size: var(--min-taskbar-height);
             }
             
             
