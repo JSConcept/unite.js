@@ -30,6 +30,9 @@
 
     //
     & .titlebar {
+        align-self: end;
+    
+        //
         & > :where(.back-button, .menu-button) {
             border-radius: 0.125rem;
         }
