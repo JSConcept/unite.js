@@ -48,7 +48,7 @@
         //
         grid-template-rows: 
             [content-b] minmax(0px, 1fr)
-            [titlebar] minmax(3rem, max-content);
+            [titlebar] minmax(0px, 3rem);
     
         //
         padding-block-end: 0px !important;
@@ -67,6 +67,7 @@
         @extend .contain-size;
         @extend .align-center;
         @extend .stretch !optional;
+        @extend .pe-enable;
         
         //
         --rx: 0px;
@@ -125,7 +126,7 @@
     
         //
         grid-template-rows: 
-            [titlebar] minmax(3rem, max-content) 
+            [titlebar] minmax(0px, 3rem) 
             [content-b] minmax(0px, 1fr);
 
         //
@@ -217,7 +218,7 @@
             block-size: calc(3rem + var(--padding));
             
             //
-            border-block-end: solid 1px var(--current-surface-color);
+            //border-block-end: solid 1px var(--current-surface-color);
             
             //
             align-items: end;

@@ -23,7 +23,7 @@
     //
     grid-template-rows: 
         [content-b] minmax(0px, 1fr)
-        [titlebar] minmax(3rem, max-content);
+        [titlebar] minmax(0px, 3rem);
 
     //
     padding-block-end: 0px !important;
@@ -33,6 +33,13 @@
         & > :where(.back-button, .menu-button) {
             border-radius: 0.125rem;
         }
+    }
+    
+    //
+    &.ux-overlay {
+        grid-template-rows: 
+            [content-b] minmax(0px, 1fr)
+            [titlebar] 0px;
     }
 }
 
@@ -73,7 +80,7 @@
         //
         translate: var(--translate-x) var(--translate-y) 0px;
         will-change: translate, transform, inline-size, block-size, contents, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
-        overflow: hidden !important;
+        overflow: visible !important;
         
         //
         position: fixed;
@@ -98,7 +105,9 @@
     
         //
         grid-template-rows: 
-            [titlebar] minmax(3rem, max-content) 
+            //[titlebar] minmax(3rem, max-content) 
+            [titlebar] minmax(0px, 3rem)
+            //[titlebar] 0px
             [content-b] minmax(0px, 1fr);
 
         //
@@ -138,6 +147,23 @@
         }
         
         //
+        &.ux-overlay {
+            //
+            grid-template-rows: 
+                //[titlebar] minmax(3rem, max-content) 
+                //[titlebar] minmax(0px, 3rem)
+                [titlebar] 0px
+                [content-b] minmax(0px, 1fr);
+
+            //
+            & > .titlebar {
+                z-index: 999999;
+                box-shadow: 0px 0px 1rem 1px #00000070;
+            }
+        }
+        
+        
+        //
         & > .titlebar {
             @extend .align-center;
             @extend .stretch;
@@ -149,23 +175,27 @@
             grid-column: 1 / 3 span;
             grid-template-columns: subgrid;
             grid-template-rows: minmax(0px, 1fr);
+            overflow: hidden !important;
             
             //
             gap: 0px;
             
             //
+            align-self: start;
             box-sizing: border-box;
-            block-size: calc(3rem + var(--padding));
+            block-size: max-content;
             
             //
-            border-block-end: solid 1px var(--current-surface-color);
+            //border-block-end: solid 1px var(--current-surface-color);
             
             //
             align-items: end;
 
             //grid-column: 1 / 2;
             grid-row: titlebar;
-            min-block-size: max-content;
+            min-block-size: calc(3rem + var(--padding));
+            max-block-size: none;
+            z-index: 9999;
             
             //
             display: grid;
@@ -173,6 +203,9 @@
             //
             padding-block: var(--padding, 0px);
             padding-inline: max(var(--padding-left), var(--padding)) max(var(--padding-right), var(--padding));
+
+            //
+            
 
             //
             & > .ux-title-handle {
@@ -218,8 +251,7 @@
                 max-block-size: 3rem;
             }
             
-            //
-            box-shadow: 0px 0px 1rem 1px #00000070;
+            
             
             
             //
