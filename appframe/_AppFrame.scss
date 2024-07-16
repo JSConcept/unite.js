@@ -12,29 +12,32 @@
 //
 @layer ux-app-frame {
     
+    //
     @mixin maximized {
         display: contents !important;
         
         //
-        & .ux-title-label {
-            display: none !important;
-        }
-        
-        //
-        & .titlebar {
-            display: none !important;
-        }
+        & .ux-title-label { display: none !important; }
+        & .titlebar { display: none !important; }
         
         //
         & .ux-content {
-            z-index: 99999;
-            z-index: calc(99999 + var(--z-index, 0));
+            z-index: 999;
+            z-index: calc(999 + var(--z-index, 0));
         }
     }
     
     //
-    .ux-app-frame:not(.ux-detached) {
-        @include maximized();
+    @mixin whenDesktop {
+        border-radius: 0.25rem;
+        box-shadow: 0px 0px 1rem 1px #00000070;
+        
+        //
+        @include u.clamped-width(min(64rem, 100cqi), calc(80rem + var(--resize-x, 0) * 1px), 100cqi);
+        @include u.clamped-height(min(36rem, 100cqb), calc(45rem + var(--resize-y, 0) * 1px), 100cqb);
+        
+        //
+        --padding-top: 0px;
     }
     
     //
@@ -42,16 +45,10 @@
         @include maximized();
     
         //
-        //--padding: 0rem;
-        //--padding-top: max(env(safe-area-inset-top, 0px), 2rem);
-    
-        //
+        padding-block-end: 0px !important;
         grid-template-rows: 
             [content-b] minmax(0px, 1fr)
             [titlebar] minmax(0px, 3rem);
-    
-        //
-        padding-block-end: 0px !important;
     
         //
         & .titlebar {
@@ -70,17 +67,9 @@
         @extend .pe-enable;
         
         //
-        --rx: 0px;
-        --ry: 0px;
-
-        //
         --rx: calc(var(--drag-x, 0) * 1px);
         --ry: calc(var(--drag-y, 0) * 1px);
 
-        //
-        //--translate-x: clamp(0px, calc(calc(50cqi - 50%) + var(--rx, 0px)), calc(100cqi - 100%));
-        //--translate-y: clamp(0px, calc(calc(50cqb - 50%) + var(--ry, 0px)), calc(100cqb - 100%));
-        
         //
         --translate-x: clamp(0px, var(--rx, 0px), calc(100cqi - 100%));
         --translate-y: clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
@@ -105,8 +94,8 @@
         
         //
         inset: 0px;
-        z-index: 99999;
-        z-index: calc(99999 + var(--z-index, 0));
+        z-index: 999;
+        z-index: calc(999 + var(--z-index, 0));
         display: grid;
     
         //
@@ -134,11 +123,8 @@
         padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem) !important;
 
         //
-        &:not(:has(.ux-content)) {
-            display: none !important;
-        }
-
-        //
+        &:not(.ux-detached) { @include maximized(); }
+        &:not(:has(.ux-content)) { display: none !important; }
         &:hover {
             outline: solid 0.5px oklch(from var(--current-glyph-color) l c h / 0.125);
         }
@@ -218,9 +204,6 @@
             block-size: calc(3rem + var(--padding));
             
             //
-            //border-block-end: solid 1px var(--current-surface-color);
-            
-            //
             align-items: end;
 
             //grid-column: 1 / 2;
@@ -270,16 +253,6 @@
         //
         @container ux-windowed #{d.$isNotWide} { @include whenMobile; }
         @media #{d.$isMobile} { @include whenMobile; }
-        @media #{d.$isDesktop} {
-            border-radius: 0.25rem;
-            box-shadow: 0px 0px 1rem 1px #00000070;
-            
-            //
-            @include u.clamped-width(min(64rem, 100cqi), calc(80rem + var(--resize-x, 0) * 1px), 100cqi);
-            @include u.clamped-height(min(36rem, 100cqb), calc(45rem + var(--resize-y, 0) * 1px), 100cqb);
-            
-            //
-            --padding-top: 0px;
-        }
+        @media #{d.$isDesktop} { @include whenDesktop; }
     }
 }

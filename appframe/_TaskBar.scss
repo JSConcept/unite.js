@@ -10,6 +10,38 @@
 @use "../core/Detector" as d;
 
 //
+@mixin collapse {
+    //
+    visibility: collapse !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    
+    //
+    & *:not(.ux-app-frame, .ux-content) {
+        visibility: collapse !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+    }
+}
+
+//
+@mixin whenDesktop {
+    --padding-top: 0px;
+
+    //
+    &:not(:has(.ux-app-frame:not(.ux-detached))) {
+        grid-template-rows: 
+            [titlebar] 0px
+            [content-b] minmax(0px, 1fr);
+
+        //
+        & > .titlebar { 
+            @include collapse;
+        }
+    }
+}
+
+//
 @mixin whenMobile {
     //
     --padding: 0rem;
@@ -26,11 +58,22 @@
         [titlebar] minmax(0px, var(--real-taskbar-height));
 
     //
-    padding-block-end: 0px !important;
+    padding-block-end: 0px;
 
     //
     & .ux-task-list {
         align-self: end;
+        translate: 0px calc(0px - var(--min-taskbar-height));
+        z-index: 9999;
+        
+        //
+        flex-direction: column;
+        align-self: end;
+        
+        //
+        & .ux-task-box {
+            max-inline-size: none;
+        }
     }
 
     //
@@ -40,6 +83,11 @@
         //
         & > :where(.back-button, .menu-button) {
             border-radius: 0.125rem;
+        }
+        
+        //
+        & > :where(.ux-task-button) {
+            display: flex;
         }
     }
     
@@ -62,18 +110,6 @@
         @extend .pe-none;
 
         //
-        --rx: 0px;
-        --ry: 0px;
-
-        //
-        //--translate-x: clamp(0px, calc(calc(50cqi - 50%) + var(--rx, 0px)), calc(100cqi - 100%));
-        //--translate-y: clamp(0px, calc(calc(50cqb - 50%) + var(--ry, 0px)), calc(100cqb - 100%));
-        
-        //
-        --translate-x: 0px;//clamp(0px, var(--rx, 0px), calc(100cqi - 100%));
-        --translate-y: 0px;//clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
-        
-        //
         --min-taskbar-height: 3rem;
         --real-taskbar-height: 3rem;
         
@@ -85,19 +121,18 @@
 
         //
         outline: solid 0.25px oklch(from var(--current-glyph-color) l c h / 0.0);
-        transition: outline-color 200ms;
-
-        //
-        translate: var(--translate-x) var(--translate-y) 0px;
-        will-change: translate, transform, inline-size, block-size, contents, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
-        overflow: visible !important;
         
         //
+        transition: outline-color 200ms;
+        translate: 0px 0px 0px;
+        
+        //
+        overflow: visible;
         position: fixed;
     
         //
         inset: 0px;
-        z-index: 99999;
+        z-index: 999;
         display: grid;
         contain: content;
         container-type: size;
@@ -115,46 +150,16 @@
     
         //
         grid-template-rows: 
-            //[titlebar] minmax(3rem, max-content) 
             [titlebar] minmax(0px, var(--real-taskbar-height))
-            //[titlebar] 0px
             [content-b] minmax(0px, 1fr);
 
         //
-        padding-block-start: var(--padding-top) !important;
-        //padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem) !important;
+        padding-block-start: var(--padding-top);
+        //padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem);
 
         //
-        &:hover {
-            outline: solid 0.5px oklch(from var(--current-glyph-color) l c h / 0.125);
-        }
-        
-        //
-        &:not(:has(.ux-app-frame)) {
-            //display: none !important;
-            visibility: collapse !important;
-            pointer-events: none !important;
-            
-            //
-            & *:not(.ux-app-frame, .ux-content) {
-                visibility: collapse !important;
-                pointer-events: none !important;
-            }
-        }
-        
-        //
-        @media #{d.$isDesktop} {
-            &:not(:has(.ux-app-frame:not(.ux-detached))) {
-                grid-template-rows: 
-                    //[titlebar] minmax(3rem, max-content) 
-                    [content-b] minmax(0px, 1fr);
-            
-                //
-                & > .titlebar {
-                    display: none;
-                }
-            }
-        }
+        &:hover { outline: solid 0.5px oklch(from var(--current-glyph-color) l c h / 0.125); }
+        &:not(:has(.ux-app-frame)) { @include collapse;  }
         
         //
         &.ux-overlay {
@@ -162,13 +167,13 @@
 
             //
             & > .titlebar {
-                z-index: 999999;
+                z-index: 9999;
                 box-shadow: 0px 0px 1rem 1px #00000070;
             }
             
             //
             & > .ux-task-list {
-                z-index: 999999 + 1;
+                z-index: 9999 + 1;
             }
         }
     
@@ -181,27 +186,22 @@
             @extend .ux-solid;
 
             //
-            z-index: 99999;
+            z-index: 999;
             padding: 0rem;
             display: flex;
             grid-column: title-label;
             grid-row: titlebar;
             overflow: visible;
+            
+            //
             align-self: start;
             
             //
             block-size: max-content;
             min-block-size: max-content;
             max-block-size: none;
-            
-            // mobile
-            //align-items: start;
-            //align-self: start;
-
-            //
             flex-direction: row;
-            //min-inline-size: max-content;
-            
+
             //
             font-weight: 600;
             font-size: 1rem;
@@ -213,8 +213,8 @@
                 @extend .pe-enable;
                 
                 //
-                grid-column: title-label;
-                grid-row: 1 / 1 span;
+                //grid-column: title-label;
+                //grid-row: 1 / 1 span;
                 
                 //
                 cursor: pointer;
@@ -253,7 +253,7 @@
                 &::after {
                     @extend .stretch;
                     @extend .pe-none;
-                
+
                     //
                     --theme-surface-color: #{cl.$baseColor};
                     --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
@@ -272,41 +272,9 @@
                     box-sizing: border-box;
                     content: "";
                     display: block;
-                    
-                    //position: absolute;
-                    //inset: 0px;
-                    //inset-block-start: auto;
-                    //inset-block-end: 0px;
                 }
             }
-            
-            
-            //
-            &.ux-mobile {
-                @extend .stretch;
-                
-                //
-                translate: 0px calc(0px - var(--min-taskbar-height));
-                
-                //
-                block-size: max-content;
-                min-block-size: max-content;
-                flex-direction: column;
-                align-self: end;
-                
-                //
-                grid-row: 1 / 1 span;
-                
-                //
-                & .ux-task-box {
-                    max-inline-size: none;
-                }
-            }
-            
-            
-            
         }
-        
         
         //
         & > .titlebar {
@@ -320,7 +288,7 @@
             grid-column: 1 / 3 span;
             grid-template-columns: subgrid;
             grid-template-rows: minmax(0px, 1fr);
-            overflow: hidden !important;
+            overflow: hidden;
             
             //
             gap: 0px;
@@ -330,10 +298,6 @@
             align-self: start;
             box-sizing: border-box;
             block-size: max-content;
-
-            //grid-column: 1 / 2;
-            grid-row: titlebar;
-            z-index: 9999;
             
             //
             min-block-size: var(--min-taskbar-height);
@@ -341,17 +305,25 @@
         
             //
             display: grid;
+            z-index: 99;
             
             //
             padding-block: var(--padding, 0px);
             padding-inline: max(var(--padding-left), var(--padding)) max(var(--padding-right), var(--padding));
 
             //
-            & > .ux-task-button {
-                // TODO: mobile support
-                display: none;
+            & > * {
+                @extend .align-center;
+                @extend .stretch;
                 
                 //
+                padding: 1rem;
+                display: flex;
+                grid-row: 1 / 1 span;
+            }
+
+            //
+            & > .ux-task-button {
                 @extend .stretch;
                 @extend .align-center;
                 @extend .align-inline-left;
@@ -359,9 +331,9 @@
                 @extend .ux-solid;
     
                 //
-                z-index: 99999;
+                z-index: 999;
                 padding: 0rem;
-                display: flex;
+                display: none;
                 grid-column: title-label;
                 grid-row: 1 / 1 span;
                 overflow: hidden;
@@ -374,17 +346,6 @@
                 font-weight: 600;
                 font-size: 1rem;
             }
-
-            //
-            & > * {
-                @extend .align-center;
-                @extend .stretch;
-                
-                //
-                padding: 1rem;
-                display: flex;
-                grid-row: 1 / 1 span;
-            }
             
             //
             & > :where(.back-button, .menu-button) {
@@ -395,18 +356,11 @@
                 max-inline-size: var(--min-taskbar-height);
                 max-block-size: var(--min-taskbar-height);
             }
-            
-            
-            
-            
-            
         }
         
         //
         @container ux-taskbar #{d.$isNotWide} { @include whenMobile; }
         @media #{d.$isMobile} { @include whenMobile; }
-        @media #{d.$isDesktop} {
-            --padding-top: 0px;
-        }
+        @media #{d.$isDesktop} { @include whenDesktop; }
     }
 }
