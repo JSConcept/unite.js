@@ -24,6 +24,12 @@
         & .titlebar {
             display: none !important;
         }
+        
+        //
+        & .ux-content {
+            z-index: 99999;
+            z-index: calc(99999 + var(--z-index, 0));
+        }
     }
     
     //
@@ -99,6 +105,7 @@
         //
         inset: 0px;
         z-index: 99999;
+        z-index: calc(99999 + var(--z-index, 0));
         display: grid;
     
         //

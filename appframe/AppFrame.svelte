@@ -1,4 +1,5 @@
 <script type="ts" lang="ts">
+    import { MOCElement } from "../utils/Utils.ts";
     //import {readableHash} from '../dom/Realtime.ts';
     import LucideIcon from '../design/WLucideIcon.svelte';
     import AxGesture from "../interact/Gesture.ts";
@@ -18,7 +19,7 @@
     
     //
     requestAnimationFrame(()=>{
-        isInactive = windowManager.getTask(hashIdName).inactive;
+        isInactive = windowManager.getTask(hashIdName).inactive || writable(true);
     });
     
     // outdated due gestures control
@@ -46,15 +47,27 @@
     //
     document.documentElement.addEventListener("click", (ev)=>{
         const target = ev.target as HTMLElement;
-        if (target.matches(".back-button")) {
+        
+        //
+        if (target.matches(".ux-app-frame *:not(.back-button)")) {
+            //ev.stopPropagation();
+            //ev.stopImmediatePropagation();
+            //ev.preventDefault();
+            
+            //
+            windowManager?.focusTask?.("#" + MOCElement(target, ".ux-app-frame")?.querySelector(".ux-content")?.id||"");
+        }
+        
+        //
+        if (target.matches(".ux-app-frame .back-button")) {
             // kuril i umer
             ev.stopPropagation();
             ev.stopImmediatePropagation();
             ev.preventDefault();
             
             //
-            const content = frameElement?.querySelector?.(".ux-content");
-            if (content) {
+            const content = MOCElement(target, ".ux-app-frame")?.querySelector?.(".ux-content");
+            if (content && (hashIdName == ("#" + content.id))) {
                 const event = new CustomEvent("ux-back", {
                     cancelable: true,
                     bubbles: true,
@@ -63,7 +76,7 @@
                 
                 //
                 if (content.dispatchEvent(event)) {
-                    windowManager?.minimizeTask?.(location.hash);
+                    windowManager?.minimizeTask?.("#" + content.id);
                     history.back();
                 }
             }
@@ -136,7 +149,7 @@
 
 <!-- -->
 {#if !$isInactive}
-    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1 ux-detached" transition:fade={{ delay: 0, duration: 100 }}>
+    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1" transition:fade={{ delay: 0, duration: 100 }}>
 
         <div class="titlebar ux-solid hl-1">
             <div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">

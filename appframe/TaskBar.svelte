@@ -4,6 +4,7 @@
     import TaskBox from './TaskBox.svelte';
     import {writable} from "svelte/store";
     import { observeBySelector } from "../dom/Observer.ts";
+    import {fade} from "svelte/transition";
 
     //
     export let windowManager: any = null;
@@ -28,33 +29,33 @@
     }, {capture: true});
     
     //
-	document.documentElement.addEventListener("click", (ev)=>{
-		const target = ev.target as HTMLElement;
-		if (target.matches(".back-button")) {
-			// kuril i umer
-			ev.stopPropagation();
-			ev.stopImmediatePropagation();
-			ev.preventDefault();
-			
-			//
-			const content = frameElement?.querySelector?.(".ux-app-frame .ux-content" + (windowManager?.getCurrentTask?.() || location.hash));
-			if (content) {
-				const event = new CustomEvent("ux-back", {
+    document.documentElement.addEventListener("click", (ev)=>{
+        const target = ev.target as HTMLElement;
+        if (target.matches(".ux-taskbar .back-button")) {
+            // kuril i umer
+            ev.stopPropagation();
+            ev.stopImmediatePropagation();
+            ev.preventDefault();
+            
+            //
+            const content = document?.querySelector?.(".ux-app-frame .ux-content" + (windowManager?.getCurrentTask?.() || location.hash));
+            if (content) {
+                const event = new CustomEvent("ux-back", {
                     cancelable: true,
                     bubbles: true,
                     detail: {}
                 });
-				
-			    //
+                
+                //
                 if (content.dispatchEvent(event)) {
-                    windowManager?.minimizeTask?.(location.hash);
+                    windowManager?.minimizeTask?.("#" + content.id);
                     history.back();
                 }
-			}
-		}
-	})
-	
-	//
+            }
+        }
+    })
+    
+    //
     observeBySelector(document.body, ".ux-app-frame", ({})=>{
         tasks.set(windowManager.getTasks());
     });
@@ -76,7 +77,6 @@
         <div class="ux-title-handle ux-solid hl-1">
             {#each $tasks.entries() as task}
                 <TaskBox windowManager={windowManager} id={task[0]} {...task[1]}></TaskBox>
-                
             {/each}
         </div>
         <div class="menu-button accent hl-2 hl-3h ux-solid" style="grid-column: menu-button; aspect-ratio: 1 / 1;">

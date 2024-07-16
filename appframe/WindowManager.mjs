@@ -4,6 +4,22 @@ import { observeBySelector } from "../dom/Observer.ts";
 //
 import { writable } from "svelte/store"
 
+
+//
+const switchClass = (el, cname, condition) => {
+    //
+    if (condition) {
+        if (!el?.classList?.contains?.(cname)) {
+            el?.classList?.add?.(cname);
+        }
+    } else {
+        if (el?.classList?.contains?.(cname)) {
+            el?.classList?.remove?.(cname);
+        }
+    }
+}
+
+
 //
 export class WindowManager {
     constructor() {
@@ -33,12 +49,15 @@ export class WindowManager {
 
     //
     restoreTask(ID) {
+        const p = this.priorityList.indexOf(ID);
         this.tasks.get(ID)?.inactive?.set(false);
         this.focusTask(ID);
     }
 
     //
     minimizeTask(ID) {
+        const p = this.priorityList.indexOf(ID);
+        if (p >= 0) { this.priorityList.splice(p, 1); }
         this.tasks.get(ID)?.inactive?.set(true);
         this.orderLayers();
     }
@@ -47,7 +66,7 @@ export class WindowManager {
     addTask(ID = "#settings", meta = {}) {
         if (!this.tasks.has(ID)) {
             this.priorityList.push(ID);
-            this.tasks.set(ID, { ...meta, inactive: writable(location.hash != ID) });
+            this.tasks.set(ID, { detached: false, ...meta, inactive: writable(location.hash != ID) });
             location.hash = ID;
             this.orderLayers();
         }
@@ -62,26 +81,27 @@ export class WindowManager {
     orderLayers() {
         this.tasks.entries().forEach(([id,S])=>{
             const f = document.querySelector(id)?.closest?.(".ux-app-frame");
+            const t = document.querySelector(".ux-task-box[data-task=\"" + id + "\"]")
 
             //
-            f?.style?.setProperty?.("--z-index", this.getTaskPriority(id), "");
-            //f?.classList?.remove?.("ux-hidden");
+            const p = this.getTaskPriority(id);
+            f?.style?.setProperty?.("--z-index", p, "");
 
             //
-            //if (S?.inactive) {
-                //f?.classList?.add?.("ux-hidden");
-            //}
+            switchClass(t, "ux-focus", p == (this.priorityList.length-1));
+            switchClass(f, "ux-focus", p == (this.priorityList.length-1));
+            switchClass(f, "ux-detached", S?.detached);
         });
     }
 
     //
     focusTask(ID) {
-        const p = this.getTaskPriority(ID);
-        if (p >= 0) {
-            location.hash = ID;
-            this.priorityList.splice(p, 1);
+        if (this.tasks.has(ID)) {
+            const p = this.getTaskPriority(ID);
+            if (p >= 0) { this.priorityList.splice(p, 1); }
             this.priorityList.push(ID);
             this.tasks.get(ID).inactive.set(false);
+            location.hash = ID;
             this.orderLayers();
             return true;
         }
@@ -90,7 +110,7 @@ export class WindowManager {
     
     //
     getCurrentTask() {
-        return this.priorityList[this.priorityList.length-1];
+        return this.priorityList[this.priorityList.length-1] || location.hash;
     }
 
 }
