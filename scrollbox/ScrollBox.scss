@@ -133,7 +133,7 @@
                 inline-size: 100%;
                 block-size: calc(var(--thumbSize) * 1px);
 
-                translate: 0px calc(var(--percent) * var(--percentInPx) * 1px);
+                translate: 0px calc(var(--percent) * var(--scrollAvail) * 1px);
             }
         }
         
@@ -155,7 +155,7 @@
                 block-size: 100%;
                 inline-size: calc(var(--thumbSize) * 1px);
 
-                translate: calc(var(--percent) * var(--percentInPx) * 1px) 0px;
+                translate: calc(var(--percent) * var(--scrollAvail) * 1px) 0px;
             }
         }
 

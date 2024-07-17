@@ -34,22 +34,22 @@ class ScrollBar {
 
         //
         const onChanges = () => {
-            const thumbSize =
-                this.scrollbar[["offsetWidth", "offsetHeight"][axis]] *
-                Math.min(
-                    this.holder[["offsetWidth", "offsetHeight"][axis]] /
-                    this.holder[["scrollWidth", "scrollHeight"][axis]],
-                    1
-                );
+
+            const sizePercent = Math.min(
+                this.holder[["offsetWidth", "offsetHeight"][axis]] /
+                this.holder[["scrollWidth", "scrollHeight"][axis]],
+                1
+            );
+            const thumbSize = this.holder[["offsetWidth", "offsetHeight"][axis]] * sizePercent;
 
             //
-            const percentInPx =
-                this.scrollbar[["offsetWidth", "offsetHeight"][axis]] -
+            const scrollAvailable =
+                this.holder[["offsetWidth", "offsetHeight"][axis]] -
                 thumbSize;
 
             //
             this.scrollbar.style.setProperty("--thumbSize", (thumbSize || "0") as string, "");
-            this.scrollbar.style.setProperty("--percentInPx", (percentInPx || "0") as string, "");
+            this.scrollbar.style.setProperty("--scrollAvail", (scrollAvailable || "0") as string, "");
 
             //
             this.holder.style.setProperty(
@@ -75,7 +75,7 @@ class ScrollBar {
             this.holder.dispatchEvent(event);
 
             //
-            if (Math.abs(percentInPx) < 1) {
+            if (sizePercent >= 0.999) {
                 this.scrollbar.style.setProperty("visibility", "collapse", "");
             } else {
                 this.scrollbar.style.setProperty("visibility", "visible", "");
@@ -128,10 +128,12 @@ class ScrollBar {
                 this.status.virtualScroll =
                     this.holder[["scrollLeft", "scrollTop"][axis]];
                 this.status.pointerId = -1;
+                onChanges();
             }
         };
 
         //
+        document.documentElement.addEventListener("click", onChanges);
         document.documentElement.addEventListener("pointerup", stopScroll, {});
         document.documentElement.addEventListener(
             "pointercancel",
