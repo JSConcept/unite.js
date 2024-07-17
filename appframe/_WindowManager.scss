@@ -237,24 +237,14 @@
             //translate: 0px calc(0px - 50cqb - var(--min-taskbar-height));
             flex-direction: column;
             align-self: end;
-            
-            //
-            & .ux-task-box {
-                max-inline-size: none;
-                
-                //
-                /*&.ux-focus {
-                    display: none;
-                }*/
-            }
-            
+
             //
             padding: 0rem;
             //display: none;
             
             //
             //grid-column: title-label;
-            ///grid-row: titlebar;
+            //grid-row: titlebar;
             
             //
             align-self: start;
@@ -272,9 +262,8 @@
             box-shadow: 0px 0px 1rem rgb(from #000000 r g b / 0.4);
             
             //
-            & .ux-task-box.ux-focus {
-                @extend .ux-inverse;
-            }
+            & .ux-task-box { max-inline-size: none; }
+            & .ux-task-box.ux-focus { @extend .ux-inverse; }
         }
         
         //
