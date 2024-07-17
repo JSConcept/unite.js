@@ -124,33 +124,42 @@
 	
 	//
 	:where(button) {
-        @extend .ux-accent;
+        //@extend .ux-accent;
 	
         //
-        @extend .hl-2;
-        @extend .hl-3h;
+        //@extend .hl-2;
+        //@extend .hl-3h;
+        
+        display: flex;
+        place-items: center;
+        place-content: center;
+        //justify-items: start;
+        //justify-content: start;
         
         //
-        font-size: 0.75rem;
+        //font-size: 0.75rem;
         color: var(--current-glyph-color);
         background-color: var(--current-surface-color);
         
-        min-inline-size: max-content;
-        min-block-size: max-content;
+        //min-inline-size: max-content;
+        //min-block-size: max-content;
         
-        inline-size: auto;
-        block-size: auto;
+        //inline-size: auto;
+        //block-size: auto;
         
-        max-inline-size: stretch;
-        max-block-size: stretch;
+        //max-inline-size: stretch;
+        //max-block-size: stretch;
         
         cursor: pointer;
         pointer-events: auto;
         pointer-events: bounding-box;
         
-        padding: 0.4rem;
-        border-radius: 0.25rem;
+        //padding: 0.4rem;
+        //border-radius: 0.25rem;
+        padding: 0px;
+        margin: 0px;
         
+        //
         border: none 0px transparent;
         outline: none 0px transparent;
 	}

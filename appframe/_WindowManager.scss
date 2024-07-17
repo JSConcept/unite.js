@@ -62,23 +62,7 @@
 
     //
     & .ux-task-list {
-        align-self: end;
-        translate: 0px calc(0px - var(--min-taskbar-height));
-        z-index: 9999;
-        
-        //
-        flex-direction: column;
-        align-self: end;
-        
-        //
-        & .ux-task-box {
-            max-inline-size: none;
-            
-            //
-            &.ux-focus {
-                display: none;
-            }
-        }
+        display: flex;
     }
 
     //
@@ -114,10 +98,10 @@
 }
 
 //
-@layer ux-taskbar {
+@layer ux-dwm {
     
     //
-    .ux-taskbar {
+    .ux-dwm {
         //
         @extend .contain-size;
         @extend .align-center;
@@ -152,7 +136,7 @@
         display: grid;
         contain: content;
         container-type: size;
-        container-name: ux-taskbar;
+        container-name: ux-dwm;
         box-sizing: border-box;
 
         //
@@ -183,13 +167,8 @@
 
             //
             & > .titlebar {
-                z-index: 9999;
-                box-shadow: 0px 0px 1rem 1px #00000070;
-            }
-            
-            //
-            & > .ux-task-list {
                 z-index: 9999 + 1;
+                box-shadow: 0px 0px 1rem 1px #00000070;
             }
         }
 
@@ -234,31 +213,7 @@
             .ux-task-label {
                 grid-column: 2 / 2 span;
                 justify-self: start;
-            }
-            
-            //
-            &::after {
-                @extend .stretch;
-                @extend .pe-none;
-
-                //
-                --theme-surface-color: #{cl.$baseColor};
-                --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
-                
-                //
-                padding: 0px;
-                margin: 0px;
-                line-height: 0px;
-                
-                //
-                background-color: var(--theme-surface-color);
-                grid-row: 2 / 2 span;
-                grid-column: 1 / 2 span;
-                
-                //
-                box-sizing: border-box;
-                content: "";
-                display: block;
+                padding-inline-end: 1rem;
             }
         }
         
@@ -271,12 +226,33 @@
             @extend .ux-solid;
 
             //
-            z-index: 999;
+            display: none;
+            z-index: 9999 + 2;
+            overflow: hidden;
+            border-radius: 0.125rem;
+            position: fixed;
+            inset: 0px;
+            
+            //
+            translate: 0px calc(0px - 50cqb - var(--min-taskbar-height));
+            flex-direction: column;
+            align-self: end;
+            
+            //
+            & .ux-task-box {
+                max-inline-size: none;
+                
+                //
+                /*&.ux-focus {
+                    display: none;
+                }*/
+            }
+            
+            //
             padding: 0rem;
-            display: flex;
+            display: none;
             grid-column: title-label;
             grid-row: titlebar;
-            overflow: visible;
             
             //
             align-self: start;
@@ -285,11 +261,18 @@
             block-size: max-content;
             min-block-size: max-content;
             max-block-size: none;
-            flex-direction: row;
 
             //
             font-weight: 600;
             font-size: 1rem;
+            
+            //
+            box-shadow: 0px 0px 1rem rgb(from #000000 r g b / 0.4);
+            
+            //
+            & .ux-task-box.ux-focus {
+                @extend .ux-inverse;
+            }
         }
         
         //
@@ -337,7 +320,7 @@
                 display: flex;
                 grid-row: 1 / 1 span;
             }
-
+            
             //
             & > .ux-task-button {
                 @extend .stretch;
@@ -349,7 +332,7 @@
                 //
                 z-index: 999;
                 padding: 0rem;
-                display: none;
+                //display: none;
                 grid-column: title-label;
                 grid-row: 1 / 1 span;
                 overflow: hidden;
@@ -361,6 +344,31 @@
                 //
                 font-weight: 600;
                 font-size: 1rem;
+                
+                
+                & .ux-task-box.ux-focus::after {
+                    @extend .stretch;
+                    @extend .pe-none;
+    
+                    //
+                    --theme-surface-color: #{cl.$baseColor};
+                    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+                    
+                    //
+                    padding: 0px;
+                    margin: 0px;
+                    line-height: 0px;
+                    
+                    //
+                    background-color: var(--theme-surface-color);
+                    grid-row: 2 / 2 span;
+                    grid-column: 1 / 2 span;
+                    
+                    //
+                    box-sizing: border-box;
+                    content: "";
+                    display: block;
+                }
             }
             
             //
@@ -369,13 +377,15 @@
                 cursor: pointer;
                 
                 //
+                min-block-size: var(--min-taskbar-height);
                 max-inline-size: var(--min-taskbar-height);
                 max-block-size: var(--min-taskbar-height);
             }
         }
         
         //
-        @container ux-taskbar #{d.$isNotWide} { @include whenMobile; }
+        @container ux-dwm #{d.$isNotWide}
+            { @include whenMobile; }
         @media #{d.$isMobile} { @include whenMobile; }
         @media #{d.$isDesktop} { @include whenDesktop; }
     }

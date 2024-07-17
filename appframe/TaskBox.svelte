@@ -19,8 +19,8 @@
 </script>
 
 <!--{#if !$inactive}-->
-    <div on:click={focusOn} class={`ux-task-box hl-1h ${$inactive ? "ux-inactive" : "ux-active"}`} data-task={id}>
+    <button on:click={focusOn} class={`ux-task-box hl-1h ${$inactive ? "ux-inactive" : "ux-active"}`} data-task={id}>
         <div class="ux-task-icon"><LucideIcon inert={true} slot="icon" name={icon}/></div>
         <div class="ux-task-label">{label||"Task"}</div>
-    </div>
+    </button>
 <!--{/if}-->

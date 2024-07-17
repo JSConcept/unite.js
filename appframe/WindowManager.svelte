@@ -11,6 +11,8 @@
 
     //
     let tasks = writable(windowManager.getTasks() ?? new Set([]));
+    
+    // @ts-ignore
     let frameElement: HTMLElement | null = null;
     
     //
@@ -21,7 +23,7 @@
     //
     document.documentElement.addEventListener("contextmenu", (ev)=>{
         const target = ev.target as HTMLElement;
-        if ((target?.matches?.(".ux-taskbar") || target?.closest?.(".ux-taskbar")) && !target.matches("input[type=\"text\"]")) {
+        if ((target?.matches?.(".ux-dwm") || target?.closest?.(".ux-dwm")) && !target.matches("input[type=\"text\"]")) {
             ev.stopPropagation();
             ev.stopImmediatePropagation();
             ev.preventDefault();
@@ -31,7 +33,7 @@
     //
     document.documentElement.addEventListener("click", (ev)=>{
         const target = ev.target as HTMLElement;
-        if (target.matches(".ux-taskbar .back-button")) {
+        if (target.matches(".ux-dwm .back-button")) {
             // kuril i umer
             ev.stopPropagation();
             ev.stopImmediatePropagation();
@@ -68,7 +70,7 @@
 </script>
 
 <!-- -->
-<div {...propsFilter($$props)} bind:this={frameElement} class="ux-taskbar ux-solid-transparent" transition:fade={{ delay: 0, duration: 100 }}>
+<div {...propsFilter($$props)} bind:this={frameElement} class="ux-dwm ux-solid-transparent" transition:fade={{ delay: 0, duration: 100 }}>
 
     <div class="titlebar ux-solid hl-1">
         <div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
