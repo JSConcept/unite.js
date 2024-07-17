@@ -73,7 +73,10 @@ export class WindowManager {
         this.tasks.get(ID)?.inactive?.set(true);
         if (location.hash == ID) {
             history.back();
-            location.hash = this.getCurrentTask()||"#"; 
+            const crt = this.getCurrentTask()||"#";
+            if (crt != location.hash) {
+                location.hash = crt;
+            }
         };
         this.orderLayers();
     }
@@ -83,7 +86,9 @@ export class WindowManager {
         if (!this.tasks.has(ID)) {
             this.priorityList.push(ID);
             this.tasks.set(ID, { detached: false, ...meta, inactive: writable(location.hash != ID) });
-            location.hash = ID;
+            if (ID != location.hash) {
+                location.hash = ID;
+            }
             this.orderLayers();
         }
     }
@@ -117,7 +122,9 @@ export class WindowManager {
             if (p >= 0) { this.priorityList.splice(p, 1); }
             this.priorityList.push(ID);
             this.tasks.get(ID).inactive.set(false);
-            location.hash = ID;
+            if (ID != location.hash) {
+                location.hash = ID;
+            }
             this.orderLayers();
             return true;
         }
