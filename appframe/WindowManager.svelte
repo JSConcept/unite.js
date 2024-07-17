@@ -5,6 +5,7 @@
     import {writable} from "svelte/store";
     import { observeBySelector } from "../dom/Observer.ts";
     import {fade} from "svelte/transition";
+    import Frame from "../design/Frame.svelte"
 
     //
     export let windowManager: any = null;
@@ -62,6 +63,9 @@
         tasks.set(windowManager.getTasks());
     });
     
+    //
+    const taskListOpened = writable(false);
+    
 </script>
 
 <!-- -->
@@ -80,7 +84,7 @@
         <!-- mobile-only -->
         <div class="ux-task-button ux-solid hl-1">
             {#each $tasks.entries() as task}
-                <TaskBox windowManager={windowManager} id={task[0]} {...task[1]}></TaskBox>
+                <TaskBox taskListOpened={taskListOpened} windowManager={windowManager} id={task[0]} {...task[1]}></TaskBox>
             {/each}
         </div>
         
@@ -90,11 +94,11 @@
     </div>
     
     <!-- on-mobile is drop-list -->
-    <div class="ux-task-list ux-solid hl-1">
+    <Frame focused={taskListOpened} class="ux-frame ux-modal-frame ux-task-list ux-solid hl-1">
         {#each $tasks.entries() as task}
             <TaskBox windowManager={windowManager} id={task[0]} {...task[1]}></TaskBox>
         {/each}
-    </div>
+    </Frame>
 
     <!-- -->
     <slot></slot>

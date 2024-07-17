@@ -61,9 +61,9 @@
     padding-block-end: 0px;
 
     //
-    & .ux-task-list {
-        display: flex;
-    }
+    //& .ux-task-list {
+        //display: flex;
+    //}
 
     //
     & .titlebar {
@@ -226,7 +226,7 @@
             @extend .ux-solid;
 
             //
-            display: none;
+            display: flex;
             z-index: 9999 + 2;
             overflow: hidden;
             border-radius: 0.125rem;
@@ -234,7 +234,7 @@
             inset: 0px;
             
             //
-            translate: 0px calc(0px - 50cqb - var(--min-taskbar-height));
+            //translate: 0px calc(0px - 50cqb - var(--min-taskbar-height));
             flex-direction: column;
             align-self: end;
             
@@ -250,9 +250,11 @@
             
             //
             padding: 0rem;
-            display: none;
-            grid-column: title-label;
-            grid-row: titlebar;
+            //display: none;
+            
+            //
+            //grid-column: title-label;
+            ///grid-row: titlebar;
             
             //
             align-self: start;

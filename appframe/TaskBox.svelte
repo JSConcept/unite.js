@@ -12,8 +12,15 @@
     export let icon = "";
 
     //
-    const focusOn = ()=>{
-        windowManager?.focusTask?.(id);
+    export let taskListOpened = writable(false);
+
+    //
+    const focusOn = (ev)=>{
+        if (matchMedia("(orientation: portrait) or (width < 9in)").matches && ev.target.closest(".ux-task-button")) {
+            taskListOpened.set(true);
+        } else {
+            windowManager?.focusTask?.(id);
+        }
     }
 
 </script>

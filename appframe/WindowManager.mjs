@@ -6,7 +6,7 @@ import { writable } from "svelte/store"
 
 
 //
-const switchClassSingle = (el, cname, condition) => {
+export const switchClassSingle = (el, cname, condition) => {
     //
     if (condition) {
         if (!el?.classList?.contains?.(cname)) {
@@ -20,12 +20,12 @@ const switchClassSingle = (el, cname, condition) => {
 }
 
 //
-const isArrayLike = (a) => {
+export const isArrayLike = (a) => {
     return (Array.isArray(a) || (a!=null && typeof(a[Symbol.iterator])==='function' && typeof(a.length)==='number' &&typeof(a)!=='string'));
 }
 
 //
-const switchClass = (el, cname, condition)=>{
+export const switchClass = (el, cname, condition)=>{
     if (isArrayLike(el)) {
         return Array.from(el).map((e)=>switchClassSingle(e, cname, condition));
     }
