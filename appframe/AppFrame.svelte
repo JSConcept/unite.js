@@ -170,7 +170,7 @@
 
         <div class="titlebar ux-solid hl-1">
             <div class="back-button hl-1h hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
-                <LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
+                <LucideIcon inert={true} slot="icon" name={"chevron-down"}/>
             </div>
             <div class="ux-title-handle hl-2 ux-solid">
                 

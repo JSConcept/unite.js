@@ -337,13 +337,34 @@ export default class AxGesture {
         document.documentElement.addEventListener("pointerdown", (ev) => {
             if (ev.target == handler) {
                 status.pointerId = ev.pointerId;
-                grabForDrag(this.#holder, ev, {
-                    propertyName: "drag",
-                    shifting: [
-                        this.propGet("--drag-x") || 0,
-                        this.propGet("--drag-y") || 0,
-                    ],
-                });
+
+                //
+                const shiftEv = (evp) => {
+                    if (evp.pointerId == ev.pointerId) {
+                        unListenShift(evp);
+                        grabForDrag(this.#holder, ev, {
+                            propertyName: "drag",
+                            shifting: [
+                                this.propGet("--drag-x") || 0,
+                                this.propGet("--drag-y") || 0,
+                            ],
+                        });
+                    }
+                };
+
+                //
+                const unListenShift = (evp) => {
+                    if (evp.pointerId == ev.pointerId) {
+                        document.removeEventListener("pointermove", shiftEv);
+                        document.removeEventListener("pointerup", unListenShift);
+                        document.removeEventListener("pointercancel", unListenShift);
+                    }
+                };
+
+                //
+                document.addEventListener("pointermove", shiftEv);
+                document.addEventListener("pointerup", unListenShift);
+                document.addEventListener("pointercancel", unListenShift);
             }
         });
 
