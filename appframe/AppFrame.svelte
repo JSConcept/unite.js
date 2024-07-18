@@ -38,7 +38,8 @@
         const target = ev.target as HTMLElement;
         
         //
-        if (MOCElement(target, ".ux-app-frame") == frameElement) {
+        if (MOCElement(target, ".ux-app-frame") == frameElement) 
+        {
             //
             if (target.matches(".ux-app-frame *:not(.back-button, .menu-button)")) {
                 //ev.stopPropagation();
