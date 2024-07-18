@@ -10,7 +10,7 @@ export const whenHashChange = () => {
 };
 
 //
-export const readableHash = whenHashChange();
+export const currentLocationHash = whenHashChange();
 
 //
 export const whenMedia = (media = "") => {

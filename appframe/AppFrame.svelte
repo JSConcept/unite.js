@@ -1,6 +1,6 @@
 <script type="ts" lang="ts">
     import { MOCElement } from "../utils/Utils.ts";
-    //import {readableHash} from '../dom/Realtime.ts';
+    import {currentLocationHash} from '../dom/Realtime.ts';
     import LucideIcon from '../design/WLucideIcon.svelte';
     import AxGesture from "../interact/Gesture.ts";
     import {fade} from "svelte/transition";
@@ -19,7 +19,9 @@
     
     //
     requestAnimationFrame(()=>{
-        isInactive = windowManager.getTask(hashIdName).inactive || writable(true);
+        if (windowManager) {
+            isInactive = windowManager.getTask(hashIdName).inactive || writable(true);
+        }
     });
     
     // outdated due gestures control
@@ -55,7 +57,9 @@
             //ev.preventDefault();
             
             //
-            windowManager?.focusTask?.("#" + MOCElement(target, ".ux-app-frame")?.querySelector(".ux-content")?.id||"");
+            if (windowManager) {
+                windowManager?.focusTask?.("#" + MOCElement(target, ".ux-app-frame")?.querySelector(".ux-content")?.id||"");
+            }
         }
         
         //
@@ -76,8 +80,11 @@
                 
                 //
                 if (content.dispatchEvent(event)) {
-                    windowManager?.minimizeTask?.("#" + content.id);
-                    //history.back();
+                    if (windowManager) {
+                        windowManager?.minimizeTask?.("#" + content.id);
+                    } else {
+                        history.back();
+                    }
                 }
             }
         }
@@ -90,10 +97,9 @@
     const makeControl = (frameElement)=>{
         if (frameElement && !frameElement["@control"]) {
             gestureControl = new AxGesture(frameElement);
-        }
-
-        //
-        if (gestureControl) {
+            frameElement["@control"] = gestureControl;
+            
+            //
             gestureControl.draggable({
                 handler: frameElement.querySelector(".ux-title-handle")
             });
@@ -102,10 +108,10 @@
             gestureControl.resizable({
                 handler: frameElement.querySelector(".ux-resize")
             });
-            
-            // TODO! fix typescript typing
-            // center manually
-            
+        }
+
+        //
+        if (frameElement) {
             // @ts-ignore
             frameElement.style.setProperty("--drag-x", -(frameElement.clientWidth / 2) + frameElement.parentNode.offsetWidth / 2, "");
             
@@ -148,8 +154,8 @@
 </script>
 
 <!-- -->
-{#if !$isInactive}
-    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1" transition:fade={{ delay: 0, duration: 100 }}>
+{#if !$isInactive && $currentLocationHash == hashIdName}
+    <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1 ux-detached" transition:fade={{ delay: 0, duration: 100 }}>
 
         <div class="titlebar ux-solid hl-1">
             <div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
