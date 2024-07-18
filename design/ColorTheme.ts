@@ -166,14 +166,20 @@ window.addEventListener("wallpaper", (ev) => {
             .then(() => {
                 const filename =
                     "/opfs?path=images/" + (blob.name || "wallpaper");
-                provide(filename, true)
-                    .then(async (fw: any) => {
-                        localStorage.setItem("@wallpaper", filename);
-                        await fw?.write?.(blob);
-                        await fw?.flush?.();
-                        await fw?.close?.();
-                    })
-                    .catch(console.warn.bind(console));
+
+                //
+                if (!ev.detail.doNotRewrite) {
+                    provide(filename, true)
+                        .then(async (fw: any) => {
+                            localStorage.setItem("@wallpaper", filename);
+                            await fw?.write?.(blob);
+                            await fw?.flush?.();
+                            await fw?.close?.();
+                        })
+                        .catch(console.warn.bind(console));
+                } else {
+                    localStorage.setItem("@wallpaper", filename);
+                }
             })
             .catch(console.warn.bind(console));
 });

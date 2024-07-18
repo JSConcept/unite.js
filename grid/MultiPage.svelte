@@ -141,10 +141,6 @@
     }
     
     
-    
-        
-    
-    
     //
     document.addEventListener("m-dragend", (ev)=>{
         if (MOC(ev.target, ".ux-grid-item[data-type=\"backup\"]")) {
@@ -156,7 +152,7 @@
     //
     document.addEventListener("click", (ev)=>{
         const target = ev.target as HTMLElement;
-        if (target.matches(".ux-grid-pages *[data-type=\"items\"][data-action]")) {
+        if (target.matches(".ux-grid-pages[data-current-page=\""+current+"\"] *[data-type=\"items\"][data-action]")) {
             ev.stopPropagation();
             ev.preventDefault();
             actionMap?.get?.(target.dataset.action as string)?.({

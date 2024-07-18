@@ -60,7 +60,7 @@
     //
     document.addEventListener("click", (ev)=>{
         const target = ev.target as HTMLElement;
-        if (target.matches(".ux-context-menu *[data-action]")) {
+        if (target.matches(".ux-context-menu[data-ctx-name=\"" + ctxName + "\"] *[data-action]")) {
             ev.stopPropagation();
             ev.preventDefault();
             actionMap?.get?.(target.dataset.action as string)?.({

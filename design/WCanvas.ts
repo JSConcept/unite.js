@@ -140,12 +140,16 @@ export class WCanvas extends HTMLCanvasElement {
     }
 
     //
-    async $useImageAsSource(blob) {
+    async $useImageAsSource(blob, doNotRewrite = false) {
         const img = (blob instanceof ImageBitmap) ? blob : (await createImageBitmap(blob).catch((_) => null));
+        if (img) {this.image = img; this.#render();}
+
+        //
         if (blob instanceof Blob || blob instanceof File) {
-            if (img) this.image = img; this.#render();
-            window.dispatchEvent(new CustomEvent("wallpaper", {detail: {blob}}));
+            window.dispatchEvent(new CustomEvent("wallpaper", {detail: {blob, doNotRewrite}}));
         }
+
+        //
         return img;
     }
 
