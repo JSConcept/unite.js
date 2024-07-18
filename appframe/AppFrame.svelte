@@ -13,7 +13,6 @@
     export let windowManager: any = null;
 
     //
-    //let pointerIdDrag = -1;
     let frameElement: HTMLElement | null = null;
     let isInactive = writable(false);
     
@@ -24,19 +23,7 @@
         }
     });
     
-    // outdated due gestures control
-    /*document.documentElement.addEventListener("m-dragging", (ev)=>{
-        const dt = ev.detail;
-        if (frameElement && frameElement?.parentNode && dt.pointer.id == pointerIdDrag && (dt.holding.element.deref() == frameElement)) {
-            const wDiff = ((frameElement?.parentNode as HTMLElement|null)?.offsetWidth || 0) - frameElement.clientWidth;
-            const hDiff = ((frameElement?.parentNode as HTMLElement|null)?.offsetHeight || 0) - frameElement.clientHeight;
-
-            // change drag-state (correction)
-            dt.holding.modified[0] = Math.min(Math.max(dt.holding.shifting[0], -wDiff/2), wDiff/2);
-            dt.holding.modified[1] = Math.min(Math.max(dt.holding.shifting[1], -hDiff/2), hDiff/2);
-        }
-    });*/
-    
+    //
     document.documentElement.addEventListener("contextmenu", (ev)=>{
         const target = ev.target as HTMLElement;
         if ((target?.matches?.(".ux-app-frame") || target?.closest?.(".ux-app-frame")) && !target.matches("input[type=\"text\"]")) {
@@ -51,7 +38,7 @@
         const target = ev.target as HTMLElement;
         
         //
-        if (target.matches(".ux-app-frame *:not(.back-button)")) {
+        if (target.matches(".ux-app-frame *:not(.back-button, .menu-button)")) {
             //ev.stopPropagation();
             //ev.stopImmediatePropagation();
             //ev.preventDefault();
@@ -59,6 +46,25 @@
             //
             if (windowManager) {
                 windowManager?.focusTask?.("#" + MOCElement(target, ".ux-app-frame")?.querySelector(".ux-content")?.id||"");
+            }
+        }
+        
+        //
+        if (target.matches(".ux-app-frame .menu-button")) {
+            // kuril i umer
+            ev.stopPropagation();
+            ev.stopImmediatePropagation();
+            ev.preventDefault();
+            
+            //
+            const content = MOCElement(target, ".ux-app-frame")?.querySelector?.(".ux-content");
+            if (content && (hashIdName == ("#" + content.id))) {
+                const event = new CustomEvent("ux-menu", {
+                    cancelable: true,
+                    bubbles: true,
+                    detail: {}
+                });
+                content.dispatchEvent(event);
             }
         }
         
