@@ -61,11 +61,18 @@
     document.addEventListener("click", (ev)=>{
         const target = ev.target as HTMLElement;
         if (target.matches(".ux-context-menu[data-ctx-name=\"" + ctxName + "\"] *[data-action]")) {
-            ev.stopPropagation();
             ev.preventDefault();
+            ev.stopPropagation();
+            ev.stopImmediatePropagation();
+            
+            //
             actionMap?.get?.(target.dataset.action as string)?.({
                 initiator
             });
+            
+            //
+            initiator = null;
+            hasInitiator.set(!!initiator);
         }
         
         //

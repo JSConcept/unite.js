@@ -153,8 +153,12 @@
     document.addEventListener("click", (ev)=>{
         const target = ev.target as HTMLElement;
         if (target.matches(".ux-grid-pages[data-current-page=\""+current+"\"] *[data-type=\"items\"][data-action]")) {
-            ev.stopPropagation();
+            //
             ev.preventDefault();
+            ev.stopPropagation();
+            ev.stopImmediatePropagation();
+            
+            //
             actionMap?.get?.(target.dataset.action as string)?.({
                 initiator: target
             });
