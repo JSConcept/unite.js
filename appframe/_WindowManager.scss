@@ -200,6 +200,11 @@
             grid-template-rows: minmax(0px, 1fr) minmax(0px, 0.25rem);
             
             //
+            &.ux-inactive {
+                opacity: 0.5;
+            }
+            
+            //
             .ux-task-label, .ux-task-icon {
                 grid-row: 1 / 2 span;
             }

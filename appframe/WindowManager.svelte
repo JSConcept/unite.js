@@ -41,18 +41,24 @@
             ev.preventDefault();
             
             //
-            const content = document?.querySelector?.(".ux-app-frame .ux-content" + (windowManager?.getCurrentTask?.() || location.hash));
-            if (content) {
-                const event = new CustomEvent("ux-back", {
-                    cancelable: true,
-                    bubbles: true,
-                    detail: {}
-                });
-                
-                //
-                if (content.dispatchEvent(event)) {
-                    windowManager?.minimizeTask?.("#" + content.id);
-                    //history.back();
+            const task = (windowManager?.getCurrentTask?.() || location.hash);
+            const corr = (task && task != "#") ? task : location.hash;
+            
+            //
+            if (corr && corr != "#") {
+                const content = document?.querySelector?.(".ux-app-frame .ux-content" + corr);
+                if (content) {
+                    const event = new CustomEvent("ux-back", {
+                        cancelable: true,
+                        bubbles: true,
+                        detail: {}
+                    });
+                    
+                    //
+                    if (content.dispatchEvent(event)) {
+                        windowManager?.minimizeTask?.("#" + content.id);
+                        //history.back();
+                    }
                 }
             }
         }

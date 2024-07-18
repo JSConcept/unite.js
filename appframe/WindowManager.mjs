@@ -62,7 +62,11 @@ export class WindowManager {
     //
     restoreTask(ID) {
         const p = this.priorityList.indexOf(ID);
-        this.tasks.get(ID)?.inactive?.set(false);
+        const task = this.tasks.get(ID);
+        if (task) {
+            task.inactive.set(false);
+            task.detached = false;
+        }
         this.focusTask(ID);
     }
 
@@ -79,6 +83,15 @@ export class WindowManager {
             }
         };
         this.orderLayers();
+    }
+    
+    //
+    detachTask(ID) {
+        if (this.tasks.has(ID)) {
+            this.tasks.get(ID).detached = true;
+            this.focusTask(ID);
+            this.orderLayers();
+        }
     }
 
     //
@@ -109,8 +122,11 @@ export class WindowManager {
             f?.style?.setProperty?.("--z-index", p, "");
 
             //
-            switchClass(t, "ux-focus", p == (this.priorityList.length-1));
-            switchClass(f, "ux-focus", p == (this.priorityList.length-1));
+            if (p >= 0) {
+                switchClass(t, "ux-focus", p == (this.priorityList.length-1));
+            }
+            
+            //
             switchClass(f, "ux-detached", S?.detached);
         });
     }

@@ -42,13 +42,14 @@
     
     //
     @mixin whenMobile {
-        @include maximized();
-    
         //
         padding-block-end: 0px !important;
         grid-template-rows: 
             [content-b] minmax(0px, 1fr)
             [titlebar] minmax(0px, 3rem);
+    
+        //
+        @include maximized();
     
         //
         & .titlebar {
