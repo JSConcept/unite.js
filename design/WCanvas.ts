@@ -150,14 +150,13 @@ export class WCanvas extends HTMLCanvasElement {
         }
 
         //
-        return img;
+        return blob;
     }
 
     //
     #preload(src) {
-        return provide(src).then(async (blob) => {
-            const img = await this.$useImageAsSource(blob).catch((_) => null);
-            if (img) {this.image = img;}
+        return provide(src).then(async (blob: any) => {
+            return (await this.$useImageAsSource(blob).catch((_) => null));
         }).catch(console.warn.bind(console));
     }
 
