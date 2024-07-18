@@ -38,61 +38,65 @@
         const target = ev.target as HTMLElement;
         
         //
-        if (target.matches(".ux-app-frame *:not(.back-button, .menu-button)")) {
-            //ev.stopPropagation();
-            //ev.stopImmediatePropagation();
-            //ev.preventDefault();
-            
+        if (MOCElement(target, ".ux-app-frame") == frameElement) {
             //
-            if (windowManager) {
-                windowManager?.focusTask?.("#" + MOCElement(target, ".ux-app-frame")?.querySelector(".ux-content")?.id||"");
-            }
-        }
-        
-        //
-        if (target.matches(".ux-app-frame .menu-button")) {
-            // kuril i umer
-            ev.stopPropagation();
-            ev.stopImmediatePropagation();
-            ev.preventDefault();
-            
-            //
-            const content = MOCElement(target, ".ux-app-frame")?.querySelector?.(".ux-content");
-            if (content && (hashIdName == ("#" + content.id))) {
-                const event = new CustomEvent("ux-menu", {
-                    cancelable: true,
-                    bubbles: true,
-                    detail: {}
-                });
-                content.dispatchEvent(event);
-            }
-        }
-        
-        //
-        if (target.matches(".ux-app-frame .back-button")) {
-            // kuril i umer
-            ev.stopPropagation();
-            ev.stopImmediatePropagation();
-            ev.preventDefault();
-            
-            //
-            const content = MOCElement(target, ".ux-app-frame")?.querySelector?.(".ux-content");
-            if (content && (hashIdName == ("#" + content.id))) {
-                const event = new CustomEvent("ux-back", {
-                    cancelable: true,
-                    bubbles: true,
-                    detail: {}
-                });
+            if (target.matches(".ux-app-frame *:not(.back-button, .menu-button)")) {
+                //ev.stopPropagation();
+                //ev.stopImmediatePropagation();
+                //ev.preventDefault();
                 
                 //
-                if (content.dispatchEvent(event)) {
-                    if (windowManager) {
-                        windowManager?.minimizeTask?.("#" + content.id);
-                    } else {
-                        history.back();
+                if (windowManager) {
+                    windowManager?.focusTask?.("#" + MOCElement(target, ".ux-app-frame")?.querySelector(".ux-content")?.id||"");
+                }
+            }
+            
+            //
+            if (target.matches(".ux-app-frame .menu-button")) {
+                // kuril i umer
+                ev.stopPropagation();
+                ev.stopImmediatePropagation();
+                ev.preventDefault();
+                
+                //
+                const content = MOCElement(target, ".ux-app-frame")?.querySelector?.(".ux-content");
+                if (content && (hashIdName == ("#" + content.id))) {
+                    const event = new CustomEvent("ux-menu", {
+                        cancelable: true,
+                        bubbles: true,
+                        detail: {}
+                    });
+                    content.dispatchEvent(event);
+                }
+            }
+            
+            //
+            if (target.matches(".ux-app-frame .back-button")) {
+                // kuril i umer
+                ev.stopPropagation();
+                ev.stopImmediatePropagation();
+                ev.preventDefault();
+                
+                //
+                const content = MOCElement(target, ".ux-app-frame")?.querySelector?.(".ux-content");
+                if (content && (hashIdName == ("#" + content.id))) {
+                    const event = new CustomEvent("ux-back", {
+                        cancelable: true,
+                        bubbles: true,
+                        detail: {}
+                    });
+                    
+                    //
+                    if (content.dispatchEvent(event)) {
+                        if (windowManager) {
+                            windowManager?.minimizeTask?.("#" + content.id);
+                        } else {
+                            history.back();
+                        }
                     }
                 }
             }
+            
         }
     })
 
@@ -164,10 +168,10 @@
     <div {...propsFilter($$props)} bind:this={frameElement} class="ux-frame ux-app-frame ux-default-theme ux-solid hl-1 ux-detached" transition:fade={{ delay: 0, duration: 100 }}>
 
         <div class="titlebar ux-solid hl-1">
-            <div class="back-button hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
+            <div class="back-button hl-1h hl-2 hl-3h ux-solid" style="grid-column: back-button; aspect-ratio: 1 / 1;">
                 <LucideIcon inert={true} slot="icon" name={"arrow-left"}/>
             </div>
-            <div class="ux-title-handle ux-solid hl-1">
+            <div class="ux-title-handle hl-2 ux-solid">
                 
             </div>
             <div class="menu-button accent hl-2 hl-3h ux-solid" style="grid-column: menu-button; aspect-ratio: 1 / 1;">
@@ -181,13 +185,8 @@
             <slot></slot>
         </div>-->
 
-        <div class="ux-resize ux-solid-transparent">
-            
-        </div>
-        
-        <div class="ux-status">
-        
-        </div>
+        <div class="ux-status"></div>
+        <div class="ux-resize ux-solid-transparent"></div>
 
     </div>
 {/if}

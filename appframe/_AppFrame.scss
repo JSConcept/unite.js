@@ -42,18 +42,11 @@
         padding-block-end: 0px !important;
         grid-template-rows: 
             [status] minmax(0px, var(--status-size))
-            [content-b] minmax(0px, 1fr)
-            [titlebar] minmax(0px, 3rem);
+            [titlebar] minmax(0px, 3rem)
+            [content-b] minmax(0px, 1fr);
     
         //
         //@include maximized();
-    
-        //
-        & .titlebar {
-            & > :where(.back-button, .menu-button) {
-                border-radius: 0.125rem;
-            }
-        }
     }
     
     //
@@ -226,7 +219,7 @@
         & > .ux-status {
             @extend .stretch;
             @extend .ux-solid;
-            @extend .hl-1;
+            @extend .hl-2;
             
             //
             grid-row: status;

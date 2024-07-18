@@ -13,17 +13,17 @@
 @layer ux-app-frame {
     
     //
-    @media #{d.$isMobile} {
-        //
-        body:has(:not(.ux-app-frame .ux-content)) .ux-status-bar {
+    body:has(.ux-app-frame .ux-content) .ux-status-bar {
+        @media #{d.$isMobile} {
             --theme-surface-color: transparent;
-            --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+            --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)} !important;
         }
         
         //
-        body:has(.ux-app-frame .ux-content) .ux-status-bar {
-            --theme-surface-color: transparent;
-            --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)} !important;
+        @media #{d.$isDesktop} {
+            --theme-surface-color: rgb(from #{cl.$baseColor} r g b / 0.8);
+            --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+            backdrop-filter: blur(0.125rem);
         }
     }
     
@@ -33,9 +33,6 @@
         @extend .pe-none;
         @extend .align-center;
         @extend .ux-transparent !optional;
-    
-        //
-        //@extend .ux-transparent !optional;
     
         //
         display: grid;
@@ -72,6 +69,10 @@
             display: flex;
             place-items: center;
             place-content: center;
+            background-color: transparent;
+        }
+        
+        & * {
             background-color: transparent;
         }
         
