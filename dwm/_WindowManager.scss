@@ -26,9 +26,6 @@
 
 //
 @mixin whenDesktop {
-    --padding-top: 0px;
-
-    //
     &:not(:has(.ux-app-frame:not(.ux-detached))) {
         grid-template-rows: 
             [titlebar] 0px
@@ -43,11 +40,6 @@
 
 //
 @mixin whenMobile {
-    //
-    --padding: 0rem;
-    --padding-top: max(env(safe-area-inset-top, 0px), 2rem);
-
-    //
     --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
     --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
     --highlight-coefficient: 6;
@@ -114,12 +106,6 @@
         --real-taskbar-height: 3rem;
         
         //
-        --padding: 0rem;
-        --padding-top: 0rem;
-        --padding-left: calc(var(--padding) + env(safe-area-inset-left, 0px));
-        --padding-right: calc(var(--padding) + env(safe-area-inset-right, 0px));
-
-        //
         outline: solid 0.25px oklch(from var(--current-glyph-color) l c h / 0.0);
         
         //
@@ -152,10 +138,6 @@
         grid-template-rows: 
             [titlebar] minmax(0px, var(--real-taskbar-height))
             [content-b] minmax(0px, 1fr);
-
-        //
-        padding-block-start: var(--padding-top);
-        //padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem);
 
         //
         &:hover { outline: solid 0.5px oklch(from var(--current-glyph-color) l c h / 0.125); }
@@ -302,10 +284,6 @@
             display: grid;
             z-index: 99;
             
-            //
-            padding-block: var(--padding, 0px);
-            padding-inline: max(var(--padding-left), var(--padding)) max(var(--padding-right), var(--padding));
-
             //
             & > * {
                 @extend .align-center;

@@ -30,7 +30,9 @@
 
 //
 @use "./appframe/AppFrame";
-@use "./appframe/StatusBar";
+
+//
+@use "./statusbar/StatusBar";
 
 //
 //@use "./dwm/WindowManager";

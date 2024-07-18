@@ -178,6 +178,10 @@
         <div class="ux-resize ux-solid-transparent">
             
         </div>
+        
+        <div class="ux-status">
+        
+        </div>
 
     </div>
 {/if}

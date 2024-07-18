@@ -1,9 +1,9 @@
-@use "../design/ColorVars" as cl;
-@use "../design/ColorUtils" as cu;
-
-//
 @use "../core/Utils" as u;
 @use "../core/ClassLets";
+
+//
+@use "../design/ColorVars" as cl;
+@use "../design/ColorUtils" as cu;
 @use "../design/ColorTheme";
 
 //
@@ -35,19 +35,13 @@
         //
         @include u.clamped-width(min(64rem, 100cqi), calc(80rem + var(--resize-x, 0) * 1px), 100cqi);
         @include u.clamped-height(min(36rem, 100cqb), calc(45rem + var(--resize-y, 0) * 1px), 100cqb);
-        
-        //
-        --padding-top: 0px;
     }
     
     //
     @mixin whenMobile {
-        //
-        --padding-top: max(env(safe-area-inset-top, 0px), 2rem);
-    
-        //
         padding-block-end: 0px !important;
         grid-template-rows: 
+            [status] minmax(0px, var(--status-size))
             [content-b] minmax(0px, 1fr)
             [titlebar] minmax(0px, 3rem);
     
@@ -77,13 +71,8 @@
         //
         --translate-x: clamp(0px, var(--rx, 0px), calc(100cqi - 100%));
         --translate-y: clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
+        --status-size: max(env(safe-area-inset-top, 0px), 2rem);
         
-        //
-        --padding: 0rem;
-        --padding-top: 0rem;
-        --padding-left: calc(var(--padding) + env(safe-area-inset-left, 0px));
-        --padding-right: calc(var(--padding) + env(safe-area-inset-right, 0px));
-
         //
         outline: solid 0.25px oklch(from var(--current-glyph-color) l c h / 0.0);
         transition: outline-color 200ms;
@@ -120,11 +109,8 @@
         //
         grid-template-rows: 
             [titlebar] minmax(0px, 3rem) 
-            [content-b] minmax(0px, 1fr);
-
-        //
-        padding-block-start: var(--padding-top) !important;
-        padding-block-end: max(env(safe-area-inset-bottom, 0px), 2rem) !important;
+            [content-b] minmax(0px, 1fr)
+            [status] minmax(0px, var(--status-size));
 
         //
         &:not(.ux-detached) { @include maximized(); }
@@ -199,27 +185,19 @@
             grid-column: 1 / 3 span;
             grid-template-columns: subgrid;
             grid-template-rows: minmax(0px, 1fr);
+            display: grid;
             
             //
             gap: 0px;
             
             //
             box-sizing: border-box;
-            block-size: calc(3rem + var(--padding));
+            block-size: 3rem;
             
             //
             align-items: end;
-
-            //grid-column: 1 / 2;
             grid-row: titlebar;
             min-block-size: max-content;
-            
-            //
-            display: grid;
-            
-            //
-            padding-block: var(--padding, 0px);
-            padding-inline: max(var(--padding-left), var(--padding)) max(var(--padding-right), var(--padding));
 
             //
             & > * {
@@ -228,8 +206,8 @@
                 
                 //
                 display: flex;
-                grid-row: 1 / 1 span;
                 padding: 1rem;
+                grid-row: 1 / 1 span;
             }
             
             //
@@ -242,6 +220,17 @@
                 max-inline-size: 3rem;
                 max-block-size: 3rem;
             }
+        }
+        
+        //
+        & > .ux-status {
+            @extend .stretch;
+            @extend .ux-solid;
+            @extend .hl-1;
+            
+            //
+            grid-row: status;
+            grid-column: 1 / 3 span;
         }
         
         //
