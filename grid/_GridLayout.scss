@@ -143,6 +143,7 @@
         //
         .ux-grid-item {
             @include calculateMetric();
+            @extend .stretch;
             
             // unsupported
             //writing-mode: horizontal-tb;

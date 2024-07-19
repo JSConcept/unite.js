@@ -29,7 +29,6 @@ registerLayout('grid-page', class {
         const availableInlineSize = constraints.fixedInlineSize; //- edges.all.inline;
         const availableBlockSize = constraints.fixedBlockSize; //- edges.all.block;
         
-
         //
         const orient = parseInt(styleMap.get("--orient").value);
         const columns = styleMap.get(["--columns", "--rows"][orient%2]).value;
@@ -40,7 +39,8 @@ registerLayout('grid-page', class {
         const rowSize = availableBlockSize / rows;
         
         //
-        const childConstraints = {availableInlineSize: columnSize, availableBlockSize: rowSize};
+        const cellMin = Math.min(columnSize, rowSize);
+        const childConstraints = {availableInlineSize: cellMin, availableBlockSize: cellMin};
 
         //
         const childFragments = await Promise.all(children.map(async (child)=>{
