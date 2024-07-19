@@ -149,21 +149,7 @@
     });
     
     
-    //
-    document.addEventListener("click", (ev)=>{
-        const target = ev.target as HTMLElement;
-        if (target.matches(".ux-grid-pages[data-current-page=\""+current+"\"] *[data-type=\"items\"][data-action]")) {
-            //
-            ev.preventDefault();
-            ev.stopPropagation();
-            ev.stopImmediatePropagation();
-            
-            //
-            actionMap?.get?.(target.dataset.action as string)?.({
-                initiator: target
-            });
-        }
-    });
+    
     
     
     //
@@ -242,7 +228,7 @@
 <div bind:this={target} data-current-page={current} data-ctx="grid-space" class="ux-grid-pages stretch grid-based-box ux-transparent pe-enable">
     {#if lists && grids}
         <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="labels"></GridPage>
-        <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} type="items"></GridPage>
+        <GridPage list={lists.get(current)} gridPage={grids.get(current)} items={items} actionMap={actionMap} type="items"></GridPage>
         <GridPage list={backup} gridPage={grids.get("backup")} items={items} type="backup"></GridPage>
     {/if}
 </div>

@@ -4,6 +4,7 @@
     import Frame from "../design/Frame.svelte";
     import {writable} from "svelte/store";
     import {zoomOf} from "../utils/Utils.ts";
+    import {request} from "http";
 
     //
     export let ctxName: string = "default";
@@ -57,28 +58,31 @@
         }
     });
     
+    
+    //
+    const onClick = (ev)=>{
+        const target = ev.target as HTMLElement;
+        
+        //
+        actionMap?.get?.(target.dataset.action as string)?.({
+            initiator
+        });
+        
+        //
+        initiator = null;
+        hasInitiator.set(!!initiator);
+    }
+    
+    
     //
     document.addEventListener("click", (ev)=>{
         const target = ev.target as HTMLElement;
-        if (target.matches(".ux-context-menu[data-ctx-name=\"" + ctxName + "\"] *[data-action]")) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            ev.stopImmediatePropagation();
-            
-            //
-            actionMap?.get?.(target.dataset.action as string)?.({
-                initiator
-            });
-            
-            //
-            initiator = null;
-            hasInitiator.set(!!initiator);
-        }
         
-        //
         if (!(target.matches(".ux-context-menu[data-ctx-name=\"" + ctxName + "\"]") || target.closest(".ux-context-menu[data-ctx-name=\"" + ctxName + "\"]")) || target.matches("*[data-action]")) {
-            initiator = null;
-            hasInitiator.set(!!initiator);
+            requestAnimationFrame(()=>{
+                initiator = null;
+                hasInitiator.set(!!initiator);
+            });
         }
     });
 
@@ -86,7 +90,7 @@
 
 <Frame focused={hasInitiator} data-ctx-name={ctxName} class="ux-modal-frame ux-context-menu">
     {#each ctxList as L}
-        <Block class="ux-block-decor ux-default-theme hl-1h" style="--decor-size: 2rem" data-action={L.action}>
+        <Block onClick={onClick} class="ux-block-decor ux-default-theme hl-1h" style="--decor-size: 2rem" data-action={L.action}>
             <WLucideIcon name={L.icon} slot="icon"></WLucideIcon>
             <span>{L.name}</span>
             <div slot="element"></div>

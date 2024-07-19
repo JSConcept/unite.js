@@ -27,6 +27,7 @@
     
     //
     export let whenMount = ()=>{};
+    export let onClick = (_: PointerEvent | MouseEvent)=>{}
     
     //
     onMount(()=>{
@@ -49,8 +50,9 @@
     });
 </script>
 
-<!-- -->
-<div bind:this={target} data-id={gridItem.id} data-action={action||""} data-href={href||""} data-type={type} data-ctx="grid-item" class="ux-grid-item wavy-shaped ux-accent-inverse">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<div on:click={onClick} bind:this={target} data-id={gridItem.id} data-action={action||""} data-href={href||""} data-type={type} data-ctx="grid-item" class="ux-grid-item wavy-shaped ux-accent-inverse">
     <!--<slot></slot>-->
     <LucideIcon name={icon}></LucideIcon>
 </div>

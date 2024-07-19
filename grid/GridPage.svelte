@@ -8,6 +8,7 @@
     
     //
     export let gridPage: GridPageType | undefined | null = null;//state.grids.get("backup");
+    export let actionMap = new Map();
     
     //
     export let items = new Map<string, GridItemType>([]);
@@ -46,6 +47,16 @@
         target?.style?.setProperty?.(["--columns", "--rows"][idx], v || [4, 8][idx] || 0, "")
     });
     
+    
+    //
+    const onItemClick = (ev)=>{
+        const target = ev.target as HTMLElement;
+        actionMap?.get?.(target.dataset.action as string)?.({
+            initiator: target
+        });
+    }
+    
+    
     //
     onMount(()=>{
         //
@@ -81,11 +92,12 @@
 <!-- -->
 <div bind:this={target} data-id={gridPage?.id||""} class="ux-grid-page stretch grid-based-box ux-transparent">
     
+    <!-- -->
     {#each list as L (L)}
         {#if type == "labels"}
             <GridItemLabel type={type} gridItem={items.get(L)}></GridItemLabel>
         {:else}
-            <GridItem type={type} gridItem={items.get(L)}></GridItem>
+            <GridItem onClick={onItemClick} type={type} gridItem={items.get(L)}></GridItem>
         {/if}
     {/each}
     
