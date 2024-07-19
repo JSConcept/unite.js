@@ -12,7 +12,7 @@
         initial-value: 0;
     }
     
-    @property --percentInPx {
+    @property --scrollAvail {
         syntax: "<number>";
         inherits: true;
         initial-value: 0;
@@ -53,7 +53,10 @@
         background-color: transparent;
 
         //
+        scroll-timeline: --scroll-y vertical, --scroll-x horizontal;
         scroll-timeline: --scroll-y block, --scroll-x inline;
+        
+        //
         scrollbar-gutter: stable both-edges;
         scrollbar-width: none;
         
@@ -87,6 +90,7 @@
             animation-name: scroll-percent;
             animation-timing-function: linear;
             animation-duration: 1ms;
+            animation-fill-mode: both;
 
             will-change: --percent;
 
