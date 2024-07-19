@@ -451,6 +451,7 @@ if ("virtualKeyboard" in navigator) {
     );
 }
 
+//
 document.documentElement.addEventListener("DOMContentLoaded", updateDynamic, {
     passive: true,
 });
@@ -459,25 +460,6 @@ self.addEventListener("resize", updateDynamic, {passive: true});
 
 //
 updateDynamic();
-
-// pre-fix full-screen mode
-document.documentElement.addEventListener(
-    "click",
-    () => {
-        if (
-            matchMedia(
-                "all and ((display-mode: fullscreen) or (display-mode: standalone))"
-            ).matches
-        ) {
-            /*document?.body
-                ?.requestFullscreen?.({
-                    navigationUI: "hide",
-                })
-                ?.catch(console.warn.bind(console));*/
-        }
-    },
-    {passive: true, capture: true}
-);
 
 //
 const viewportHandler = (event?: any) => {
@@ -501,17 +483,24 @@ const viewportHandler = (event?: any) => {
         ""
     );
 
+    //
     const vvh = (viewport?.height || 0) - offsetTop;
     document.documentElement.style.setProperty(
         "--visual-height",
         vvh + "px",
         ""
     );
+
+    //
+    updateDynamic();
 };
 
 //
 window?.visualViewport?.addEventListener?.("scroll", viewportHandler);
 window?.visualViewport?.addEventListener?.("resize", viewportHandler);
+
+//
+document.documentElement.addEventListener("fullscreenchange", viewportHandler);
 
 //
 viewportHandler();
