@@ -99,14 +99,15 @@ export class WCanvas extends HTMLCanvasElement {
         }).observe(this, {box: "content-box"});
 
         //
-        screen.orientation.addEventListener("change", () => {
+        const fixSize = () => {
+            this.width = Math.max((this.offsetWidth || parent?.offsetWidth || 0) * devicePixelRatio, 0);
+            this.height = Math.max((this.offsetHeight || parent?.offsetHeight || 0) * devicePixelRatio, 0);
             this.#render();
-        });
+        }
 
         //
-        window.addEventListener("resize", () => {
-            this.#render();
-        });
+        screen.orientation.addEventListener("change", fixSize);
+        window.addEventListener("resize", fixSize);
 
         //
         this.#preload(this.dataset.src).then(() => this.#render());
@@ -119,6 +120,12 @@ export class WCanvas extends HTMLCanvasElement {
         const img = this.image;
 
         //
+        /*if (CSS.supports("background-image", "paint(w-canvas)")) {
+            ctx?.clearRect(0, 0, canvas.width, canvas.height);
+            this.style.backgroundImage = "paint(w-canvas)";
+            this.style.backgroundSize = "cover";
+            this.style.backgroundPosition = "center";
+        } else*/ //{
         if (img && ctx) {
             const orientation = getCorrectOrientation() || "";
             const ox = (orientation.startsWith("portrait") ? 1 : 0) - 0;
@@ -136,18 +143,27 @@ export class WCanvas extends HTMLCanvasElement {
             ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
             ctx.restore();
         }
-
+        //}
     }
 
     //
     async $useImageAsSource(blob, doNotRewrite = false) {
         const img = (blob instanceof ImageBitmap) ? blob : (await createImageBitmap(blob).catch((_) => null));
-        if (img) {this.image = img; this.#render();}
 
         //
         if (blob instanceof Blob || blob instanceof File) {
+            //this.style.backgroundImage = `url(\"${URL.createObjectURL(blob)}\")`;
+            //this.style.setProperty("--image", `url(\"${URL.createObjectURL(blob)}\")`);
+            this.style.setProperty("--image-width", (this.image?.width || 1) as unknown as string);
+            this.style.setProperty("--image-height", (this.image?.height || 1) as unknown as string);
+            this.style.setProperty("border-image-source", `url(\"${URL.createObjectURL(blob)}\")`);
+
+            //
             window.dispatchEvent(new CustomEvent("wallpaper", {detail: {blob, doNotRewrite}}));
         }
+
+        //
+        if (img) {this.image = img; this.#render();}
 
         //
         return blob;
@@ -170,3 +186,33 @@ export class WCanvas extends HTMLCanvasElement {
 
 //
 customElements.define('w-canvas', WCanvas, {extends: 'canvas'});
+
+//
+if ("paintWorklet" in CSS) {
+    // @ts-ignore
+    CSS.paintWorklet.addModule(new URL("./WCanvasPaint.mjs", import.meta.url).href);
+}
+
+//
+CSS?.registerProperty?.({
+    name: '--image-width',
+    syntax: '<number>',
+    initialValue: `1`,
+    inherits: true,
+});
+
+//
+CSS?.registerProperty?.({
+    name: '--image-height',
+    syntax: '<number>',
+    initialValue: `1`,
+    inherits: true,
+});
+
+//
+CSS?.registerProperty?.({
+    name: '--image',
+    syntax: '<image>',
+    initialValue: `url(\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\")`,
+    inherits: true,
+});
