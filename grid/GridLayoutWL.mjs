@@ -2,6 +2,11 @@ registerLayout('grid-page', class {
     static get inputProperties() { return ['--columns', '--rows', '--orient']; }
     static get childInputProperties() { return ['--grid-column', '--grid-row', '--cell-x', '--cell-y']; }
     
+    static layoutOptions = {
+        childDisplay: 'block',
+        sizing: 'manual'
+    };
+    
     //
     async intrinsicSizes(children, edges, styleMap) {
         const childrenSizes = await Promise.all(children.map((child) => {
@@ -23,7 +28,7 @@ registerLayout('grid-page', class {
     async layout(children, edges, constraints, styleMap) {
         const availableInlineSize = constraints.fixedInlineSize; //- edges.all.inline;
         const availableBlockSize = constraints.fixedBlockSize; //- edges.all.block;
-        const childConstraints = {availableInlineSize, availableBlockSize};
+        
 
         //
         const orient = parseInt(styleMap.get("--orient").value);
@@ -33,6 +38,9 @@ registerLayout('grid-page', class {
         //
         const columnSize = availableInlineSize / columns;
         const rowSize = availableBlockSize / rows;
+        
+        //
+        const childConstraints = {availableInlineSize: columnSize, availableBlockSize: rowSize};
 
         //
         const childFragments = await Promise.all(children.map(async (child)=>{
