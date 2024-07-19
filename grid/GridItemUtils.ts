@@ -181,7 +181,25 @@ const getOrientedPoint = () => {
 
 //
 export const animationSequence = () => {
-    return [
+    return CSS.supports("display", "layout(grid-page)") ?
+        [
+            {
+                "--translate-x": "calc(var(--drag-x) * 1px)",
+                "--translate-y": "calc(var(--drag-y) * 1px)",
+                "--grid-column": "var(--fp-cell-x)",
+                "--grid-row": "var(--fp-cell-y)",
+                easing: "linear",
+                offset: 0.0,
+            },
+            {
+                "--translate-x": "0px",
+                "--translate-y": "0px",
+                "--grid-column": "var(--fc-cell-x)",
+                "--grid-row": "var(--fc-cell-y)",
+                easing: "linear",
+                offset: 1,
+            }
+        ] : [
         {
             "--translate-x": "calc(var(--drag-x) * 1px)",
             "--translate-y": "calc(var(--drag-y) * 1px)",
@@ -282,3 +300,25 @@ export const putToCell = (gridArgs: GridArgsType, $coord: [number, number]) => {
         preCell
     );
 };
+
+//
+if ("layoutWorklet" in CSS) {
+    // @ts-ignore
+    CSS.layoutWorklet.addModule(new URL("./GridLayoutWL.mjs", import.meta.url).href);
+}
+
+//
+CSS?.registerProperty?.({
+    name: "--grid-column",
+    syntax: CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
+    inherits: true,
+    initialValue: "0",
+});
+
+//
+CSS?.registerProperty?.({
+    name: "--grid-row",
+    syntax: CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
+    inherits: true,
+    initialValue: "0",
+});

@@ -88,13 +88,7 @@ export const WavyShapedCircle = () => {
 //
 const properties = [
     {
-        name: "--grid-column",
-        syntax: "<integer>",
-        inherits: true,
-        initialValue: 0,
-    },
-    {
-        name: "--grid-row",
+        name: "--orient",
         syntax: "<integer>",
         inherits: true,
         initialValue: 0,
@@ -273,6 +267,14 @@ const realCellOriented = {
 }
 
 
+
+
+//
+const orient0deg = {"--orient": 0};
+const orient90deg = {"--orient": 1};
+const orient180deg = {"--orient": 2};
+const orient270deg = {"--orient": 3};
+
 //
 const portrait0deg = {"--prot": "0deg"};
 const portrait90deg = {"--prot": "90deg"};
@@ -343,6 +345,9 @@ const lts = Object.assign({}, ltsLandscape);
 const pts = Object.assign({}, ptsLandscape);
 
 //
+const currentOrient = Object.assign({}, orient0deg);
+
+//
 const cloudyShape = WavyShapedCircle();
 
 //
@@ -379,6 +384,11 @@ const updateOrientation = (_) => {
             //
             Object.assign(lts, ltsPortrait);
             Object.assign(pts, ptsPortrait);
+
+            //
+            Object.assign(currentOrient, orient0deg);
+
+            ///
             break;
 
         case "landscape-primary":
@@ -392,6 +402,10 @@ const updateOrientation = (_) => {
             //
             Object.assign(lts, ltsLandscape);
             Object.assign(pts, ptsLandscape);
+
+            //
+            Object.assign(currentOrient, orient90deg);
+
             break;
 
         case "portrait-secondary":
@@ -405,6 +419,10 @@ const updateOrientation = (_) => {
             //
             Object.assign(lts, ltsPortrait);
             Object.assign(pts, ptsPortrait);
+
+            //
+            Object.assign(currentOrient, orient180deg);
+
             break;
 
         case "landscape-secondary":
@@ -418,6 +436,10 @@ const updateOrientation = (_) => {
             //
             Object.assign(lts, ltsLandscape);
             Object.assign(pts, ptsLandscape);
+
+            //
+            Object.assign(currentOrient, orient270deg);
+
             break;
     }
 };
@@ -432,6 +454,7 @@ const classes: StyleTuple[] = [
     [":root, :host, :scope", lts],
     [":root, :host, :scope", pts],
     [":root, :host, :scope", availSize],
+    [":root, :host, :scope", currentOrient],
     [":where(.ux-grid-item), :where(.ux-grid-page > *), :where(.ux-grid-item-label)", currentCellLayout]
 ];
 

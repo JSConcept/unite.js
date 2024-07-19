@@ -57,6 +57,9 @@
         container-name: ux-grid;
         container-type: size;
 
+        // if supported...
+        display: layout(grid-page);
+
         //
         overflow: visible !important;
         contain: size layout !important;
