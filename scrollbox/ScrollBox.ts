@@ -4,8 +4,11 @@ import {zoomOf} from "../utils/Utils.ts";
 // @ts-ignore
 import styles from "./ScrollBox.scss?inline";
 
-// @ts-ignore
+//
 import html from "./ScrollBox.html?raw";
+
+//
+import {observeContentBox} from "../dom/Observer.ts";
 
 //
 interface ScrollBarStatus {
@@ -13,6 +16,10 @@ interface ScrollBarStatus {
     virtualScroll: number;
     pointerLocation: number;
 }
+
+//
+const contentBoxWidth = Symbol("@content-box-width");
+const contentBoxHeight = Symbol("@content-box-height");
 
 //
 class ScrollBar {
@@ -36,15 +43,15 @@ class ScrollBar {
         const onChanges = () => {
 
             const sizePercent = Math.min(
-                this.holder[["offsetWidth", "offsetHeight"][axis]] /
+                this.holder[[contentBoxWidth, contentBoxHeight][axis]] /
                 this.holder[["scrollWidth", "scrollHeight"][axis]],
                 1
             );
-            const thumbSize = this.holder[["offsetWidth", "offsetHeight"][axis]] * sizePercent;
+            const thumbSize = this.holder[[contentBoxWidth, contentBoxHeight][axis]] * sizePercent;
 
             //
             const scrollAvailable =
-                this.holder[["offsetWidth", "offsetHeight"][axis]] -
+                this.holder[[contentBoxWidth, contentBoxHeight][axis]] -
                 thumbSize;
 
             //
@@ -107,8 +114,7 @@ class ScrollBar {
                 //
                 this.status.virtualScroll +=
                     (coord - this.status.pointerLocation) *
-                    (this.holder[["scrollWidth", "scrollHeight"][axis]] /
-                        this.scrollbar[["offsetWidth", "offsetHeight"][axis]]);
+                    (this.holder[["scrollWidth", "scrollHeight"][axis]] / this.holder[[contentBoxWidth, contentBoxHeight][axis]]);
                 this.status.pointerLocation = coord;
 
                 //
@@ -145,11 +151,13 @@ class ScrollBar {
         this.holder.addEventListener("pointerleave", onChanges);
         this.holder.addEventListener("pointerenter", onChanges);
         this.holder.addEventListener("scroll", onChanges);
-        new ResizeObserver((entries) => {
-            if (entries) {
-                onChanges();
-            }
-        }).observe(this.holder, {box: "content-box"});
+
+        //
+        observeContentBox(this.holder, (box) => {
+            this.holder[contentBoxWidth] = box.inlineSize;
+            this.holder[contentBoxHeight] = box.blockSize;
+            onChanges();
+        });
 
         //
         addEventListener("resize", onChanges);

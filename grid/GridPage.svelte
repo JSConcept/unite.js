@@ -25,7 +25,7 @@
     
     //
     $: gridPage?.["@subscribe"]?.((v)=>{
-        const idc = 0;//matchMedia("(orientation: landscape)").matches?1:0;
+        const idc = 0;
         target?.style?.setProperty?.(["--grid-w", "--grid-h"][idc], (v?.[0] || 0) as unknown as string, "")
         target?.style?.setProperty?.(["--grid-h", "--grid-w"][idc], (v?.[1] || 0) as unknown as string, "")
     }, "size");
@@ -59,13 +59,6 @@
     
     //
     onMount(()=>{
-        //
-        const idc = matchMedia("(orientation: landscape)").matches?1:0;
-        if (gridPage && target) { gridPage.size = [target["clientWidth"], target["clientHeight"]]; }
-        target?.style?.setProperty?.(["--grid-w", "--grid-h"][idc], (gridPage?.size?.[0] || 0) as unknown as string, "")
-        target?.style?.setProperty?.(["--grid-h", "--grid-w"][idc], (gridPage?.size?.[1] || 0) as unknown as string, "")
-        
-        //
         target?.style?.setProperty?.("--columns", (gridPage?.layout?.[0] || 4) as unknown as string, "")
         target?.style?.setProperty?.("--rows", (gridPage?.layout?.[1] || 8) as unknown as string, "")
         
@@ -81,7 +74,7 @@
                 gridPage.size[1] = box.blockSize;
                 
                 //
-                const idc = 0;//matchMedia("(orientation: landscape)").matches?1:0;
+                const idc = 0;
                 target?.style?.setProperty?.(["--grid-w", "--grid-h"][idc], (gridPage?.size?.[0] || 0) as unknown as string, "")
                 target?.style?.setProperty?.(["--grid-h", "--grid-w"][idc], (gridPage?.size?.[1] || 0) as unknown as string, "")
             }

@@ -29,13 +29,78 @@ const tpm = (callback: (p0: Function, p1: Function) => {}, timeout = 1000) => {
 };
 
 //
-const widthOf = Symbol("@width");
-const heightOf = Symbol("@height");
+const borderBoxWidth = Symbol("@border-box-width");
+const borderBoxHeight = Symbol("@border-box-height");
+
+//
+const contentBoxWidth = Symbol("@content-box-width");
+const contentBoxHeight = Symbol("@content-box-height");
+
 
 //
 interface InteractStatus {
     pointerId?: number;
 }
+
+
+
+//
+const onBorderObserve = new WeakMap<HTMLElement, ResizeObserver>();
+const onContentObserve = new WeakMap<HTMLElement, ResizeObserver>();
+
+
+
+//
+const doContentObserve = (element) => {
+    if (!onContentObserve.has(element)) {
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.contentBoxSize) {
+                    const contentBoxSize = entry.contentBoxSize[0];
+                    if (contentBoxSize) {
+                        element[contentBoxWidth] = contentBoxSize.inlineSize;
+                        element[contentBoxHeight] = contentBoxSize.blockSize;
+                    }
+                }
+            }
+        });
+
+        //
+        element[contentBoxWidth] = element.offsetWidth;
+        element[contentBoxHeight] = element.offsetHeight;
+
+        //
+        onContentObserve.set(element, observer);
+        observer.observe(element, {box: "content-box"});
+    }
+};
+
+
+//
+const doBorderObserve = (element) => {
+    if (!onBorderObserve.has(element)) {
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.borderBoxSize) {
+                    const borderBoxSize = entry.borderBoxSize[0];
+                    if (borderBoxSize) {
+                        element[borderBoxWidth] = borderBoxSize.inlineSize;
+                        element[borderBoxHeight] = borderBoxSize.blockSize;
+                    }
+                }
+            }
+        });
+
+        //
+        element[borderBoxWidth] = element.clientWidth;
+        element[borderBoxHeight] = element.clientHeight;
+
+        //
+        onBorderObserve.set(element, observer);
+        observer.observe(element, {box: "border-box"});
+    }
+}
+
 
 //
 export default class AxGesture {
@@ -56,29 +121,8 @@ export default class AxGesture {
         this.#holder["@control"] = this;
 
         //
-        this.#observer = new ResizeObserver((entries) => {
-            if (this.#resizeMute) return;
-            for (const entry of entries) {
-                if (entry.borderBoxSize) {
-                    const borderBoxSize = entry.borderBoxSize[0];
-                    if (borderBoxSize) {
-                        this.#holder[widthOf] =
-                            borderBoxSize.inlineSize -
-                            (this.propGet("--resize-x") || 0);
-                        this.#holder[heightOf] =
-                            borderBoxSize.blockSize -
-                            (this.propGet("--resize-y") || 0);
-                    }
-                }
-            }
-        });
-
-        //
-        this.#holder[widthOf] =
-            this.#holder.clientWidth - (this.propGet("--resize-x") || 0);
-        this.#holder[heightOf] =
-            this.#holder.clientHeight - (this.propGet("--resize-y") || 0);
-        this.#observer.observe(this.#holder, {box: "border-box"});
+        doBorderObserve(this.#holder);
+        doContentObserve(this.#holder.parentNode);
     }
 
     //
@@ -219,12 +263,8 @@ export default class AxGesture {
 
     //
     limitResize(real, virtual, holder, container) {
-        const widthDiff =
-            container.offsetWidth -
-            (holder[widthOf] - (this.propGet("--drag-x") || 0));
-        const heightDiff =
-            container.offsetHeight -
-            (holder[heightOf] - (this.propGet("--drag-y") || 0));
+        const widthDiff = container[contentBoxWidth] - (holder[borderBoxWidth] - (this.propGet("--resize-x") || 0) - (this.propGet("--drag-x") || 0));
+        const heightDiff = container[contentBoxHeight] - (holder[borderBoxHeight] - (this.propGet("--resize-y") || 0) - (this.propGet("--drag-y") || 0));
 
         // if relative of un-resized to edge corner max-size
         // discount of dragging offset!
@@ -234,8 +274,8 @@ export default class AxGesture {
 
     //
     limitDrag(real, virtual, holder, container) {
-        const widthDiff = container.offsetWidth - holder.clientWidth;
-        const heightDiff = container.offsetHeight - holder.clientHeight;
+        const widthDiff = container[contentBoxWidth] - holder[borderBoxWidth];
+        const heightDiff = container[contentBoxHeight] - holder[borderBoxHeight];
 
         // if centered
         //real[0] = clamp(-widthDiff * 0.5, virtual[0], widthDiff * 0.5);
@@ -276,7 +316,7 @@ export default class AxGesture {
             (ev) => {
                 const dt = ev.detail;
                 if (dt.holding.propertyName == "resize") {
-                    this.#resizeMute = true;
+                    //this.#resizeMute = true;
                 }
             },
             {capture: true, passive: false}
@@ -310,13 +350,7 @@ export default class AxGesture {
             (ev) => {
                 const dt = ev.detail;
                 if (dt.holding.propertyName == "resize") {
-                    this.#resizeMute = false;
-                    this.#holder[widthOf] =
-                        this.#holder.clientWidth -
-                        (this.propGet("--resize-x") || 0);
-                    this.#holder[heightOf] =
-                        this.#holder.clientHeight -
-                        (this.propGet("--resize-y") || 0);
+                    //this.#resizeMute = false;
                 }
             },
             {capture: true, passive: false}

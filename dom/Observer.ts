@@ -1,26 +1,72 @@
+
+//
+const onBorderObserve = new WeakMap<HTMLElement, Function[]>();
+const onContentObserve = new WeakMap<HTMLElement, Function[]>();
+
 //
 export const observeContentBox = (element, cb) => {
-    const observer = new ResizeObserver((entries, observer) => {
-        for (const entry of entries) {
-            if (entry.contentBoxSize) {
-                cb(entry.contentBoxSize[0], observer);
+    if (!onContentObserve.has(element)) {
+        const callbacks: Function[] = [];
+
+        //
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.contentBoxSize) {
+                    const contentBoxSize = entry.contentBoxSize[0];
+                    if (contentBoxSize) {
+                        callbacks.map((cb) => cb?.(contentBoxSize, observer));
+                    }
+                }
             }
-        }
-    });
-    observer.observe(element, {box: "content-box"});
+        });
+
+        //
+        cb?.({
+            inlineSize: element.offsetWidth,
+            blockSize: element.offsetHeight,
+        }, observer);
+
+        //
+        onContentObserve.set(element, callbacks);
+        observer.observe(element, {box: "content-box"});
+    }
+
+    //
+    onContentObserve.get(element)?.push(cb);
 };
+
 
 //
 export const observeBorderBox = (element, cb) => {
-    const observer = new ResizeObserver((entries, observer) => {
-        for (const entry of entries) {
-            if (entry.contentBoxSize) {
-                cb(entry.borderBoxSize[0], observer);
+    if (!onBorderObserve.has(element)) {
+        const callbacks: Function[] = [];
+
+        //
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.borderBoxSize) {
+                    const borderBoxSize = entry.borderBoxSize[0];
+                    if (borderBoxSize) {
+                        callbacks.map((cb) => cb?.(borderBoxSize, observer));
+                    }
+                }
             }
-        }
-    });
-    observer.observe(element, {box: "border-box"});
-};
+        });
+
+        //
+        cb?.({
+            inlineSize: element.clientWidth,
+            blockSize: element.clientHeight,
+        }, observer);
+
+        //
+        onBorderObserve.set(element, callbacks);
+        observer.observe(element, {box: "border-box"});
+    }
+
+    //
+    onBorderObserve.get(element)?.push(cb);
+}
 
 //
 export const observeAttribute = (element, attribute, cb) => {
