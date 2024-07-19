@@ -43,6 +43,7 @@
         data-name={fieldName} 
         min={-1} max={1} step={1}
         {...propsFilter($$props)}>
+    <div class="fill hl-1"></div>
     <div class="track hl-1"></div>
     <div class="thumb icon-sign hl-2"><LucideIcon name={"circle"}/></div>
 </label>

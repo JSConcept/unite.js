@@ -46,17 +46,54 @@
         aspect-ratio: 1 / 1;
 
         //
-        @include u.clamped-width(max-content, 5rem, none);
+        @include u.clamped-width(max-content, 5rem, 5rem);
         @include u.clamped-height(max-content, 1.5rem, 2.5rem);
         
         //
-        background-color: var(--current-surface-color);
+        background-color: transparent !important;
+        //background-color: var(--current-surface-color);
         accent-color: var(--current-glyph-color);
         color: var(--current-glyph-color);
         
         //
+        & * {
+            background-color: transparent;
+        }
+        
+        
+        //
+        &::after {
+            @extend .stretch;
+        
+            //
+            content: "";
+            display: block;
+            
+            //
+            grid-column: space-r;
+            grid-row: 1 / 1 span;
+        }
+        
+        //
+        &::before {
+            @extend .stretch;
+        
+            //
+            content: "";
+            display: block;
+            
+            //
+            grid-column: space-l;
+            grid-row: 1 / 1 span;
+        }
+        
+        
+        //
         .thumb {
             @extend .pe-none;
+            
+            background-color: var(--current-surface-color);
+            z-index: 9;
         }
         
         //
@@ -99,13 +136,12 @@
         }
         
         //
-        & .track {
+        & .fill {
             @extend .stretch;
-            @extend .ux-inverse;
             @extend .pe-none;
             
             //
-            grid-column: fillT;
+            grid-column: 2 / 3;
             grid-row: 1 / 1 span;
             
             //
@@ -117,7 +153,29 @@
             
             //
             background-color: var(--current-surface-color);
-            color: var(--current-glyph-color);
+            z-index: 1;
+        }
+        
+        //
+        & .track {
+            @extend .stretch;
+            @extend .ux-inverse;
+            @extend .pe-none;
+            
+            //
+            grid-column: 2 / 2;
+            grid-row: 1 / 1 span;
+            
+            //
+            border-radius: 0.25rem 0px 0px 0.25rem;
+            
+            //
+            inset: 0px;
+            transition: inline-size 100ms linear;
+            
+            //
+            background-color: var(--current-surface-color);
+            z-index: 2;
         }
         
         //
