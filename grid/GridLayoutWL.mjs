@@ -10,11 +10,11 @@ registerLayout('grid-page', class {
 
         const maxContentSize = childrenSizes.reduce((max, childSizes) => {
             return Math.max(max, childSizes.maxContentSize);
-        }, 0) + edges.all.inline;
+        }, 0);
 
         const minContentSize = childrenSizes.reduce((max, childSizes) => {
             return Math.max(max, childSizes.minContentSize);
-        }, 0) + edges.all.inline;
+        }, 0);
 
         return {maxContentSize, minContentSize};
     }
