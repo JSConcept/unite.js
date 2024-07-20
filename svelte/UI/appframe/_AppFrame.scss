@@ -1,0 +1,242 @@
+@use "../../../scss/core/Utils" as u;
+@use "../../../scss/core/ClassLets";
+@use "../../../scss/core/Detector" as d;
+
+//
+@use "../../../scss/design/ColorVars" as cl;
+@use "../../../scss/design/ColorUtils" as cu;
+@use "../../../scss/design/ColorTheme";
+
+//
+@layer ux-app-frame {
+    
+    //
+    @mixin maximized {
+        display: contents !important;
+        
+        //
+        & .ux-title-label { display: none !important; }
+        & .titlebar { display: none !important; }
+        
+        //
+        & .ux-content {
+            z-index: 999;
+            z-index: calc(999 + var(--z-index, 0));
+        }
+    }
+    
+    //
+    @mixin whenDesktop {
+        border-radius: 0.25rem;
+        box-shadow: 0px 0px 1rem 1px #00000070;
+        
+        //
+        @include u.clamped-width(min(64rem, 100cqi), calc(80rem + var(--resize-x, 0) * 1px), 100cqi);
+        @include u.clamped-height(min(36rem, 100cqb), calc(45rem + var(--resize-y, 0) * 1px), 100cqb);
+    }
+    
+    //
+    @mixin whenMobile {
+        padding-block-end: 0px !important;
+        grid-template-rows: 
+            [status] minmax(0px, var(--status-size))
+            [titlebar] minmax(0px, 3rem)
+            [content-b] minmax(0px, 1fr);
+    
+        //
+        //@include maximized();
+    }
+    
+    //
+    .ux-app-frame {
+        //
+        @extend .contain-size;
+        @extend .align-center;
+        @extend .stretch !optional;
+        @extend .pe-enable;
+        
+        //
+        --rx: calc(var(--drag-x, 0) * 1px);
+        --ry: calc(var(--drag-y, 0) * 1px);
+
+        //
+        --translate-x: clamp(0px, var(--rx, 0px), calc(100cqi - 100%));
+        --translate-y: clamp(0px, var(--ry, 0px), calc(100cqb - 100%));
+        --status-size: max(env(safe-area-inset-top, 0px), 2rem);
+        
+        //
+        outline: solid 0.25px oklch(from var(--current-glyph-color) l c h / 0.0);
+        transition: outline-color 200ms;
+
+        //
+        translate: var(--translate-x) var(--translate-y) 0px;
+        will-change: translate, transform, inline-size, block-size, contents, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
+        
+        //
+        overflow: hidden !important;
+        position: fixed;
+        
+        //
+        inset: 0px;
+        z-index: 999;
+        z-index: calc(999 + var(--z-index, 0));
+        display: grid;
+    
+        //
+        contain: content;
+        container-type: size;
+        container-name: ux-windowed;
+        box-sizing: border-box;
+        
+        //
+        font-size: 0.9rem;
+
+        //
+        grid-template-columns: 
+            [menu-button] minmax(3rem, max-content)
+            [title-label] minmax(0px, 1fr)
+            [back-button] minmax(3rem, max-content);
+    
+        //
+        grid-template-rows: 
+            [titlebar] minmax(0px, 3rem) 
+            [content-b] minmax(0px, 1fr)
+            [status] minmax(0px, var(--status-size));
+
+        //
+        &:not(.ux-detached) { @include maximized(); }
+        &:not(:has(.ux-content)) { display: none !important; }
+        &:hover {
+            outline: solid 0.5px oklch(from var(--current-glyph-color) l c h / 0.125);
+        }
+        
+        //
+        & > .ux-resize {
+            position: absolute;
+            inset: auto;
+            inset-inline-end: 0px;
+            inset-block-end: 0px;
+            inline-size: 1rem;
+            block-size: 1rem;
+            
+            //
+            background-color: transparent;
+            cursor: nwse-resize;
+        }
+        
+        //
+        & > :where(.titlebar > .ux-title-handle, .ux-title-label) 
+        {
+            @extend .stretch;
+            @extend .align-center;
+            @extend .align-inline-left;
+            @extend .no-wrap;
+            @extend .ux-solid;
+
+            //
+            display: flex;
+            grid-column: title-label;
+
+            //
+            flex-direction: row;
+            padding: 0.5rem;
+            padding-inline: 1rem;
+            min-inline-size: max-content;
+            cursor: grab;
+            
+            //
+            font-weight: 600;
+            font-size: 1rem;
+            
+            //
+            &:where(.ux-title-handle) {
+                @extend .ux-solid;
+                @extend .pe-enable;
+            }
+            
+            //
+            &:where(.ux-title-label) {
+                @extend .pe-none;
+                @extend .ux-solid-transparent;
+                
+                //
+                grid-row: titlebar;
+            }
+        }
+        
+        //
+        & > .titlebar {
+            @extend .align-center;
+            @extend .stretch;
+            @extend .pe-enable;
+            @extend .no-wrap;
+            
+            //
+            grid-row: titlebar;
+            grid-column: 1 / 3 span;
+            grid-template-columns: subgrid;
+            grid-template-rows: minmax(0px, 1fr);
+            display: grid;
+            
+            //
+            gap: 0px;
+            
+            //
+            box-sizing: border-box;
+            block-size: 3rem;
+            
+            //
+            align-items: end;
+            grid-row: titlebar;
+            min-block-size: max-content;
+
+            //
+            & > * {
+                @extend .align-center;
+                @extend .stretch;
+                
+                //
+                display: flex;
+                padding: 1rem;
+                grid-row: 1 / 1 span;
+            }
+            
+            //
+            & > :where(.back-button, .menu-button) {
+                padding: 0.75rem;
+                cursor: pointer;
+                aspect-ratio: 1 / 1;
+                
+                //
+                max-inline-size: 3rem;
+                max-block-size: 3rem;
+            }
+        }
+        
+        //
+        & > .ux-status {
+            @extend .stretch;
+            @extend .ux-solid;
+            @extend .hl-2;
+            
+            //
+            grid-row: status;
+            grid-column: 1 / 3 span;
+        }
+        
+        //
+        & > .ux-content {
+            @extend .stretch;
+            @extend .ux-solid;
+            
+            //
+            grid-row: content-b;
+            grid-column: 1 / 3 span;
+        }
+        
+        //
+        @container ux-windowed #{d.$isNotWide} { @include whenMobile; }
+        @media #{d.$isMobile} { @include whenMobile; }
+        @media #{d.$isDesktop} { @include whenDesktop; }
+    }
+}

@@ -1,0 +1,384 @@
+/* 
+ * Here is very simple class-lets, for something harder use complex!
+ */
+
+@layer ux-classlets {
+
+    // usable for grid-items
+    .auto-space {
+        inline-size: auto;
+        inline-size: stretch;
+        block-size: auto;
+        block-size: stretch;
+    }
+
+    //
+    .stretch {
+        inline-size: auto;
+        inline-size: 100%;
+        inline-size: stretch;
+        block-size: auto;
+        block-size: 100%;
+        block-size: stretch;
+        
+        //
+        max-inline-size: none;
+        max-inline-size: stretch;
+        max-block-size: none;
+        max-block-size: stretch;
+        
+        // stretch or moz-available works buggy
+        @-moz-document url-prefix() {
+            inline-size: min(100%, 100cqi);
+            block-size: min(100%, 100cqb);
+            max-inline-size: min(100%, 100cqi);
+            max-block-size: min(100%, 100cqb);
+        }
+    }
+
+    //
+    .contained {
+        inline-size: 100cqi;
+        block-size: 100cqb;
+    }
+
+    //
+    .fixed { position: fixed; overflow: visible; }
+    .inset-0 { inset: 0px; };
+
+    //
+    .horizontal-force {
+        writing-mode: horizontal-tb;
+    }
+
+    //
+    .orientation-adaptive {
+        transform-origin: center center;
+        writing-mode: var(--pwm);
+        direction: var(--pdir);
+        rotate: var(--pfrot, 0deg);
+    }
+
+    //
+    .padding-0 {
+        padding: 0px;
+    }
+
+    //
+    .overflow-visible {
+        overflow: visible;
+    }
+
+    //
+    .relative {
+        position: relative;
+    }
+
+    // bit-complex element
+    .grid-inside {
+        position: relative;
+        grid-column: 1 / 1;
+        grid-row: 1 / 1;
+    }
+
+    //
+    .pointer-events-enable {
+        pointer-events: auto !important;
+        pointer-events: bounding-box !important;
+    }
+
+    //
+    .pe-enable {
+        @extend .pointer-events-enable;
+    }
+
+    //
+    .user-select-enable {
+        -webkit-user-select: auto;
+        -khtml-user-select: auto;
+        -moz-user-select: auto;
+        -o-user-select: auto;
+        -ms-user-select: auto;
+        user-select: auto;
+    }
+
+    //
+    .ux-hidden {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: collapse !important;
+        
+        & * {
+            pointer-events: none !important;
+        }
+    }
+
+    //
+    .us-enable {
+        @extend .user-select-enable;
+    }
+
+    //
+    .user-drag-enable {
+        -webkit-user-drag: auto;
+        -khtml-user-drag: auto;
+        -moz-user-drag: auto;
+        -o-user-drag: auto;
+        -ms-user-drag: auto;
+        user-drag: auto;
+    }
+
+    //
+    .ud-enable {
+        @extend .user-drag-enable;
+    }
+    
+    //
+    .no-user-select {
+        //
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        
+        //
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        -ms-user-drag: none;
+        user-drag: none;
+    }
+
+    //
+    .pointer-events-none {
+        pointer-events: none;
+        
+        //
+        @extend .no-user-select;
+    }
+
+    //
+    .pe-none {
+        @extend .pointer-events-none;
+    }
+    
+    
+    
+    
+    // depends from virtual keyboards
+    .fit-viewport {
+        @extend .vp-vars;
+        
+        //
+        inline-size: var(--vp-i-size);
+        block-size: var(--vp-b-size);
+        
+        //
+        max-inline-size: var(--vp-i-size);
+        max-block-size: var(--vp-b-size);
+    }
+    
+    //
+    .vp-vars {
+        --vp-i-size: calc(100dvi / var(--zoom, 1));
+        --vp-b-size: calc(100dvb / var(--zoom, 1));
+
+        //
+        /*@media screen and ((hover: none) and (pointer: coarse)) {
+            --vp-i-size: max(calc(var(--avail-width) / var(--zoom, 1)), calc(100lvi / var(--zoom, 1)));
+            --vp-b-size: max(calc(var(--avail-height) / var(--zoom, 1)), calc(100lvb / var(--zoom, 1)));
+        }*/
+
+        //
+        @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+        
+        //
+        @at-root :fullscreen & {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+    }
+
+
+    //
+    .vp-vars-keyboard-dependent {
+        --vp-i-size: calc(100dvi / var(--zoom, 1));
+        --vp-b-size: calc(100dvb / var(--zoom, 1));
+        
+        //
+        @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+        
+        //
+        @at-root :fullscreen & {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+    }
+    
+    
+    
+    
+    // not depends from virtual keyboards
+    .fixed-avail {
+        @extend .fixed;
+        @extend .inset-0;
+        @extend .fit-viewport;
+    }
+
+    //
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    //
+    .align-center {
+        // FLEX/GRID
+        justify-content: center;
+        justify-items: center;
+        align-content: center;
+        align-items: center;
+        
+        // Legacy
+        text-align: center;
+        vertical-align: center;
+        
+        // EXPERIMENTAL!
+        place-content: center;
+        place-items: center;
+    }
+
+    // bit-complex element
+    .grid-based-box {
+        @extend .stretch;
+        @extend .align-center;
+
+        //
+        container-type: size;
+        contain: content;
+        
+        //
+        isolation: auto;
+
+        //
+        display: grid;
+        grid-template-columns: minmax(0px, 1fr);
+        grid-template-rows: minmax(0px, 1fr);
+        position: fixed;
+        inset: 0px;
+
+        //
+        pointer-events: none;
+        overflow: visible;
+
+        //
+        align-items: start;
+        align-content: start;
+        align-self: start;
+
+        //
+        & > :where(*) {
+            @extend .contained;
+            @extend .grid-inside;
+            @extend .align-center;
+            
+            //
+            align-items: start;
+            align-content: start;
+            align-self: start;
+        }
+    }
+    
+    //
+    .inset-auto {
+        inset: auto;
+    }
+    
+    //
+    .no-contain {
+        container-type: normal;
+        contain: none;
+    }
+
+    //
+    .layer-1m { z-index: -1; };
+    .layer-0 { z-index: 0; };
+    .layer-1 { z-index: 1; };
+    .layer-2 { z-index: 2; };
+    .layer-99 { z-index: 99; };
+    .layer-999 { z-index: 999; };
+
+    // display: contents + pointer-events: none
+    // used for transparent wrappers
+    .contents {
+        container-type: normal;
+        contain: none;
+        display: contents;
+        pointer-events: none;
+        background-color: transparent;
+    }
+    
+    //
+    .max-content-as-min {
+        min-inline-size: max-content;
+        min-block-size: max-content;
+    }
+    
+    .inline-stretch {
+        inline-size: stretch;
+        block-size: max-content;
+        
+        max-block-size: stretch;
+        min-block-size: max-content;
+    }
+    
+    //
+    .contain-size {
+        container-type: size;
+        contain: content;
+        
+        //
+        @extend .max-content-as-min;
+        @extend .stretch;
+    }
+    
+    //
+    .contain-inline-size {
+        container-type: inline-size;
+        contain: content;
+        
+        //
+        @extend .inline-stretch;
+    }
+
+    //
+    .round-ns {
+        border-radius: 0.2rem;
+    }
+
+    //
+    .no-wrap {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: keep-all;
+        word-wrap: normal;
+    }
+    
+    //
+    .align-inline-left {
+        text-align: start;
+        justify-self: start;
+        justify-content: start;
+        justify-items: start;
+    }
+
+}

@@ -1,0 +1,34 @@
+//
+@property --theme-wallpaper-is-dark {
+    syntax: "<number>"; initial-value: 0; inherits: true;
+}
+
+//
+@property --theme-black-mod { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-white-mod { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-is-dark { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --theme-dark-up-mod   { syntax: "<color>"; inherits: true; initial-value: black; }
+@property --theme-dark-down-mod { syntax: "<color>"; inherits: true; initial-value: white; }
+@property --theme-light-up-mod   { syntax: "<color>"; inherits: true; initial-value: white; }
+@property --theme-light-down-mod { syntax: "<color>"; inherits: true; initial-value: black; }
+@property --theme-chroma-mod { syntax: "<color>"; inherits: true; initial-value: red; }
+@property --theme-up-mod { syntax: "<color>"; inherits: true; initial-value: white; }
+@property --theme-down-mod { syntax: "<color>"; inherits: true; initial-value: black; }
+
+//
+@property --theme-accent-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-base-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-glyph-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --current-glyph-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --current-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --current-chroma-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --current-accent-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --highlight-coefficient { syntax: "<number>"; initial-value: 0; inherits: true; };
+
+//
+@property --icon-size {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}

@@ -1,0 +1,138 @@
+@use "../../../scss/design/ColorVars" as cl;
+@use "../../../scss/design/ColorUtils" as cu;
+@use "../../../scss/core/ClassLets";
+@use "../../../scss/core/Utils" as u;
+
+//
+@layer ux-decors {
+    .ux-block-decor {
+        //
+        @extend .align-center;
+        @extend .inline-stretch;
+        @extend .no-wrap;
+
+        //
+        --decor-size: 2.8rem;
+
+        //
+        display: grid;
+        box-sizing: border-box;
+        
+        //
+        grid-template-columns: minmax(var(--decor-size), max-content) minmax(0px, 1fr) minmax(var(--decor-size), max-content);
+        grid-template-rows: minmax(var(--decor-size), max-content);
+        
+        //
+        justify-content: space-between;
+        
+        //
+        padding: 0px;
+        margin: 0px;
+        cursor: pointer;
+        
+        //
+        min-block-size: var(--decor-size);
+        
+        //
+        min-inline-size: max-content;
+        inline-size: stretch;
+        max-inline-size: stretch;
+        
+        // stretch or moz-available works buggy
+        @-moz-document url-prefix() {
+            inline-size: min(100%, 100cqi);
+            max-inline-size: min(100%, 100cqi);
+            max-block-size: min(100%, 100cqb);
+        }
+        
+
+        /* // override by main theme rule
+        //
+        background-color: var(--current-surface-color);
+        accent-color: var(--current-glyph-color);
+        color: var(--current-glyph-color);
+        
+        //
+        &, svg {
+            stroke: var(--current-glyph-color);
+        }*/
+
+        //
+        & > :where(.icon-wrap, .label-box, .in-element) {
+            @extend .align-center;
+            @extend .pe-none;
+            @extend .no-wrap;
+            
+            //
+            inline-size: stretch;
+            max-inline-size: stretch;
+            min-inline-size: max-content;
+            min-block-size: max-content;
+            
+            //
+            box-sizing: border-box;
+            background-clip: border-box;
+            background-origin: content-box;
+            background-color: transparent;
+            background-image: none;
+            padding-inline: calc(var(--decor-size) * 0.4);
+            padding-block: calc(var(--decor-size) * 0.4);
+            overflow: visible;
+            
+            // stretch or moz-available works buggy
+            @-moz-document url-prefix() {
+                inline-size: min(100%, 100cqi);
+                max-inline-size: min(100%, 100cqi);
+                max-block-size: min(100%, 100cqb);
+            }
+        }
+        
+        & > :where(.label-box) {
+            padding-inline: calc(var(--decor-size) * 0.2);
+        }
+        
+        //
+        & > .in-element {
+            @extend .align-center;
+            
+            //
+            min-inline-size: max-content;
+            inline-size: max-content;
+            max-inline-size: stretch;
+            aspect-ratio: auto;
+        }
+        
+        //
+        & > :where(.icon-wrap, *:has(svg)) {
+            //background-color: var(--current-surface-color);
+            //background-color: transparent;
+            color: var(--current-glyph-color);
+            aspect-ratio: 1 / 1;
+            max-inline-size: calc(var(--decor-size) * 1.333);
+            max-block-size: calc(var(--decor-size) * 1.333);
+        }
+        
+        //rangeSlider
+        & > .icon-wrap  { @extend .stretch; grid-column: 1 / span 1; grid-row: 1 / span 1; }
+        & > .label-box  { @extend .stretch; grid-column: 2 / span 2; grid-row: 1 / span 1; }
+        & > .in-element { @extend .stretch; grid-column: 3 / span 3; grid-row: 1 / span 1; }
+        
+        //
+        & > .label-box {
+			@extend .align-inline-left;
+			@extend .no-wrap;
+        }
+        
+        //
+        &.layout-alt {
+            grid-template-columns: minmax(var(--decor-size), max-content) minmax(0px, 1fr);
+            grid-template-rows: minmax(var(--decor-size), max-content) minmax(var(--decor-size), max-content);
+            
+            //
+            & > .icon-wrap  { grid-column: 1 / span 1; grid-row: 1 / span 2; }
+            & > .in-element { grid-column: 2 / span 2; grid-row: 2 / span 2; }
+            & > .label-box  { grid-column: 2 / span 2; grid-row: 1 / span 1; justify-self: start; }
+        }
+        
+    }
+}

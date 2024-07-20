@@ -1,0 +1,103 @@
+@use "../../../scss/core/ClassLets";
+@use "../../../scss/core/Utils" as u;
+
+//
+@use "../../../scss/design/ColorTheme";
+@use "../../../scss/design/ColorVars" as cl;
+@use "../../../scss/design/ColorUtils" as cu;
+
+
+//
+@layer ux-inputs {
+    :where(.number-input) {
+        //
+        @extend .align-center;
+        @extend .pe-enable;
+    
+        //
+        --block-size: 2rem;
+
+        //
+        display: grid;
+        grid-template-columns: minmax(var(--block-size), max-content) minmax(max-content, 1fr) minmax(var(--block-size), max-content);
+        grid-template-rows: minmax(var(--block-size), max-content);
+        overflow: hidden;
+        min-inline-size: max-content;
+        cursor: default;
+        
+        //
+        &, input {
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+        }
+        
+        //
+        & .input-wrap {
+            @extend .stretch;
+            
+            //
+            @include u.clamped-height(var(--block-size), stretch, var(--block-size));
+            
+            //
+            background-color: var(--current-surface-color);
+            overflow: visible;
+        }
+        
+        //
+        & input {
+            @extend .stretch;
+            @extend .no-wrap;
+            
+            //
+            pointer-events: none;
+            cursor: default;
+            
+            //
+            overflow: visible;
+            min-inline-size: 3em;
+            display: inline-block;
+            opacity: 1;
+            text-align: center;
+            background: transparent;
+            inline-size: max-content;
+            max-inline-size: 4em;
+            
+            appearance: textfield;
+            visibility: visible;
+            
+            //
+            font-size: 0.8rem;
+            color: var(--current-glyph-color);
+            
+            //
+            @include u.clamped-height(var(--block-size), stretch, var(--block-size));
+        }
+        
+        //
+        & > * {
+            @extend .align-center;
+            @extend .stretch;
+            @extend .max-content-as-min;
+            
+            //
+            display: flex;
+            padding: 0.5rem;
+            background: transparent;
+            
+            //
+            @include u.clamped-height(var(--block-size), stretch, var(--block-size));
+        }
+        
+        //
+        & > :is(.f-minus, .f-plus) {
+            cursor: pointer;
+            background-color: var(--current-surface-color) !important;
+        }
+        
+        //
+        & > .icon-wrap {
+            @extend .stretch;
+            @extend .max-content-as-min;
+            aspect-ratio: 1 / 1;
+        }
+    }
+}

@@ -1,0 +1,191 @@
+@use "../core/ClassLets";
+
+//
+@property --cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --vect-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --vect-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --drag-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --drag-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --p-drag-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --p-drag-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --p-cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --p-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --grid-w { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --grid-h { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --f-col { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --f-row { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --fc-cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --fc-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --fp-cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --fp-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --r-gap {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --c-gap {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --rows {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --columns {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@mixin calculateMetric() {
+    // CLAMPED GRID
+    --f-col: clamp(4, var(--columns, 4), 6);
+    --f-row: clamp(8, var(--rows, 8), 12);
+
+    //
+    --fc-cell-x: calc(clamp(0, var(--cell-x), calc(var(--f-col) - 1)) + 1);
+    --fc-cell-y: calc(clamp(0, var(--cell-y), calc(var(--f-row) - 1)) + 1);
+
+    //
+    --fp-cell-x: calc(clamp(0, var(--p-cell-x), calc(var(--f-col) - 1)) + 1);
+    --fp-cell-y: calc(clamp(0, var(--p-cell-y), calc(var(--f-row) - 1)) + 1);
+
+    //
+    --vect-x: calc(var(--fc-cell-x) - var(--fp-cell-x));
+    --vect-y: calc(var(--fc-cell-y) - var(--fp-cell-y));
+}
+
+//
+@layer ux-grid-layout {
+    .ux-grid-layout {
+        // in rems!
+        --c-gap: 0;
+        --r-gap: 0;
+
+        //
+        container-name: ux-grid;
+        container-type: size;
+        contain: size layout !important;
+
+        //
+        overflow: visible !important;
+        pointer-events: none;
+
+        //
+        background-color: transparent;
+
+        // when houdini not supported, also do gaps (include edges)...
+        @supports not (display: layout(grid-page)) {
+            display: grid;
+            
+            //
+            padding-inline: calc(var(--c-gap) * 0.5rem);
+            padding-block : calc(var(--r-gap) * 0.5rem);
+            column-gap: calc(var(--c-gap) * 1rem);
+            row-gap: calc(var(--r-gap) * 1rem);
+
+            // when houdini not supported...
+            place-items: center !important;
+            place-content: space-around !important;
+
+            // when houdini not supported...
+            @media (orientation: portrait) {
+                grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
+                grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+            }
+            
+            // when houdini not supported...
+            @media (orientation: landscape) {
+                grid-template-columns: repeat(var(--rows), minmax(0px, 1fr));
+                grid-template-rows: repeat(var(--columns), minmax(0px, 1fr));
+            }
+
+            // other's fixes by JS...
+            // <JS>
+        }
+
+        // HOUDINI: if supported...
+        @supports (display: layout(grid-page)) {
+            display: layout(grid-page);
+        }
+
+        //
+        & > :where(*) {
+            place-self: center !important;
+        }
+
+        //
+        .ux-grid-item-label, .ux-grid-item {
+            @include calculateMetric();
+            --icon-size: min(calc(100cqmin / min(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem), 4rem);
+            --grid-column: var(--fc-cell-x);
+            --grid-row: var(--fc-cell-y);
+
+            //
+            transform: translate3d(var(--translate-x), var(--translate-y), 0px);
+        }
+
+        //
+        .ux-grid-item-label {
+            @extend .no-wrap;
+
+            //
+            --translate-x: 0px;
+            --translate-y: 2.5rem;
+
+            //
+            pointer-events: none;
+            display: inline-block;
+            overflow: visible;
+
+            //
+            inline-size: max-content;
+            block-size: max-content;
+
+            //
+            font-size: 0.8rem;
+        }
+
+        .ux-grid-item {
+            @extend .stretch;
+
+            //
+            overflow: hidden;
+            pointer-events: none;
+            touch-action: none; 
+            user-select: none;
+            -webkit-user-drag: none;
+            -moz-user-drag: none;
+
+            //
+            max-inline-size: var(--icon-size);
+            max-block-size: var(--icon-size);
+            
+            //
+            aspect-ratio: 1 / 1;
+            inline-size: var(--icon-size);
+            block-size: var(--icon-size);
+        }
+
+    }
+}

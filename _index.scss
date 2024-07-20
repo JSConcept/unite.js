@@ -1,38 +1,25 @@
-@use "./core/Layers";
-@use "./core/Props";
-@use "./core/Root";
-@use "./core/Zoom";
-@use "./core/Normalize";
-@use "./core/ClassLets";
+@use "./scss/core/Layers";
+@use "./scss/core/Props";
+@use "./scss/core/Root";
+@use "./scss/core/Zoom";
+@use "./scss/core/Normalize";
+@use "./scss/core/ClassLets";
 
 //
-@use "./design/ColorProps";
-@use "./design/ColorTheme";
-@use "./design/Block";
-@use "./design/Backdrop";
-@use "./design/Frame";
+@use "./scss/design/ColorProps";
+@use "./scss/design/ColorTheme";
+@use "./scss/design/Backdrop";
+@use "./scss/grid/GridLayout";
+@use "./wcomp/scrollbox/ScrollBox";
 
 //
-@use "./grid/GridProps";
-@use "./grid/GridLayout";
-
-//
-@use "./forms/ItemEdit";
-@use "./editor/InputEditor";
-
-//
-@use "./scrollbox/ScrollBox";
-
-//
-@use "./inputs/Checkbox";
-@use "./inputs/Number";
-@use "./inputs/Switch";
-
-//
-@use "./appframe/AppFrame";
-
-//
-@use "./statusbar/StatusBar";
-
-//
-//@use "./dwm/WindowManager";
+@use "./svelte/UI/design/Block";
+@use "./svelte/UI/design/Frame";
+@use "./svelte/UI/forms/ItemEdit";
+@use "./svelte/UI/editor/InputEditor";
+@use "./svelte/UI/inputs/Checkbox";
+@use "./svelte/UI/inputs/Number";
+@use "./svelte/UI/inputs/Switch";
+@use "./svelte/UI/appframe/AppFrame";
+@use "./svelte/UI/statusbar/StatusBar";
+@use "./svelte/UI/grid/GridDesign";
