@@ -3,7 +3,12 @@
 @use "./scss/core/Root";
 @use "./scss/core/Zoom";
 @use "./scss/core/Normalize";
+
+// TODO: deprecate
 @use "./scss/core/ClassLets";
+
+//
+@use "./scss/core/States";
 
 //
 @use "./scss/design/ColorProps";

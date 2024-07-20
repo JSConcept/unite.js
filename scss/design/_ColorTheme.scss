@@ -5,6 +5,44 @@
 @use "./ColorUtils" as cu;
 @use "./ColorVars" as cl;
 
+
+@mixin ux-accent {
+    --theme-surface-color: #{cl.$baseColor};
+    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+}
+
+@mixin ux-solid {
+    --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+    --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+}
+
+@mixin ux-inverse {
+    --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+    --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+}
+
+@mixin ux-inverse {
+    --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+    --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+}
+
+@mixin ux-accent-inverse {
+    --theme-surface-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(l - 0.5) * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+}
+
+@mixin ux-transparent {
+    --theme-surface-color: transparent;
+    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+}
+
+@mixin ux-solid-transparent {
+    --theme-surface-color: transparent;
+    --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+}
+
+
+
 //
 @layer ux-colors {
 
@@ -92,92 +130,42 @@
             stroke: var(--current-glyph-color);
         }
 	}
-	
+
 	//
     @media screen and ((hover: hover) or (pointer: fine)) {
-        .hl-1h:hover { --highlight-coefficient: 6; }
-        .hl-2h:hover { --highlight-coefficient: 10; }
-        .hl-3h:hover { --highlight-coefficient: 16; }
+        *[data-highlight-hover="1"]:hover { --highlight-coefficient: 6; }
+        *[data-highlight-hover="2"]:hover { --highlight-coefficient: 12; }
+        *[data-highlight-hover="3"]:hover { --highlight-coefficient: 16; }
     }
 
     //
     @media screen and (hover: none) and (pointer: coarse) {
-        .hl-1h:active { --highlight-coefficient: 6; }
-        .hl-2h:active { --highlight-coefficient: 12; }
-        .hl-3h:active { --highlight-coefficient: 16; }
+        *[data-highlight-hover="1"]:active { --highlight-coefficient: 6; }
+        *[data-highlight-hover="2"]:active { --highlight-coefficient: 12; }
+        *[data-highlight-hover="3"]:active { --highlight-coefficient: 16; }
     }
     
-    .hl-1 { --highlight-coefficient: 6; }
-    .hl-2 { --highlight-coefficient: 12; }; 
-    .hl-ns { --highlight-coefficient: 3; }
-    .hl-ms { --highlight-coefficient: 4.5; }
+    //
+    *[data-highlight="1"] { --highlight-coefficient: 6; }
+    *[data-highlight="2"] { --highlight-coefficient: 12; }
 
     //
-    .force-light { --theme-is-dark: 0; color-scheme: light; }
-    .force-dark { --theme-is-dark: 1; color-scheme: dark; }
+    *[data-theme="dark"] { --theme-is-dark: 1; color-scheme: dark; }
+    *[data-theme="light"] { --theme-is-dark: 0; color-scheme: light; }
+
+    //
+    *[data-scheme="accent"] { @include ux-accent; }
+    *[data-scheme="solid"] { @include ux-solid; }
+    *[data-scheme="inverse"] { @include ux-inverse; }
+    *[data-scheme="accent-inverse"] { @include ux-accent-inverse; }
+    *[data-scheme="transparent"] { @include ux-transparent; }
+    *[data-scheme="solid-transparent"] { @include ux-solid-transparent(); }
 
     //
     :where(span) {
         --theme-surface-color: transparent;
         background-color: transparent;
     }
-	
-	//
-	:where(button) {
-        display: flex;
-        place-items: center;
-        place-content: center;
-
-        color: var(--current-glyph-color);
-        background-color: var(--current-surface-color);
-        
-        cursor: pointer;
-        pointer-events: auto;
-        pointer-events: bounding-box;
-        
-        padding: 0px;
-        margin: 0px;
-        
-        //
-        border: none 0px transparent;
-        outline: none 0px transparent;
-	}
-	
-    //
-	:where(.ux-accent) {
-        --theme-surface-color: #{cl.$baseColor};
-        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
-	}
-	
-    // 
-    :where(.ux-solid) {
-        --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
-        --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
-    }
-    
-    // 
-    :where(.ux-inverse) {
-        --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
-        --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
-    }
-	
-    //
-	:where(.ux-accent-inverse) {
-        --theme-surface-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
-        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(l - 0.5) * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
-	}
-
-	//
-	:where(.ux-transparent) {
-        --theme-surface-color: transparent;
-        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
-	}
-	
-	//
-	:where(.ux-solid-transparent) {
-        --theme-surface-color: transparent;
-        --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
-	}
 	
 	//
 	:where(svg) {
@@ -190,4 +178,23 @@
 	:where(x-scrollbox) {
         --sb-color: #{cu.theme-mod-down(cu.theme-mod-up(cl.$baseColor, 80%), 20%)};
 	}
+
+
+
+
+    // TODO! deprecated!
+    ////////////////////
+
+    //
+    .force-light { --theme-is-dark: 0; color-scheme: light; }
+    .force-dark { --theme-is-dark: 1; color-scheme: dark; }
+
+    //
+	:where(.ux-accent) { @include ux-accent; }
+	:where(.ux-solid) { @include ux-solid; }
+    :where(.ux-inverse) { @include ux-inverse; }
+    :where(.ux-accent-inverse) { @include ux-accent-inverse; }
+    :where(.ux-transparent) { @include ux-transparent; }
+	:where(.ux-solid-transparent) { @include ux-solid-transparent; }
+
 }

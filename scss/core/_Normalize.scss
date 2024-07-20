@@ -213,4 +213,27 @@
         }
     }
 
+    //
+	:where(button) {
+        display: flex;
+        place-items: center;
+        place-content: center;
+
+        color: var(--current-glyph-color);
+        background-color: var(--current-surface-color);
+        
+        cursor: pointer;
+        pointer-events: auto;
+        pointer-events: bounding-box;
+        
+        padding: 0px;
+        margin: 0px;
+        
+        //
+        border: none 0px transparent;
+        outline: none 0px transparent;
+	}
+	
+
+
 }
