@@ -199,12 +199,13 @@
         }
         
         //
-        @at-root :fullscreen {
+        @at-root :fullscreen & {
             --vp-i-size: min(calc(var(--avail-width) / var(--zoom, 1)), calc(100lvi / var(--zoom, 1)));
             --vp-b-size: min(calc(var(--avail-height) / var(--zoom, 1)), calc(100lvb / var(--zoom, 1)));
         }
     }
-    
+
+
     //
     .vp-vars-keyboard-dependent {
         --vp-i-size: calc(100dvi / var(--zoom, 1));
@@ -217,7 +218,7 @@
         }
         
         //
-        @at-root :fullscreen {
+        @at-root :fullscreen & {
             --vp-i-size: min(calc(var(--avail-width) / var(--zoom, 1)), calc(100dvi / var(--zoom, 1)));
             --vp-b-size: min(calc(var(--avail-height) / var(--zoom, 1)), calc(100dvb / var(--zoom, 1)));
         }
