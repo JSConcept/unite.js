@@ -2,6 +2,7 @@ registerLayout('grid-page', class {
     static get inputProperties() { return ['--columns', '--rows', '--orient']; }
     static get childInputProperties() { return ['--grid-column', '--grid-row', '--cell-x', '--cell-y']; }
     
+    //
     static layoutOptions = {
         childDisplay: 'block',
         sizing: 'manual'

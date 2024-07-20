@@ -1,6 +1,6 @@
 <script type="ts" lang="ts">
     import {onMount} from 'svelte';
-    import type {GridItemType} from "./GridItemUtils";
+    import type {GridItemType} from "../utils/GridItemUtils";
     
     // @ts-ignore
     export let gridItem: GridItemType = {};

@@ -36,10 +36,7 @@ if (typeof navigator != "undefined") {
 // use workers
 const loading = Promise.allSettled([
     import("../scrollbox/ScrollBox.ts"),
-    import("../core/StyleWork.ts"),
-    import("../design/WCanvas.ts").then(
-        (_) => import("../design/ColorTheme.ts")
-    ),
+    import("../stylework/Bundle.ts")
 ]);
 
 //

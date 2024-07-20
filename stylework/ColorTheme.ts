@@ -5,39 +5,8 @@ import {hexFromArgb} from "@material/material-color-utilities";
 import {formatCss, formatHex, interpolate, oklch, parse} from "culori";
 
 //
-import {setStyleRule} from "../core/StyleWork.ts";
-import {sourceColorFromImage} from "./ColorMod.ts";
-
-//
-export const provide = async (path = "", rw = false) => {
-    const relPath = path.replace(location.origin, "");
-    if (relPath.startsWith("/opfs")) {
-        const params = relPath.split(/\?/i)?.[1] || relPath;
-        const $path = new URLSearchParams(params).get("path");
-        const parts = $path?.split?.("/") || $path || "";
-
-        //
-        let dir = await navigator?.storage
-            ?.getDirectory?.()
-            ?.catch?.(console.warn.bind(console));
-        for (let I = 0; I < parts.length - 1; I++) {
-            if (!parts[I]) continue;
-            dir = await dir
-                ?.getDirectoryHandle?.(parts[I], {create: rw})
-                ?.catch?.(console.warn.bind(console));
-            if (!dir) break;
-        }
-
-        //
-        const fileh = await dir?.getFileHandle?.(parts[parts.length - 1], {
-            create: rw,
-        });
-        return await fileh?.[rw ? "createWritable" : "getFile"]?.();
-    } else if (relPath.startsWith("/")) {
-        return fetch(path).then((r) => r.blob());
-    }
-    return null;
-};
+import {setStyleRule} from "./StyleRules.ts";
+import {sourceColorFromImage} from "../utils/ColorMod.ts";
 
 //
 //let baseColorH: string = "#FFFFFF";
@@ -54,10 +23,12 @@ let cssIsDark =
     parseInt(localStorage.getItem("--theme-wallpaper-is-dark") || "0") || 0;
 
 //
-setStyleRule(":host, :root, :scope, :where(*)", {
-    "--theme-base-color": baseColor,
-    "--theme-wallpaper-is-dark": cssIsDark,
-});
+const updateStyleRule = ()=>{
+    setStyleRule(":host, :root, :scope, :where(*)", {
+        "--theme-base-color": baseColor,
+        "--theme-wallpaper-is-dark": cssIsDark,
+    });
+}
 
 //
 export const switchTheme = (isDark = false) => {
@@ -137,10 +108,7 @@ export const colorScheme = async (blob) => {
 
     //
     if (baseColor) {
-        setStyleRule(":host, :root, :scope, :where(*)", {
-            "--theme-base-color": baseColor,
-            "--theme-wallpaper-is-dark": cssIsDark,
-        });
+        updateStyleRule();
 
         //
         localStorage.setItem("--theme-base-color", baseColor);
@@ -152,34 +120,11 @@ export const colorScheme = async (blob) => {
 };
 
 //
+updateStyleRule();
+
+//
 window
     .matchMedia("(prefers-color-scheme: dark)")
     .addEventListener("change", ({matches}) => {
         switchTheme(matches);
     });
-
-//
-window.addEventListener("wallpaper", (ev) => {
-    const blob = ev?.detail?.blob;
-    if (blob)
-        colorScheme(blob)
-            .then(() => {
-                const filename =
-                    "/opfs?path=images/" + (blob.name || "wallpaper");
-
-                //
-                if (!ev.detail.doNotRewrite) {
-                    provide(filename, true)
-                        .then(async (fw: any) => {
-                            localStorage.setItem("@wallpaper", filename);
-                            await fw?.write?.(blob);
-                            await fw?.flush?.();
-                            await fw?.close?.();
-                        })
-                        .catch(console.warn.bind(console));
-                } else {
-                    localStorage.setItem("@wallpaper", filename);
-                }
-            })
-            .catch(console.warn.bind(console));
-});

@@ -1,209 +1,8 @@
+import { setStyleRules } from "./StyleRules.ts";
+import type {StyleTuple} from "./StyleRules.ts";
+
 //
 import {getCorrectOrientation} from "../utils/Utils.ts";
-
-//
-const styleElement = document.createElement("style");
-document.querySelector("head")?.appendChild?.(styleElement);
-
-//
-//let shapeCount: number = 0;
-
-//
-export const setStyleRule = (selector: string, sheet: object) => {
-    const styleRules = styleElement.sheet;
-    let ruleId = Array.from(styleRules?.cssRules || []).findIndex((rule) => (rule instanceof CSSStyleRule ? (selector == rule?.selectorText) : false));
-    if (ruleId <= -1) {ruleId = styleRules?.insertRule(`${selector} {}`) as number;}
-
-    //
-    const rule = styleElement?.sheet?.cssRules[ruleId];
-    Object.entries(sheet).map(([propName, propValue]) => {
-        if (rule instanceof CSSStyleRule) {
-            const exists = rule?.style?.getPropertyValue(propName);
-            if (!exists || exists != propValue) {
-                rule?.style?.setProperty?.(propName, (propValue || "") as string, "");
-            }
-        }
-    });
-};
-
-//
-type StyleTuple = [selector: string, sheet: object];
-
-//
-export const setStyleRules = (classes: StyleTuple[]) => {
-    return classes?.map?.((args) => setStyleRule(...args));
-};
-
-//
-export const WavyShapedCircle = () => {
-    const steps = 100;
-    //const cx = 0.5;
-    //const cy = 0.5;
-    const ampl = 0.06;
-    const freq = 8;
-    //const radius = 0.5;
-
-    //
-    const points: number[] = [];
-    for (let i = 0; i < steps; i++) {
-        points.push(i / steps);
-    }
-
-    /*for (let i=0;i<steps;i++) {
-        const angle = (i / steps) * 2 * Math.PI;
-        const variant = (Math.cos(freq * angle) * 0.5 + 0.5) * ampl;
-        const rx = cx + Math.cos(angle) * (radius - variant);
-        const ry = cy + Math.sin(angle) * (radius - variant);
-        points.push([rx, ry]);
-    }*/
-    // * 0.5 + 0.5
-    const angle = (step) => {
-        return `calc(${step}rad * pi * 2)`;
-    };
-
-    //
-    const variant = (step) => {
-        return `calc(calc(cos(calc(var(--clip-freq) * ${angle(step)})) * 0.5 + 0.5) * var(--clip-ampl))`;
-    };
-
-    //
-    const func = (step) => {
-        return [
-            `calc(calc(0.5 + calc(cos(${angle(step)}) * calc(0.5 - ${variant(step)}))) * 100%)`,
-            `calc(calc(0.5 + calc(sin(${angle(step)}) * calc(0.5 - ${variant(step)}))) * 100%)`
-        ];
-    };
-
-    //
-    const d = points.map((step) => {const stp = func(step).join(" "); return stp;}).join(", ");
-
-    //
-    return {
-        "--clip-ampl": ampl,
-        "--clip-freq": freq,
-        "--clip-path": `polygon(${d})`
-    };
-};
-
-//
-const properties = [
-    {
-        name: "--orient",
-        syntax: "<integer>",
-        inherits: true,
-        initialValue: 0,
-    },
-
-
-    {
-        name: "--visual-width",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--visual-height",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--clip-ampl",
-        syntax: "<number>",
-        inherits: true,
-        initialValue: "0",
-    },
-    {
-        name: "--clip-freq",
-        syntax: "<number>",
-        inherits: true,
-        initialValue: "0",
-    },
-    {
-        name: "--pfrot",
-        syntax: "<angle>",
-        inherits: true,
-        initialValue: "0deg",
-    },
-    {
-        name: "--lfrot",
-        syntax: "<angle>",
-        inherits: true,
-        initialValue: "0deg",
-    },
-    {name: "--prot", syntax: "<angle>", inherits: true, initialValue: "0deg"},
-    {name: "--lrot", syntax: "<angle>", inherits: true, initialValue: "0deg"},
-    {
-        name: "--pth",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--ptw",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--lth",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--ltw",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--ptrans-x",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--ptrans-y",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--ltrans-x",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--ltrans-y",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--avail-width",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--avail-height",
-        syntax: "<length-percentage>",
-        inherits: true,
-        initialValue: "0px",
-    },
-    {
-        name: "--pixel-ratio",
-        syntax: "<number>",
-        inherits: true,
-        initialValue: "1",
-    },
-];
-
-// define properties
-// @ts-ignore
-properties.map((o) => CSS?.registerProperty?.(o));
 
 //
 const displayPortrait90deg = {
@@ -264,7 +63,7 @@ const realCellOriented = {
         "grid-column": "calc(var(--rows) - var(--grid-row) + 1)",
         "grid-row": "var(--grid-column)",
     }
-}
+};
 
 
 
@@ -311,24 +110,6 @@ const ltsPortrait = {
     "--lth": "100cqi",
 };
 
-/*
-//
-const ptransLandscape = {
-    "--ptrans-x":
-        "calc(var(--h) * 0.5 + calc(var(--rx) * 1px + var(--cx)) - 50%)",
-    "--ptrans-y":
-        "calc(var(--w) * 0.5 + calc(var(--ry) * 1px + var(--cy)) - 50%)",
-};
-
-//
-const ptransPortrait = {
-    "--ptrans-x":
-        "calc(var(--w) * 0.5 + calc(var(--rx) * 1px + var(--cx)) - 50%)",
-    "--ptrans-y":
-        "calc(var(--h) * 0.5 + calc(var(--ry) * 1px + var(--cy)) - 50%)",
-};
-*/
-
 //
 const currentCellLayout = {...realCellOriented[getCorrectOrientation()]};
 
@@ -348,9 +129,6 @@ const pts = Object.assign({}, ptsLandscape);
 const currentOrient = Object.assign({}, orient0deg);
 
 //
-const cloudyShape = WavyShapedCircle();
-
-//
 const availSize = {
     "--avail-width": Math.min(screen.availWidth || 0, screen.width || 0) + "px",
     "--avail-height":
@@ -359,7 +137,7 @@ const availSize = {
 };
 
 //
-const updateOrientation = (_) => {
+export const updateOrientation = (_) => {
     Object.assign(currentCellLayout, realCellOriented[getCorrectOrientation()]);
 
     //
@@ -446,7 +224,6 @@ const updateOrientation = (_) => {
 
 //
 const classes: StyleTuple[] = [
-    [":where(.wavy-shaped)", cloudyShape],
     [":root, :host, :scope", portrait],
     [":root, :host, :scope", landscape],
     [":root, :host, :scope", displayPortrait],
@@ -482,40 +259,11 @@ screen.orientation.addEventListener("change", updateDynamic, {passive: true});
 self.addEventListener("resize", updateDynamic, {passive: true});
 
 //
-updateDynamic();
+window?.visualViewport?.addEventListener?.("scroll", updateDynamic);
+window?.visualViewport?.addEventListener?.("resize", updateDynamic);
 
 //
-const viewportHandler = (event?: any) => {
-    const layoutViewport = document.body;
-    const viewport = event?.target || visualViewport;
-
-    //
-    document.documentElement.style.setProperty(
-        "--visual-width",
-        (viewport?.width || 0) + "px",
-        ""
-    );
-
-    //
-    const vvh = viewport?.height;
-    const dff = vvh - (layoutViewport.getBoundingClientRect().height || window.innerHeight);
-    const cvh = Math.min(Math.max(vvh - dff, viewport?.offsetTop || 0) - (viewport?.offsetTop || 0), (screen.availHeight || screen.height));
-    document.documentElement.style.setProperty(
-        "--visual-height",
-        cvh + "px",
-        ""
-    );
-
-    //
-    updateDynamic();
-};
+document.documentElement.addEventListener("fullscreenchange", updateDynamic);
 
 //
-window?.visualViewport?.addEventListener?.("scroll", viewportHandler);
-window?.visualViewport?.addEventListener?.("resize", viewportHandler);
-
-//
-document.documentElement.addEventListener("fullscreenchange", viewportHandler);
-
-//
-viewportHandler();
+requestAnimationFrame(updateDynamic);

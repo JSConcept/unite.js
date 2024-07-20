@@ -13,8 +13,8 @@ const cover = (ctx, img, scale = 1, port) => {
             ctx.rotate(0 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
 
         //
         case "portrait-primary": {
@@ -22,8 +22,8 @@ const cover = (ctx, img, scale = 1, port) => {
             ctx.rotate(90 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
 
         //
         case "landscape-secondary": {
@@ -31,8 +31,8 @@ const cover = (ctx, img, scale = 1, port) => {
             ctx.rotate(180 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
 
         //
         case "portrait-secondary": {
@@ -40,8 +40,8 @@ const cover = (ctx, img, scale = 1, port) => {
             ctx.rotate(270 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
     }
 
 };
@@ -78,10 +78,6 @@ export class WCanvas extends HTMLCanvasElement {
 
         //
         this.inert = true;
-        this.width = Math.max((this.offsetWidth || parent?.offsetWidth || 0) * devicePixelRatio, 0);
-        this.height = Math.max((this.offsetHeight || parent?.offsetHeight || 0) * devicePixelRatio, 0);
-
-        //
         this.style.objectFit = "cover";
         this.style.objectPosition = "center";
         this.classList.add("w-canvas");
@@ -108,6 +104,7 @@ export class WCanvas extends HTMLCanvasElement {
         //
         screen.orientation.addEventListener("change", fixSize);
         window.addEventListener("resize", fixSize);
+        requestAnimationFrame(fixSize);
 
         //
         this.#preload(this.dataset.src).then(() => this.#render());
@@ -188,6 +185,7 @@ export class WCanvas extends HTMLCanvasElement {
 customElements.define('w-canvas', WCanvas, {extends: 'canvas'});
 
 //
+/* // broken support...
 if ("paintWorklet" in CSS) {
     // @ts-ignore
     CSS.paintWorklet.addModule(new URL("./WCanvasPaint.mjs", import.meta.url).href);
@@ -216,3 +214,4 @@ CSS?.registerProperty?.({
     initialValue: `url(\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\")`,
     inherits: true,
 });
+*/

@@ -9,8 +9,8 @@ const cover = (ctx, img, scale = 1, port, orient, canvas) => {
             ctx.rotate(0 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
 
         //
         case 0: {
@@ -18,8 +18,8 @@ const cover = (ctx, img, scale = 1, port, orient, canvas) => {
             ctx.rotate(90 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
 
         //
         case 3: {
@@ -27,8 +27,8 @@ const cover = (ctx, img, scale = 1, port, orient, canvas) => {
             ctx.rotate(180 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
 
         //
         case 2: {
@@ -36,8 +36,8 @@ const cover = (ctx, img, scale = 1, port, orient, canvas) => {
             ctx.rotate(270 * (Math.PI / 180));
             ctx.rotate(port * -90 * (Math.PI / 180));
             ctx.translate(-(img.width / 2) * scale, -(img.height / 2) * scale);
-        }
-            break;
+        };
+        break;
     }
 
 };

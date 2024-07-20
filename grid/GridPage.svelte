@@ -3,7 +3,7 @@
     import {observeBorderBox, observeBySelector} from "../dom/Observer.ts";
     import GridItem from "./GridItem.svelte";
     import GridItemLabel from "./GridItemLabel.svelte";
-    import type {GridItemType, GridPageType} from "./GridItemUtils.ts";
+    import type {GridItemType, GridPageType} from "../utils/GridItemUtils.ts";
     //import {state} from "./GridState";
     
     //

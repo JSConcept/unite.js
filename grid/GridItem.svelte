@@ -2,7 +2,7 @@
     import {onMount} from 'svelte';
     import LucideIcon from "../design/WLucideIcon.svelte";
     import GestureControl from "../interact/Gesture.ts";
-    import type {GridItemType} from "./GridItemUtils.ts";
+    import type {GridItemType} from "../utils/GridItemUtils.ts";
 
     // @ts-ignore
     export let gridItem: GridItemType = {};

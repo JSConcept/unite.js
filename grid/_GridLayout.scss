@@ -54,51 +54,44 @@
 
     //
     .ux-grid-page {
+        // in rems!
+        --c-gap: 1;
+        --r-gap: 1;
+
+        //
         container-name: ux-grid;
         container-type: size;
+        contain: size layout !important;
 
-        // if supported...
+        // HOUDINI: if supported...
+        display: grid;
         display: layout(grid-page);
 
         //
         overflow: visible !important;
-        contain: size layout !important;
-
-        //
         pointer-events: none;
 
         //
         background-color: transparent;
-
-        //
-        //grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
-        //grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
-        
         filter: drop-shadow(0px 0px 0.25rem #00000060);
 
-        //
-        --c-gap: 1;
-        --r-gap: 1;
-    
-        //
+        // when houdini not supported, also do gaps (include edges)...
         padding-inline: calc(var(--c-gap) * 0.5rem);
         padding-block : calc(var(--r-gap) * 0.5rem);
-    
-        //
         column-gap: calc(var(--c-gap) * 1rem);
         row-gap: calc(var(--r-gap) * 1rem);
-        
-        //
+
+        // when houdini not supported...
         place-items: center !important;
         place-content: space-around !important;
         
-        //
+        // when houdini not supported...
         @media (orientation: portrait) {
             grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
             grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
         }
         
-        //
+        // when houdini not supported...
         @media (orientation: landscape) {
             grid-template-columns: repeat(var(--rows), minmax(0px, 1fr));
             grid-template-rows: repeat(var(--columns), minmax(0px, 1fr));
@@ -110,85 +103,63 @@
         }
         
         //
-        .ux-grid-item-label {
+        .ux-grid-item-label, .ux-grid-item {
             @include calculateMetric();
+            --icon-size: min(calc(100cqmin / min(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem), 4rem);
+            --grid-column: var(--fc-cell-x);
+            --grid-row: var(--fc-cell-y);
+        }
+
+        //
+        .ux-grid-item-label {
             @extend .no-wrap;
-        
+
             //
-            --icon-size: calc(100cqmin / max(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem);
-            
+            --translate-y: 2.5rem;
+
             //
             display: inline-block;
             inline-size: max-content;
             block-size: max-content;
-            
+            overflow: visible;
+
             //
             font-size: 0.8rem;
-            
-            //
-            --grid-column: var(--fc-cell-x);
-            --grid-row: var(--fc-cell-y);
-            
-            //
-            //writing-mode: horizontal-tb;
-        
-            //
-            --translate-y: 2.5rem;
             transform: translate(var(--translate-x), var(--translate-y));
-            
+
             //
             will-change: translate, transform, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y;
         }
         
         //
         .ux-grid-item {
-            @include calculateMetric();
             @extend .stretch;
             
-            // unsupported
-            //writing-mode: horizontal-tb;
-            
             //
-            //background-color: white;
             overflow: hidden;
-            
-            //
-            --grid-column: var(--fc-cell-x);
-            --grid-row: var(--fc-cell-y);
-            
-            //
+            pointer-events: none;
             touch-action: none !important; 
             user-select: none;
             -webkit-user-drag: none;
             -moz-user-drag: none;
-    
+
             //
             transform: translate3d(var(--translate-x), var(--translate-y), 0px);
             will-change: translate, transform, --rx, --ry, --drag-x, --drag-y, --resize-x, --resize-y, --translate-x, --translate-y;
             
             //
-            aspect-ratio: 1 / 1;
-            
-            //
             clip-path: var(--clip-path);
             padding: calc(var(--icon-size) * 0.3);
             border-radius: calc(var(--icon-size) * 0.5);
-            
-            //
-            --icon-size: min(calc(100cqmin / min(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem), 4rem);
-            
+
             //
             max-inline-size: var(--icon-size);
             max-block-size: var(--icon-size);
             
             //
+            aspect-ratio: 1 / 1;
             inline-size: var(--icon-size);
             block-size: var(--icon-size);
-            
-            //
-            &:where([data-type="labels"], [data-type="items"]) {
-                //writing-mode: horizontal-tb;
-            }
             
             //
             &:where([data-type="labels"], [data-type="bucket"]) {
@@ -197,10 +168,11 @@
             
             //
             &:where([data-type="backup"]) {
+                // override by animations...
                 --translate-x: calc(var(--drag-x, 0) * 1px);
                 --translate-y: calc(var(--drag-y, 0) * 1px);
-                
-                //
+
+                // override by animations...
                 --grid-column: var(--fp-cell-x);
                 --grid-row: var(--fp-cell-y);
             }

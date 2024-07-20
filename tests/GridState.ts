@@ -4,7 +4,7 @@ import {JSOX} from 'jsox';
 import {createReactiveMap} from "../reactive/ReactiveMap.ts";
 import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
 import {createReactiveSet} from "../reactive/ReactiveSet.ts";
-import {GridsStateType} from "../grid/GridItemUtils.ts";
+import {GridsStateType} from "../utils/GridItemUtils.ts";
 
 //
 export const toMapSet = <K, V>(list) => {

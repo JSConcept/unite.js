@@ -3,22 +3,19 @@
     import {observeBySelector} from "../dom/Observer.ts";
     import {grabForDrag} from "../interact/PointerAPI";
     import {createReactiveSet} from "../reactive/ReactiveSet";
-    import {MOC, zoomOf} from "../utils/Utils";
-    import {animationSequence, putToCell} from "./GridItemUtils";
-    import type {GridItemType, GridPageType, GridsStateType} from "./GridItemUtils";
+    import {MOCElement, zoomOf} from "../utils/Utils";
+    import {putToCell} from "../utils/GridItemUtils.ts";
+    import type {GridItemType, GridPageType, GridsStateType} from "../utils/GridItemUtils.ts";
     import GridPage from "./GridPage.svelte";
-    
-    // TODO! make it optional...
-    // Make it as `export`s!
-    //import {state} from "./GridState";
-    
+
+    //
+    import {animationSequence} from "../stylework/GridLayout.ts";
+
     //
     export let state: GridsStateType | null = null;
-    
+
     //
     export let current = "main";
-    
-    //
     export let lists = state?.lists;
     export let grids = state?.grids;
     export let items = state?.items;
@@ -68,8 +65,9 @@
     }
     
     //
-    document.addEventListener("long-press", (ev)=>{
-        if (MOC(ev.target, ".ux-grid-item[data-type=\"items\"]")) {
+    document.documentElement.addEventListener("long-press", (ev)=>{
+        const parent = MOCElement(ev.target, ".ux-grid-item[data-type=\"items\"]");
+        if (parent && parent.closest(".ux-grid-pages") == target) {
             grabItem(ev.detail);
         }
     });
@@ -139,58 +137,17 @@
         backup.delete(id);
         backup = backup;
     }
-    
-    
+
     //
     document.addEventListener("m-dragend", (ev)=>{
-        if (MOC(ev.target, ".ux-grid-item[data-type=\"backup\"]")) {
+        const parent = MOCElement(ev.target, ".ux-grid-item[data-type=\"backup\"]");
+        if (parent && parent.closest(".ux-grid-pages") == target) {
             placeElement(ev.detail);
         }
     });
-    
-    
-    
-    
-    
+
     //
     onMount(()=>{
-        observeBySelector(target, ".ux-grid-item[data-type=\"backup\"]", (mut)=>{
-            mut.addedNodes.map((el)=>{
-                const real = target?.querySelector?.(".ux-grid-item[data-type=\"items\"][data-id=\"" + el.dataset.id + "\"]");
-                if (!real?.classList?.contains?.("ux-hidden")) {
-                    real?.classList?.add?.("ux-hidden");
-                }
-                
-                //
-                const item = items?.get(el.dataset.id);
-                grabForDrag(el, item);
-                
-                //
-                el.style.setProperty("--cell-x", item?.cell[0] || 0, "");
-                el.style.setProperty("--cell-y", item?.cell[1] || 0, "");
-                el.style.setProperty("--p-cell-x", item?.cell[0] || 0, "");
-                el.style.setProperty("--p-cell-y", item?.cell[1] || 0, "");
-            });
-        });
-        
-        //
-        observeBySelector(target, ".ux-grid-item[data-type=\"items\"]", (mut)=>{
-            mut.addedNodes.map((el)=>{
-                const visual = target?.querySelector?.(".ux-grid-item[data-type=\"backup\"][data-id=\"" + el.dataset.id + "\"]");
-                if (visual) {
-                    // avoid re-appear
-                    if (!el.classList.contains("ux-hidden")) {
-                        el.classList.add("ux-hidden");
-                    }
-                }
-            });
-        });
-    });
-    
-    
-    onMount(()=>{
-    
-        //
         target?.addEventListener("dragenter", (ev)=>{
             if (document.elementFromPoint(ev.clientX, ev.clientY)?.matches?.(".ux-grid-pages, canvas[is=\"w-canvas\"]")) {
                 ev.preventDefault();
@@ -218,11 +175,49 @@
                 }
             }
         });
-    
     });
     
-    
+    //
+    observeBySelector(document.documentElement, ".ux-grid-pages .ux-grid-item[data-type=\"backup\"]", (mut)=>{
+        mut.addedNodes.map((el)=>{
+            const tgt = document.querySelector(".ux-grid-pages");
+            if (tgt == target) {
+                const real = target?.querySelector?.(".ux-grid-item[data-type=\"items\"][data-id=\"" + el.dataset.id + "\"]");
+                if (!real?.classList?.contains?.("ux-hidden")) {
+                    real?.classList?.add?.("ux-hidden");
+                }
+                
+                //
+                const item = items?.get(el.dataset.id);
+                grabForDrag(el, item);
+                
+                //
+                el.style.setProperty("--cell-x", item?.cell[0] || 0, "");
+                el.style.setProperty("--cell-y", item?.cell[1] || 0, "");
+                el.style.setProperty("--p-cell-x", item?.cell[0] || 0, "");
+                el.style.setProperty("--p-cell-y", item?.cell[1] || 0, "");
+            }
+        });
+    });
+
+    //
+    observeBySelector(document.documentElement, ".ux-grid-pages .ux-grid-item[data-type=\"items\"]", (mut)=>{
+        const tgt = document.querySelector(".ux-grid-pages");
+        if (tgt == target) {
+            mut.addedNodes.map((el)=>{
+                const visual = target?.querySelector?.(".ux-grid-item[data-type=\"backup\"][data-id=\"" + el.dataset.id + "\"]");
+                if (visual) {
+                    // avoid re-appear
+                    if (!el.classList.contains("ux-hidden")) {
+                        el.classList.add("ux-hidden");
+                    }
+                }
+            });
+        }
+    });
+
 </script>
+
 
 <!-- -->
 <div bind:this={target} data-current-page={current} data-ctx="grid-space" class="ux-grid-pages stretch grid-based-box ux-transparent pe-enable">
