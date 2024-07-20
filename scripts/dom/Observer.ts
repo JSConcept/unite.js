@@ -95,8 +95,13 @@ export const observeBySelector = (element, selector, cb) => {
             }
         }
     });
+
+    //
     observer.observe(element, {
         childList: true,
         subtree: true
     });
+
+    //
+    cb({ addedNodes: element.querySelectorAll(selector) }, observer);
 };

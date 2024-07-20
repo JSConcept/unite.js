@@ -1,5 +1,5 @@
 {
-    "include": ["./**/*", "../src/UI"],
+    "include": ["./**/*", "../src/UI", "../src/UI2/ItemEdit/ItemEdit.ts"],
     "exclude": ["./node_modules", "../node_modules"],
     "compilerOptions": {
         "types": ["./global.d.ts"],
