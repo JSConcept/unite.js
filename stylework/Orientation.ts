@@ -130,9 +130,8 @@ const currentOrient = Object.assign({}, orient0deg);
 
 //
 const availSize = {
-    "--avail-width": Math.min(screen.availWidth || 0, screen.width || 0) + "px",
-    "--avail-height":
-        Math.min(screen.availHeight || 0, screen.height || 0) + "px",
+    "--avail-width": Math.max(Math.min(screen.availWidth || 0, screen.width || 0), window.innerWidth || 0) + "px",
+    "--avail-height": Math.max(Math.min(screen.availHeight || 0, screen.height || 0), window.innerHeight || 0) + "px",
     "--pixel-ratio": devicePixelRatio || 1,
 };
 
@@ -142,10 +141,8 @@ export const updateOrientation = (_) => {
 
     //
     Object.assign(availSize, {
-        "--avail-width":
-            Math.min(screen.availWidth || 0, screen.width || 0) + "px",
-        "--avail-height":
-            Math.min(screen.availHeight || 0, screen.height || 0) + "px",
+        "--avail-width": Math.max(Math.min(screen.availWidth || 0, screen.width || 0), window.innerWidth || 0) + "px",
+        "--avail-height": Math.max(Math.min(screen.availHeight || 0, screen.height || 0), window.innerHeight || 0) + "px",
         "--pixel-ratio": devicePixelRatio || 1,
     });
 
