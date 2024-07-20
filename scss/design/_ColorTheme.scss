@@ -32,15 +32,21 @@
 }
 
 @mixin ux-transparent {
-    --theme-surface-color: transparent;
+    --theme-surface-color: oklch(from #{cl.$baseColor} l c h / 0.0);
     --theme-glyph-color: oklch(from #{cl.$baseColor} calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
 }
 
 @mixin ux-solid-transparent {
-    --theme-surface-color: transparent;
+    --theme-surface-color: oklch(from #{cu.theme-mod-down(cl.$baseColor, 90%)} l c h / 0.0);
     --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
 }
 
+
+
+//
+@mixin ux-transparent-mode {
+    --current-surface-color: #{cu.theme-mod-down(oklch(from var(--theme-surface-color) l c h / 0.0), calc(var(--highlight-coefficient) * 1%))};
+}
 
 
 //
@@ -53,7 +59,7 @@
     }
     
     //
-    :root, :host, :scope, :where(html, body, .ux-solid) {
+    :root, :host, :scope, :where(html, body) {
         --theme-glyph-color: #{cl.$glyphColor};
         --theme-surface-color: #{cl.$surfaceColor};
         --theme-accent-color: #{cl.$accentColor};
@@ -82,6 +88,7 @@
         --current-surface-color: #{cu.theme-mod-down(var(--theme-surface-color), calc(var(--highlight-coefficient) * 1%))};
         --current-accent-color: var(--theme-accent-color);
         --current-chroma-color: var(--theme-chroma-color);
+        --highlight-coefficient: 0.0;
         
         //
         @include cu.var-dependent();
@@ -113,6 +120,7 @@
 		--range-float-text:      #{cu.theme-mod-up(cl.$baseColor, 100%)};; /* text color on floating label */
 	}
 	
+    //
 	:root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*, *::before, *::after) {
         accent-color: var(--current-glyph-color);
         color: var(--current-glyph-color);
@@ -130,6 +138,16 @@
             stroke: var(--current-glyph-color);
         }
 	}
+
+    //
+    :where([data-highlight-hover], [data-highlight]) *:not([data-highlight], [data-highlight-hover]) {
+        --highlight-coefficient: 0;
+    }
+
+    //
+    :where([data-scheme]) *:not([data-scheme]) {
+        @include ux-transparent-mode;
+    }
 
 	//
     @media screen and ((hover: hover) or (pointer: fine)) {
@@ -162,14 +180,15 @@
     *[data-scheme="solid-transparent"] { @include ux-solid-transparent(); }
 
     //
+    *[data-transparent]:not([data-transparent="false"]) { @include ux-transparent-mode; }
+
+    //
     :where(span) {
-        --theme-surface-color: transparent;
         background-color: transparent;
     }
 	
 	//
 	:where(svg) {
-        --theme-surface-color: transparent;
         background-color: transparent;
         stroke: var(--current-glyph-color);
 	}
@@ -178,23 +197,4 @@
 	:where(x-scrollbox) {
         --sb-color: #{cu.theme-mod-down(cu.theme-mod-up(cl.$baseColor, 80%), 20%)};
 	}
-
-
-
-
-    // TODO! deprecated!
-    ////////////////////
-
-    //
-    .force-light { --theme-is-dark: 0; color-scheme: light; }
-    .force-dark { --theme-is-dark: 1; color-scheme: dark; }
-
-    //
-	:where(.ux-accent) { @include ux-accent; }
-	:where(.ux-solid) { @include ux-solid; }
-    :where(.ux-inverse) { @include ux-inverse; }
-    :where(.ux-accent-inverse) { @include ux-accent-inverse; }
-    :where(.ux-transparent) { @include ux-transparent; }
-	:where(.ux-solid-transparent) { @include ux-solid-transparent; }
-
 }
