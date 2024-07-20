@@ -488,16 +488,6 @@ updateDynamic();
 const viewportHandler = (event?: any) => {
     const layoutViewport = document.body;
     const viewport = event?.target || visualViewport;
-    //const offsetLeft = viewport.offsetLeft;
-    const offsetTop =
-        viewport?.height -
-        (layoutViewport.getBoundingClientRect().height || window.innerHeight) +
-        (viewport?.offsetTop || 0);
-
-    //
-    /*document.body.style.transform = `translate(${offsetLeft}px, ${offsetTop}px) scale(${
-        1 / viewport.scale
-    })`;*/
 
     //
     document.documentElement.style.setProperty(
@@ -507,10 +497,12 @@ const viewportHandler = (event?: any) => {
     );
 
     //
-    const vvh = (viewport?.height || 0) - offsetTop;
+    const vvh = viewport?.height;
+    const dff = vvh - (layoutViewport.getBoundingClientRect().height || window.innerHeight);
+    const cvh = Math.min(Math.max(vvh - dff, viewport?.offsetTop || 0) - (viewport?.offsetTop || 0), (screen.availHeight || screen.height));
     document.documentElement.style.setProperty(
         "--visual-height",
-        vvh + "px",
+        cvh + "px",
         ""
     );
 
