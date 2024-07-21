@@ -6,35 +6,22 @@
 
     // usable for grid-items
     @mixin auto-space {
-        inline-size: auto;
-        inline-size: stretch;
-        block-size: auto;
-        block-size: stretch;
+        inline-size: fallback(stretch, auto);
+        block-size: fallback(stretch, auto);
     }
 
     //
     @mixin stretch {
-        inline-size: auto;
-        inline-size: stretch;
-        inline-size: 100%;
+        //inline-size: fallback(stretch, 100%);
+        //block-size: fallback(stretch, 100%);
 
-        block-size: auto;
-        block-size: stretch;
-        block-size: 100%;
-        
         //
-        max-inline-size: none;
-        max-inline-size: stretch;
-        max-block-size: none;
-        max-block-size: stretch;
-        
-        // stretch or moz-available works buggy
-        /*@-moz-document url-prefix() {
-            inline-size: min(100%, 100cqi);
-            block-size: min(100%, 100cqb);
-            max-inline-size: min(100%, 100cqi);
-            max-block-size: min(100%, 100cqb);
-        }*/
+        inline-size: 100%;
+        block-size: 100%;
+
+        //
+        max-inline-size: fallback(stretch, none);
+        max-block-size: fallback(stretch, none);
     }
 
     //
@@ -84,8 +71,7 @@
 
     //
     @mixin pointer-events-enable {
-        pointer-events: auto !important;
-        pointer-events: bounding-box !important;
+        pointer-events: fallback(bounding-box, auto) !important;
     }
 
     //
@@ -95,11 +81,12 @@
 
     //
     @mixin user-select-enable {
-        -webkit-user-select: auto;
+        // DO auto-prefix by PostCSS!
+        /*-webkit-user-select: auto;
         -khtml-user-select: auto;
         -moz-user-select: auto;
         -o-user-select: auto;
-        -ms-user-select: auto;
+        -ms-user-select: auto;*/
         user-select: auto;
     }
 

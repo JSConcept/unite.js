@@ -66,8 +66,7 @@
         
         //
         & :where(.ux-modal-frame, .ux-modal) {
-            pointer-events: auto;
-            pointer-events: bounding-box;
+            pointer-events: fallback(bounding-box, auto);
         }
     }
 

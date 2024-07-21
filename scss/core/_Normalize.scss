@@ -64,7 +64,6 @@
     
         //
         display: none !important;
-        pointer-events: none !important;
     }
 
     //
@@ -79,9 +78,6 @@
 
     //
     body {
-        background-color: #000000 !important;
-
-        //
         overflow: hidden;
         position: relative;
         
@@ -106,7 +102,7 @@
         @include cm.no-user-select;
         
         //
-        overflow: hidden !important;
+        overflow: hidden;
     }
     
     //
@@ -178,10 +174,7 @@
         display: flex;
 
         //
-        image-rendering: auto;
-        image-rendering: optimizeQuality;
-        image-rendering: smooth;
-        image-rendering: high-quality;
+        image-rendering: fallback(high-quality, smooth, optimizeQuality, auto);
 
         //
         object-fit: cover;
@@ -218,13 +211,15 @@
         place-items: center;
         place-content: center;
 
+        //
         color: var(--current-glyph-color);
         background-color: var(--current-surface-color);
         
+        //
         cursor: pointer;
-        pointer-events: auto;
-        pointer-events: bounding-box;
+        pointer-events: fallback(bounding-box, auto);
         
+        //
         padding: 0px;
         margin: 0px;
         
