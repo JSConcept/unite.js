@@ -71,7 +71,7 @@
 
     //
     @mixin pointer-events-enable {
-        pointer-events: fallback(bounding-box, auto) !important;
+        pointer-events: fallback(bounding-box, auto);
     }
 
     //
