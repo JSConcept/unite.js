@@ -82,8 +82,32 @@ export const observeAttribute = (element, attribute, cb) => {
     });
 };
 
+const defer = ()=>{
+    const resolveOf = async (x) => {
+        if (
+            ["loading", "interactive", "complete"].indexOf(
+                document.readyState
+            ) >= 1
+        ) {
+            await Timer.raf;
+            x({});
+            return true;
+        }
+        return false;
+    };
+    return new Promise(async (x) => {
+        if (!(await resolveOf(x))) {
+            document.documentElement.addEventListener(
+                "readystatechange",
+                (_) => resolveOf(x),
+                {once: false, passive: true}
+            );
+        }
+    });
+}
+
 //
-export const observeBySelector = (element, selector, cb) => {
+export const observeBySelector = async (element, selector, cb) => {
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type == "childList") {
@@ -97,11 +121,15 @@ export const observeBySelector = (element, selector, cb) => {
     });
 
     //
+    await defer;
+    await new Promise((r)=>requestAnimationFrame(r));
+
+    //
     observer.observe(element, {
         childList: true,
         subtree: true
     });
 
     //
-    cb({ addedNodes: element.querySelectorAll(selector) }, observer);
+    cb({ addedNodes: Array.from(element.querySelectorAll(selector)) }, observer);
 };
