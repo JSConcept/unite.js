@@ -1,5 +1,5 @@
 //@use "@scss/fonts/xo_cal;iburn" as dFont;
-@use "./ClassLets";
+@use "./ClassMods" as cm;
 
 //
 @layer ux-normalize {
@@ -59,8 +59,8 @@
 
     //
     head {
-        @extend .pe-none;
-        @extend .no-user-select !optional;
+        @include cm.pe-none;
+        @include cm.no-user-select;
     
         //
         display: none !important;
@@ -79,10 +79,6 @@
 
     //
     body {
-        //@extend .vp-exclude-keyboard;
-        @extend .fit-viewport;
-
-        //
         background-color: #000000 !important;
 
         //
@@ -99,12 +95,15 @@
         
         //
         will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
+
+        //
+        @include cm.fit-viewport;
     }
 
     //
     :where(canvas, img, picture, video) {
-        @extend .pe-none;
-        @extend .no-user-select !optional;
+        @include cm.pe-none;
+        @include cm.no-user-select;
         
         //
         overflow: hidden !important;
@@ -117,7 +116,7 @@
 
     //
     :where(*) {
-        @extend .no-user-select;
+        @include cm.no-user-select;
         
         //
         box-sizing: border-box;
@@ -134,8 +133,8 @@
     
     //
     :where(.lucide, svg) {
-        @extend .stretch;
-        @extend .pe-none;
+        @include cm.stretch;
+        @include cm.pe-none;
     
         //
         display: inline-block;
@@ -161,13 +160,13 @@
 
     //
     :where([inert], *[inert]) {
-        @extend .pointer-events-none
+        @include cm.pointer-events-none
     }
 
     //
     :where(canvas):is([is="w-canvas"]) {
-        @extend .stretch;
-        @extend .align-center;
+        @include cm.stretch;
+        @include cm.align-center;
 
         //
         align-items: start;

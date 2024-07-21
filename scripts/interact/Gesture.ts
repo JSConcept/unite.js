@@ -263,8 +263,8 @@ export default class AxGesture {
 
     //
     limitResize(real, virtual, holder, container) {
-        const widthDiff = container[contentBoxWidth] - (holder[borderBoxWidth] - (this.propGet("--resize-x") || 0) - (this.propGet("--drag-x") || 0));
-        const heightDiff = container[contentBoxHeight] - (holder[borderBoxHeight] - (this.propGet("--resize-y") || 0) - (this.propGet("--drag-y") || 0));
+        const widthDiff = container[contentBoxWidth] - (holder[borderBoxWidth] - (this.propGet("--resize-x") || 0) + (this.propGet("--drag-x") || 0));
+        const heightDiff = container[contentBoxHeight] - (holder[borderBoxHeight] - (this.propGet("--resize-y") || 0) + (this.propGet("--drag-y") || 0));
 
         // if relative of un-resized to edge corner max-size
         // discount of dragging offset!

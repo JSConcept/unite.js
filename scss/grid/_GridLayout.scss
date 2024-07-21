@@ -1,4 +1,4 @@
-@use "../core/ClassLets";
+@use "../core/ClassMods" as cm;
 
 //
 @property --cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
@@ -78,6 +78,8 @@
 //
 @layer ux-grid-layout {
     .ux-grid-layout {
+        @include cm.stretch;
+
         // in rems!
         --c-gap: 0;
         --r-gap: 0;
@@ -147,7 +149,7 @@
 
         //
         .ux-grid-item-label {
-            @extend .no-wrap;
+            @include cm.no-wrap;
 
             //
             --translate-x: 0px;
@@ -167,7 +169,7 @@
         }
 
         .ux-grid-item {
-            @extend .stretch;
+            @include cm.stretch;
 
             //
             overflow: hidden;
