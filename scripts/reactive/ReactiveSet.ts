@@ -1,5 +1,23 @@
+const boundCtx = new WeakMap();
+const bindFx = (target, fx)=>{
+    if (!boundCtx.has(target)) {
+        boundCtx.set(target, new WeakMap());
+    }
+
+    //
+    const be = boundCtx.get(target);
+    if (!be.has(fx)) {
+        const bfx = fx?.bind?.(target);
+        be.set(fx, bfx);
+    }
+
+    //
+    return be.get(fx);
+}
+
+//
 const bindCtx = (target, fx) => {
-    return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
+    return (typeof fx == "function" ? bindFx(target, fx) : fx) ?? fx;
 }
 
 //
