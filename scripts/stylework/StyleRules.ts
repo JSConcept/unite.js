@@ -13,7 +13,7 @@ export const setStyleRule = (selector: string, sheet: object) => {
 
     //
     const rule = styleElement?.sheet?.cssRules[ruleId];
-    Object.entries(sheet).map(([propName, propValue]) => {
+    Object.entries(sheet).forEach(([propName, propValue]) => {
         if (rule instanceof CSSStyleRule) {
             const exists = rule?.style?.getPropertyValue(propName);
             if (!exists || exists != propValue) {

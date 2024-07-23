@@ -103,7 +103,7 @@ document.documentElement.addEventListener(
             }
 
             //
-            exists.holding.map((hm) => {
+            exists.holding.forEach((hm) => {
                 hm.shifting = [...(hm.modified || hm.shifting || [0, 0])];
             });
 
@@ -219,7 +219,7 @@ document.documentElement.addEventListener(
         }
 
         //
-        exists.holding.map((hm) => {
+        exists.holding.forEach((hm) => {
             if (hm.shifting) {
                 hm.shifting[0] += np.movement[0];
                 hm.shifting[1] += np.movement[1];
@@ -254,7 +254,7 @@ document.documentElement.addEventListener(
         });
 
         //
-        ["left", "top", "right", "bottom"].map((side) => {
+        ["left", "top", "right", "bottom"].forEach((side) => {
             if (exists?.edges?.results?.[side] != exists?.edges?.[side]) {
                 const nev = new CustomEvent(
                     (exists.edges?.[side] ? "m-contact-" : "m-leave-") + side,
@@ -303,7 +303,7 @@ export const releasePointer = (ev) => {
         }
 
         //
-        (exists.holding || []).map((hm) => {
+        (exists.holding || []).forEach((hm) => {
             const em = hm.element?.deref();
 
             //

@@ -122,7 +122,7 @@ export default class AxQuery {
                                         allowed &&
                                         (mut.target as HTMLElement)?.matches?.(selector || "")
                                     ) {
-                                        Array.from(fns.values()).map((F) =>
+                                        Array.from(fns.values()).forEach((F) =>
                                             F(
                                                 [mut.target],
                                                 selector,
@@ -163,7 +163,7 @@ export default class AxQuery {
 
                                 //
                                 elements = [...new Set(elements)];
-                                Array.from(fns.values()).map((F) => F(elements, selector));
+                                Array.from(fns.values()).forEach((F) => F(elements, selector));
                             });
                         }
                     }
@@ -179,7 +179,7 @@ export default class AxQuery {
         //
         this.defer.then(() => {
             for (const [selector, fns] of domListener.entries()) {
-                Array.from(fns.values()).map((F) =>
+                Array.from(fns.values()).forEach((F) =>
                     F(
                         this.dynamic(selector).filter((el) => !el[_changed_]),
                         selector
@@ -203,7 +203,7 @@ export default class AxQuery {
     //
     #reflectAttribInStyle(selector, elements, attribs) {
         for (const [key, unit] of attribs.entries()) {
-            elements.map(async (e, I) => {
+            elements.forEach(async (e, I) => {
                 if (!e[_changed_] && e != null) {
                     //await Timer.raf;
                     const K = await (typeof key == "function"
@@ -233,7 +233,7 @@ export default class AxQuery {
 
     //
     #applyEvents(selector, elements, args) {
-        elements.map(async (e, _) => {
+        elements.forEach(async (e, _) => {
             //
             const mb = e?.matches?.(selector);
 
@@ -275,7 +275,7 @@ export default class AxQuery {
     //
     #observeAttrib(selector, elements, attribs, mutation) {
         for (const [key, value] of attribs.entries()) {
-            elements.map(async (e, I) => {
+            elements.forEach(async (e, I) => {
                 if (!e[_changed_] && e.matches(selector)) {
                     if (
                         ["style", "class", "id"].indexOf(mutation ?? key) < 0 &&
@@ -296,7 +296,7 @@ export default class AxQuery {
     //
     #applyAttrib(selector, elements, attribs, mutation) {
         for (const [key, value] of attribs.entries()) {
-            elements.map(async (e, I) => {
+            elements.forEach(async (e, I) => {
                 if (!e[_changed_] && e.matches(selector)) {
                     if (
                         (["style", "class", "id"].indexOf(mutation) >= 0

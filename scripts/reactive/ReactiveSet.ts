@@ -74,8 +74,8 @@ export default class ReactiveSet {
         if (name == "delete") {
             return (value) => {
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(value, value);
-                Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
-                Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
+                Array.from(this.subscribers.get(value)?.values?.() || []).forEach((cb: (value: any) => void) => cb(value));
+                Array.from(this.listeners?.values?.() || []).forEach((cb: (value: any) => void) => cb(value));
                 return result;
             };
         }
@@ -84,8 +84,8 @@ export default class ReactiveSet {
         if (name == "add") {
             return (value) => {
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(value, value);
-                Array.from(this.subscribers.get(value)?.values?.() || []).map((cb: (value: any) => void) => cb(value));
-                Array.from(this.listeners?.values?.() || []).map((cb: (value: any) => void) => cb(value));
+                Array.from(this.subscribers.get(value)?.values?.() || []).forEach((cb: (value: any) => void) => cb(value));
+                Array.from(this.listeners?.values?.() || []).forEach((cb: (value: any) => void) => cb(value));
                 return result;
             };
         }

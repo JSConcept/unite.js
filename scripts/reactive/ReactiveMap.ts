@@ -74,8 +74,8 @@ export default class ReactiveMap {
         if (name == "delete") {
             return (prop, value = null) => {
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
-                Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
+                Array.from(this.subscribers.get(prop)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
+                Array.from(this.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
                 return result;
             };
         }
@@ -84,8 +84,8 @@ export default class ReactiveMap {
         if (name == "set") {
             return (prop, value) => {
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
-                Array.from(this.subscribers.get(prop)?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                Array.from(this.listeners?.values?.() || []).map((cb: (value: any, prop: keyType) => void) => cb(value, prop));
+                Array.from(this.subscribers.get(prop)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
+                Array.from(this.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
                 return result;
             };
         }

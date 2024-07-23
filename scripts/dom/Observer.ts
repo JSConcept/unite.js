@@ -14,7 +14,7 @@ export const observeContentBox = (element, cb) => {
                 if (entry.contentBoxSize) {
                     const contentBoxSize = entry.contentBoxSize[0];
                     if (contentBoxSize) {
-                        callbacks.map((cb) => cb?.(contentBoxSize, observer));
+                        callbacks.forEach((cb) => cb?.(contentBoxSize, observer));
                     }
                 }
             }
@@ -47,7 +47,7 @@ export const observeBorderBox = (element, cb) => {
                 if (entry.borderBoxSize) {
                     const borderBoxSize = entry.borderBoxSize[0];
                     if (borderBoxSize) {
-                        callbacks.map((cb) => cb?.(borderBoxSize, observer));
+                        callbacks.forEach((cb) => cb?.(borderBoxSize, observer));
                     }
                 }
             }

@@ -107,7 +107,7 @@ export const properties = [
 ];
 
 // define properties
-properties.map((o) => {
+properties.forEach((o) => {
     try {
         CSS?.registerProperty?.(o)
     } catch(e) {
