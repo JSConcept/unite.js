@@ -46,7 +46,17 @@ const cover = (ctx, img, scale = 1, port) => {
 
 };
 
+
 //
+const blobImageMap = new WeakMap();
+const createImageBitmapCache = (blob)=>{
+    if (!blobImageMap.has(blob)) {
+        blobImageMap.set(blob, createImageBitmap(blob));
+    }
+    return blobImageMap.get(blob);
+}
+
+
 export class WCanvas extends HTMLCanvasElement {
     static observedAttributes = ["data-src"];
 
@@ -133,7 +143,7 @@ export class WCanvas extends HTMLCanvasElement {
                 canvas[["width", "height"][ox]] / img[["width", "height"][port]],
                 canvas[["height", "width"][ox]] / img[["height", "width"][port]]);
 
-            // 
+            //
             ctx.save();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             cover(ctx, img, scale, port);
@@ -145,15 +155,15 @@ export class WCanvas extends HTMLCanvasElement {
 
     //
     async $useImageAsSource(blob, doNotRewrite = false) {
-        const img = (blob instanceof ImageBitmap) ? blob : (await createImageBitmap(blob).catch((_) => null));
+        const img = (blob instanceof ImageBitmap) ? blob : (await createImageBitmapCache(blob).catch((_) => null));
 
         //
         if (blob instanceof Blob || blob instanceof File) {
             //this.style.backgroundImage = `url(\"${URL.createObjectURL(blob)}\")`;
             //this.style.setProperty("--image", `url(\"${URL.createObjectURL(blob)}\")`);
-            this.style.setProperty("--image-width", (this.image?.width || 1) as unknown as string);
-            this.style.setProperty("--image-height", (this.image?.height || 1) as unknown as string);
-            this.style.setProperty("border-image-source", `url(\"${URL.createObjectURL(blob)}\")`);
+            //this.style.setProperty("--image-width", (this.image?.width || 1) as unknown as string);
+            //this.style.setProperty("--image-height", (this.image?.height || 1) as unknown as string);
+            //this.style.setProperty("border-image-source", `url(\"${URL.createObjectURL(blob)}\")`);
 
             //
             window.dispatchEvent(new CustomEvent("wallpaper", {detail: {blob, doNotRewrite}}));

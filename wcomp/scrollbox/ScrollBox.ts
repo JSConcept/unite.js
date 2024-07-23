@@ -14,6 +14,14 @@ interface ScrollBarStatus {
 }
 
 //
+const setProperty = (target, name, style)=>{
+    const prop = target?.style?.getPropertyValue?.(name);
+    if (prop != style && parseFloat(prop) != style || prop == null) {
+        target?.style?.setProperty?.(name, style, "");
+    }
+}
+
+//
 const contentBoxWidth = Symbol("@content-box-width");
 const contentBoxHeight = Symbol("@content-box-height");
 
@@ -36,52 +44,30 @@ class ScrollBar {
         };
 
         //
-        const onChanges = () => {
+        const onChanges = (ev: any | null = null) => {
+            if (!ev?.target || ev?.target == this.holder) {
+                const sizePercent = Math.min(
+                    this.holder[[contentBoxWidth, contentBoxHeight][axis]] /
+                    this.holder[["scrollWidth", "scrollHeight"][axis]],
+                    1
+                );
+                const thumbSize = this.holder[[contentBoxWidth, contentBoxHeight][axis]] * sizePercent;
 
-            const sizePercent = Math.min(
-                this.holder[[contentBoxWidth, contentBoxHeight][axis]] /
-                this.holder[["scrollWidth", "scrollHeight"][axis]],
-                1
-            );
-            const thumbSize = this.holder[[contentBoxWidth, contentBoxHeight][axis]] * sizePercent;
+                //
+                const scrollAvailable =
+                    this.holder[[contentBoxWidth, contentBoxHeight][axis]] -
+                    thumbSize;
 
-            //
-            const scrollAvailable =
-                this.holder[[contentBoxWidth, contentBoxHeight][axis]] -
-                thumbSize;
+                //
+                setProperty(this.scrollbar, "--thumbSize", (thumbSize || "0") as string);
+                setProperty(this.scrollbar, "--scrollAvail", (scrollAvailable || "0") as string);
 
-            //
-            this.scrollbar.style.setProperty("--thumbSize", (thumbSize || "0") as string, "");
-            this.scrollbar.style.setProperty("--scrollAvail", (scrollAvailable || "0") as string, "");
-
-            //
-            this.holder.style.setProperty(
-                "--scroll-top",
-                (this.holder.scrollTop || "0") as string,
-                ""
-            );
-            this.holder.style.setProperty(
-                "--scroll-left",
-                (this.holder.scrollLeft || "0") as string,
-                ""
-            );
-
-            //
-            const event = new CustomEvent("scroll-change", {
-                detail: {
-                    scrollTop: this.holder.scrollTop,
-                    scrollLeft: this.holder.scrollLeft,
-                },
-            });
-
-            //
-            this.holder.dispatchEvent(event);
-
-            //
-            if (sizePercent >= 0.999) {
-                this.scrollbar.style.setProperty("visibility", "collapse", "");
-            } else {
-                this.scrollbar.style.setProperty("visibility", "visible", "");
+                //
+                if (sizePercent >= 0.999) {
+                    setProperty(this.scrollbar, "visibility", "collapse");
+                } else {
+                    setProperty(this.scrollbar, "visibility", "visible");
+                }
             }
         };
 
@@ -117,10 +103,12 @@ class ScrollBar {
                 const realShift = this.status.virtualScroll - previous;
 
                 //
-                this.holder.scrollBy({
-                    [["left", "top"][axis]]: realShift,
-                    behavior: "instant",
-                });
+                if (Math.abs(realShift) >= 0.01) {
+                    this.holder.scrollBy({
+                        [["left", "top"][axis]]: realShift,
+                        behavior: "instant",
+                    });
+                }
             }
         });
 
@@ -146,7 +134,34 @@ class ScrollBar {
         //
         this.holder.addEventListener("pointerleave", onChanges);
         this.holder.addEventListener("pointerenter", onChanges);
-        this.holder.addEventListener("scroll", onChanges);
+        this.holder.addEventListener("scroll", (ev)=>{
+            //
+            setProperty(
+                this.holder,
+                "--scroll-top",
+                (this.holder.scrollTop || "0") as string
+            );
+
+            //
+            setProperty(
+                this.holder,
+                "--scroll-left",
+                (this.holder.scrollLeft || "0") as string
+            );
+
+            //
+            const event = new CustomEvent("scroll-change", {
+                detail: {
+                    scrollTop: this.holder.scrollTop,
+                    scrollLeft: this.holder.scrollLeft,
+                },
+            });
+
+            //
+            this.holder.dispatchEvent(event);
+
+            //onChanges
+        });
 
         //
         observeContentBox(this.holder, (box) => {

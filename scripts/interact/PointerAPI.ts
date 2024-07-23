@@ -124,6 +124,16 @@ document.documentElement.addEventListener(
     {capture: true}
 );
 
+
+//
+const setProperty = (target, name, style)=>{
+    const prop = target?.style?.getPropertyValue?.(name);
+    if (prop != style || !prop) {
+        target?.style?.setProperty?.(name, style, "");
+    }
+}
+
+
 //
 document.documentElement.addEventListener(
     "pointermove",
@@ -190,14 +200,14 @@ document.documentElement.addEventListener(
             em?.dispatchEvent?.(nev);
 
             //
-            if (hm.modified) {
-                em?.style?.setProperty?.(
+            if (hm.modified && Math.hypot(...np.movement) >= 0.001) {
+                setProperty(em,
                     `--${hm.propertyName || "drag"}-x`,
-                    hm.modified[0] as unknown as string, ""
+                    hm.modified[0] as unknown as string
                 );
-                em?.style?.setProperty?.(
+                setProperty(em,
                     `--${hm.propertyName || "drag"}-y`,
-                    hm.modified[1] as unknown as string, ""
+                    hm.modified[1] as unknown as string
                 );
             }
         });

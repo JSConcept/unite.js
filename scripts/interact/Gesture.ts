@@ -434,7 +434,8 @@ export default class AxGesture {
 
     //
     propFloat(name, val) {
-        if (parseFloat(this.#holder.style.getPropertyValue(name)) != val) {
+        const pVal = this.#holder.style.getPropertyValue(name);
+        if (parseFloat(pVal) != val && pVal != val || pVal == null) {
             this.#holder.style.setProperty(name, val, "");
         }
     }
