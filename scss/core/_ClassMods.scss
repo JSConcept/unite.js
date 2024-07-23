@@ -299,7 +299,7 @@
                 --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
                 --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
             }
-            
+
             //
             @at-root :fullscreen & {
                 --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
@@ -312,13 +312,13 @@
         .vp-vars-keyboard-dependent {
             --vp-i-size: calc(100dvi / var(--zoom, 1));
             --vp-b-size: calc(100dvb / var(--zoom, 1));
-            
+
             //
             @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
                 --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
                 --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
             }
-            
+
             //
             @at-root :fullscreen & {
                 --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));

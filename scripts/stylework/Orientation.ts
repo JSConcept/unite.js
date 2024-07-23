@@ -62,10 +62,18 @@ const pts = Object.assign({}, ptsLandscape);
 const currentOrient = Object.assign({}, orient0deg);
 
 //
+const isMobile = ()=>{
+    const f1 = matchMedia("(hover: none) and (pointer: coarse) and (display-mode: fullscreen)").matches;
+    const f2 = 'ontouchstart' in window || 'onmsgesturechange' in window;
+    return f1 && f2;
+}
+
+//
 const getAvailSize = ()=>{
+    const mob = isMobile();
     return {
-        "--avail-width": Math.min(window.outerWidth, screen.availWidth) + "px",
-        "--avail-height": Math.min(window.outerHeight, screen.availHeight) + "px",
+        "--avail-width": (mob ? screen.availWidth : Math.max(window.outerWidth, screen.availWidth)) + "px",
+        "--avail-height": (mob ? screen.availHeight : Math.max(window.outerHeight, screen.availHeight)) + "px",
         "--pixel-ratio": devicePixelRatio || 1,
     };
 }
