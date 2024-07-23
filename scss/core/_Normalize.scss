@@ -113,7 +113,7 @@
     //
     :where(*) {
         @include cm.no-user-select;
-        
+
         //
         box-sizing: border-box;
         border: none;
@@ -122,16 +122,16 @@
         -webkit-tap-highlight-color: transparent;
         -moz-tap-highlight-color: transparent;
         box-shadow: none;
-        
+
         //
         touch-action: pan-y pan-x;
     }
-    
+
     //
     :where(.lucide, svg) {
         @include cm.stretch;
         @include cm.pe-none;
-    
+
         //
         display: inline-block;
         contain-intrinsic-width: calc(24px / var(--scaling));
@@ -139,17 +139,17 @@
         contain: size;
         aspect-ratio: 1 / 1;
         position: relative;
-        
+
         //
         object-fit: contain;
         object-position: center center;
-        
+
         //
         inset: 0px;
-        translate: 0px 0px;
+        translate: 0px 0px 0px;
         visibility: visible;
         opacity: 1;
-        
+
         //
         stroke: var(--current-glyph-color);
     }

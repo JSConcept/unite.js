@@ -126,10 +126,50 @@ document.documentElement.addEventListener(
 
 
 //
-const setProperty = (target, name, style)=>{
-    const prop = target?.style?.getPropertyValue?.(name);
-    if (prop != style || !prop) {
-        target?.style?.setProperty?.(name, style, "");
+CSS?.registerProperty?.({
+    name: "--resize-x",
+    syntax: "<number>",
+    inherits: true,
+    initialValue: `0`,
+});
+
+//
+CSS?.registerProperty?.({
+    name: "--resize-y",
+    syntax: "<number>",
+    inherits: true,
+    initialValue: `0`,
+});
+
+//
+CSS?.registerProperty?.({
+    name: "--drag-x",
+    syntax: "<number>",
+    inherits: true,
+    initialValue: `0`,
+});
+
+//
+CSS?.registerProperty?.({
+    name: "--drag-y",
+    syntax: "<number>",
+    inherits: true,
+    initialValue: `0`,
+});
+
+
+//
+const setProperty = (target, name, value)=>{
+    if ("attributeStyleMap" in target) {
+        const prop = target.attributeStyleMap.get(name)?.[0];
+        if (parseFloat(prop) != value && prop != value || prop == null) {
+            target.attributeStyleMap.set(name, value);
+        }
+    } else {
+        const prop = target?.style?.getPropertyValue?.(name);
+        if (parseFloat(prop) != value && prop != value || prop == null) {
+            target?.style?.setProperty?.(name, value, "");
+        }
     }
 }
 
@@ -187,20 +227,21 @@ document.documentElement.addEventListener(
             }
 
             //
-            const nev = new CustomEvent("m-dragging", {
-                bubbles: true,
-                detail: {
-                    pointer: exists,
-                    holding: hm,
-                },
-            });
-
-            //
-            const em = hm.element?.deref();
-            em?.dispatchEvent?.(nev);
-
-            //
             if (hm.modified && Math.hypot(...np.movement) >= 0.001) {
+                //
+                const nev = new CustomEvent("m-dragging", {
+                    bubbles: true,
+                    detail: {
+                        pointer: exists,
+                        holding: hm,
+                    },
+                });
+
+                //
+                const em = hm.element?.deref();
+                em?.dispatchEvent?.(nev);
+
+                //
                 setProperty(em,
                     `--${hm.propertyName || "drag"}-x`,
                     hm.modified[0] as unknown as string

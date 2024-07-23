@@ -6,9 +6,12 @@ export const or_mod = {
     "portrait-secondary": [-1, -1, 0],
 };
 
+const zoomSupport = "currentCSSZoom" in document.documentElement;
+
 //
 export const zoomOf = () => {
-    if ("currentCSSZoom" in document.documentElement) { return ((document.documentElement.currentCSSZoom as number) || 1); }
+    // @ts-ignore
+    if (zoomSupport) { return ((document.documentElement.currentCSSZoom as number) || 1); }
     return parseFloat(document.documentElement.style.getPropertyValue("--scaling")) || 1;
 };
 

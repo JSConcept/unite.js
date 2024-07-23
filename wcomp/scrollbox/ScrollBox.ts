@@ -14,10 +14,17 @@ interface ScrollBarStatus {
 }
 
 //
-const setProperty = (target, name, style)=>{
-    const prop = target?.style?.getPropertyValue?.(name);
-    if (prop != style && parseFloat(prop) != style || prop == null) {
-        target?.style?.setProperty?.(name, style, "");
+const setProperty = (target, name, value)=>{
+    if ("attributeStyleMap" in target) {
+        const prop = target.attributeStyleMap.get(name)?.[0];
+        if (parseFloat(prop) != value && prop != value || prop == null) {
+            target.attributeStyleMap.set(name, value);
+        }
+    } else {
+        const prop = target?.style?.getPropertyValue?.(name);
+        if (parseFloat(prop) != value && prop != value || prop == null) {
+            target?.style?.setProperty?.(name, value, "");
+        }
     }
 }
 
@@ -103,7 +110,7 @@ class ScrollBar {
                 const realShift = this.status.virtualScroll - previous;
 
                 //
-                if (Math.abs(realShift) >= 0.01) {
+                if (Math.abs(realShift) >= 0.001) {
                     this.holder.scrollBy({
                         [["left", "top"][axis]]: realShift,
                         behavior: "instant",
