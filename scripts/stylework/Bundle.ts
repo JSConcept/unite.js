@@ -1,7 +1,8 @@
-import("./Properties.ts").then(()=>Promise.allSettled([
+Promise.allSettled([
+    import("./Properties.ts"),
+    import("./GridLayoutModLoader.ts"),
     import("./StyleRules.ts"),
     import("./Viewport.ts"),
     import("./Orientation.ts"),
-    import("./Wallpaper.ts").then((_)=>import("./WCanvas.ts")),
-]));
-
+    import("./Wallpaper.ts").then(()=>import("./WCanvas.ts"))
+]);
