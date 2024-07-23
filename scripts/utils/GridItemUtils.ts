@@ -1,5 +1,5 @@
 //import {get} from "node:http";
-import {makeReactiveObject} from "../reactive/ReactiveObject.ts";
+import {makeReactiveObject} from "../reactive/ReactiveLib.ts";
 import {getCorrectOrientation, isMobile} from "./Utils.ts";
 
 //
