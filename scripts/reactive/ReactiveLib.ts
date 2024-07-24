@@ -255,9 +255,9 @@ export class ReactiveObject {
 }
 
 //
-export const makeReactiveObject: <T extends object>(map: T) => T = <T extends object>(obj: T) => new Proxy<T>(obj, register(obj, new ReactiveObject()) as ProxyHandler<T>);
-export const makeReactiveMap: <K, V>(map: Map<K, V>) => Map<K, V> = <K, V>(map: Map<K, V>) => new Proxy(map, register(map, new ReactiveMap()) as ProxyHandler<Map<K, V>>);
-export const makeReactiveSet: <V>(set: Set<V>) => Set<V> = <V>(set: Set<V>) => new Proxy(set, register(set, new ReactiveSet()) as ProxyHandler<Set<V>>);
+export const makeReactiveObject: <T extends object>(map: T) => T = <T extends object>(obj: T) => new Proxy<T>(obj?.[extractSymbol] ?? obj, register(obj, new ReactiveObject()) as ProxyHandler<T>);
+export const makeReactiveMap: <K, V>(map: Map<K, V>) => Map<K, V> = <K, V>(map: Map<K, V>) => new Proxy(map?.[extractSymbol] ?? map, register(map, new ReactiveMap()) as ProxyHandler<Map<K, V>>);
+export const makeReactiveSet: <V>(set: Set<V>) => Set<V> = <V>(set: Set<V>) => new Proxy(set?.[extractSymbol] ?? set, register(set, new ReactiveSet()) as ProxyHandler<Set<V>>);
 
 //
 export const createReactiveMap: <K, V>(map: [K, V][]) => Map<K, V> = <K, V>(map: [K, V][] = []) => new Proxy(new Map(map), register(map, new ReactiveMap()) as ProxyHandler<Map<K, V>>);
