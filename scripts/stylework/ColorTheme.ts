@@ -46,14 +46,8 @@ export const switchTheme = (isDark = false) => {
     //surfaceColor = formatCss(baseColorI);
 
     //
-    const media = document?.head?.querySelector?.(
-        'meta[name="theme-color"]:not([media])'
-    );
-
-    //
-    if (media) {
-        media.setAttribute("content", baseColor);
-    }
+    const media = document?.head?.querySelector?.('meta[data-theme-color]');
+    if (media) { media.setAttribute("content", baseColor); }
 };
 
 //
