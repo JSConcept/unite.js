@@ -1,4 +1,4 @@
-Promise.allSettled([
+export default Promise.allSettled([
     import("./Properties.ts"),
     import("./GridLayoutModLoader.ts"),
     import("./StyleRules.ts"),

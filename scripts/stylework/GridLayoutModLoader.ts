@@ -1,3 +1,4 @@
+
 //
 CSS?.registerProperty?.({
     name: "--orient",
@@ -57,9 +58,9 @@ CSS?.registerProperty?.({
     initialValue: "0",
 });
 
-
-//
+// pre-load (cache inside code)
+import $Worklet from "./GridLayoutMod.mjs?raw";
 if ("layoutWorklet" in CSS) {
     // @ts-ignore
-    CSS.layoutWorklet.addModule(new URL("./GridLayoutMod.mjs", import.meta.url).href);
+    CSS.layoutWorklet.addModule(URL.createObjectURL(new Blob([$Worklet], {type: "text/javascript"})));
 }
