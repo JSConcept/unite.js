@@ -48,6 +48,12 @@ export class Subscript {
             this.listeners.add?.(cb);
         }
     }
+
+    //
+    trigger(name, value = null) {
+        Array.from(this.subscribers.get(name)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, name));
+        Array.from(this.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, name));
+    }
 }
 
 //
@@ -94,7 +100,6 @@ export const subscribe = (target, cb: (value: any, prop: keyType) => void, prop:
     //
     const self = subscriptRegistry.get(unwrap);
     self?.subscribe?.(cb, prop);
-
     return self;
 }
 
@@ -117,13 +122,10 @@ export class ReactiveMap {
 
         //
         if (name == "delete") {
-            return (prop, value = null) => {
+            return (prop, _ = null) => {
                 const self = subscriptRegistry.get(target);
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(prop);
-                if (self) {
-                    Array.from(self.subscribers.get(prop)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                    Array.from(self.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                }
+                self?.trigger?.(prop, null);
                 return result;
             };
         }
@@ -133,10 +135,7 @@ export class ReactiveMap {
             return (prop, value) => {
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
                 const self = subscriptRegistry.get(target);
-                if (self) {
-                    Array.from(self.subscribers.get(prop)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                    Array.from(self.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, prop));
-                }
+                self?.trigger?.(prop, value);
                 return result;
             };
         }
@@ -178,10 +177,7 @@ export class ReactiveSet {
             return (value) => {
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(value);
                 const self = subscriptRegistry.get(target);
-                if (self) {
-                    Array.from(self.subscribers.get(value)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, value));
-                    Array.from(self.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, value));
-                }
+                self?.trigger?.(value, null);
                 return result;
             };
         }
@@ -191,10 +187,7 @@ export class ReactiveSet {
             return (value) => {
                 const result = bindCtx(target, Reflect.get(target, name, ctx))(value);
                 const self = subscriptRegistry.get(target);
-                if (self) {
-                    Array.from(self.subscribers.get(value)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, value));
-                    Array.from(self.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, value));
-                }
+                self?.trigger?.(value, value);
                 return result;
             };
         }
@@ -248,10 +241,7 @@ export class ReactiveObject {
     set(target, name: keyType, value) {
         const result = Reflect.set(target, name, value);
         const self = subscriptRegistry.get(target);
-        if (self) {
-            Array.from(self.subscribers.get(name)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, name));
-            Array.from(self.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(value, name));
-        }
+        self?.trigger?.(name, value);
         return result;
     }
 
@@ -259,10 +249,7 @@ export class ReactiveObject {
     deleteProperty(target, name: keyType) {
         const result = Reflect.deleteProperty(target, name);
         const self = subscriptRegistry.get(target);
-        if (self) {
-            Array.from(self.subscribers.get(name)?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(null, name));
-            Array.from(self.listeners?.values?.() || []).forEach((cb: (value: any, prop: keyType) => void) => cb(null, name));
-        }
+        self?.trigger?.(name, null);
         return result;
     }
 }
