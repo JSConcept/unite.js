@@ -9,18 +9,9 @@ import {setStyleRule} from "./StyleRules.ts";
 import {sourceColorFromImage} from "../utils/ColorMod.ts";
 
 //
-//let baseColorH: string = "#FFFFFF";
-//let surfaceColor: string = "#FFFFFF";
-
-//
-const lightMods: string[] = ["#000000", "#FFFFFF"], darkMods: string[] = ["#FFFFFF", "#000000"];
 let baseColorI: any = {};
 let baseColor: string = localStorage.getItem("--theme-base-color") || "oklch(50% 0.3 0)";
-let surfaceColorI: any = {};
-let surfaceColorH: string = "#FFFFFF";
-let chromaMod: any = {};
-let cssIsDark =
-    parseInt(localStorage.getItem("--theme-wallpaper-is-dark") || "0") || 0;
+let cssIsDark = parseInt(localStorage.getItem("--theme-wallpaper-is-dark") || "0") || 0;
 
 //
 const updateStyleRule = ()=>{
@@ -34,20 +25,19 @@ const updateStyleRule = ()=>{
 export const switchTheme = (isDark = false) => {
     if (!baseColorI) return;
 
-    // used in UI
-    surfaceColorI = interpolate(
-        [baseColorI, [lightMods, darkMods][(isDark ? 1 : 0) - 0][1]],
-        "oklch",
-        {}
-    )(0.96);
-
     //
-    surfaceColorH = formatHex(surfaceColorI);
-    //surfaceColor = formatCss(baseColorI);
+    const source = Array.from(document.elementsFromPoint(window.innerWidth - 64, 30));
+    const opaque = source.filter((node)=>{
+        const computed = getComputedStyle(node as HTMLElement, "");
+        const parsed = parse(computed.backgroundColor);
+        return (parsed.alpha == null || parsed.alpha > 0.1);
+    });
 
     //
     const media = document?.head?.querySelector?.('meta[data-theme-color]');
-    if (media) { media.setAttribute("content", baseColor); }
+    const color = getComputedStyle(opaque[0] as HTMLElement, "")?.backgroundColor || baseColor;
+    if (media) { media.setAttribute("content", color); }
+    document.documentElement.style.setProperty("--theme-dynamic-color", color, "");
 };
 
 //
@@ -73,31 +63,6 @@ export const colorScheme = async (blob) => {
 
     //
     baseColorI.h ||= 0;
-
-    //
-    const whiteMod = {...baseColorI};
-    whiteMod.c = 0.01;
-    whiteMod.l = 0.99;
-
-    //
-    const blackMod = {...baseColorI};
-    blackMod.c = 0.01;
-    blackMod.l = 0.01;
-
-    //
-    chromaMod = {...baseColorI};
-    chromaMod.c = 0.99;
-
-    //
-    lightMods[0] = interpolate([baseColorI, blackMod], "oklch", {})(0.98);
-    lightMods[1] = interpolate([baseColorI, whiteMod], "oklch", {})(0.9);
-
-    //
-    darkMods[0] = interpolate([baseColorI, whiteMod], "oklch", {})(0.98);
-    darkMods[1] = interpolate([baseColorI, blackMod], "oklch", {})(0.9);
-
-    //
-    //baseColorH = formatHex(baseColorI);
     baseColor = formatCss(baseColorI);
 
     //
@@ -110,7 +75,7 @@ export const colorScheme = async (blob) => {
     }
 
     //
-    switchTheme(false);
+    switchTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
 };
 
 //
@@ -119,6 +84,14 @@ updateStyleRule();
 //
 window
     .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", ({matches}) => {
-        switchTheme(matches);
-    });
+    .addEventListener("change", ({matches}) => { switchTheme(matches); });
+
+//
+setInterval(()=>{
+    switchTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+}, 1000);
+
+//
+document.addEventListener("ux-theme-change", ()=>{
+    switchTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+});

@@ -18,6 +18,7 @@
 //
 @property --theme-accent-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-base-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-dynamic-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-glyph-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --current-glyph-color { syntax: "<color>"; initial-value: black; inherits: true; };

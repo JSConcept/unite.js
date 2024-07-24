@@ -26,7 +26,7 @@
         position: fixed;
         inset: 0;
     }
-    
+
     //
     :where(div, span) {
         background-color: transparent;
@@ -44,15 +44,15 @@
         @include HQRendering();
         //@include dFont.applyFont(0.9rem);
     }
-    
+
     :where(:root, body, html, button) {
         font-family: Calibri, Carlito, Caliburn, Seravek, 'Gill Sans Nova', Ubuntu, 'DejaVu Sans', Candara, Segoe, "Segoe UI", Optima, source-sans-pro, sans-serif;
     }
-    
+
     :where(body, html) {
         font-size: 1rem;
     }
-    
+
     :where(body) {
         font-size: 0.9rem;
     }
@@ -61,7 +61,7 @@
     head {
         @include cm.pe-none;
         @include cm.no-user-select;
-    
+
         //
         display: none !important;
     }
@@ -80,15 +80,15 @@
     body {
         overflow: hidden;
         position: relative;
-        
+
         //
-        background-color: transparent;
+        background-color: var(--theme-base-color, transparent);
         //zoom: var(--scaling, 1);
 
         // if needs viewport
         container-type: size;
         contain: strict;
-        
+
         //
         will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
 
@@ -100,11 +100,11 @@
     :where(canvas, img, picture, video) {
         @include cm.pe-none;
         @include cm.no-user-select;
-        
+
         //
         overflow: hidden;
     }
-    
+
     //
     :where(picture) {
         display: contents;
@@ -179,17 +179,16 @@
         //
         object-fit: cover;
         object-position: center;
-        
+
         //
+        background-color: var(--theme-base-color, transparent) !important;
         border-image-source: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 
         //
         position: fixed;
         inset: 0px;
     }
-    
-    
-    
+
     //
     @media (prefers-reduced-motion: reduce) {
         :where(*),
@@ -214,20 +213,18 @@
         //
         color: var(--current-glyph-color);
         background-color: var(--current-surface-color);
-        
+
         //
         cursor: pointer;
         pointer-events: fallback(bounding-box, auto);
-        
+
         //
         padding: 0px;
         margin: 0px;
-        
+
         //
         border: none 0px transparent;
         outline: none 0px transparent;
 	}
-	
-
 
 }

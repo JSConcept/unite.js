@@ -41,6 +41,17 @@
     --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
 }
 
+//
+@mixin ux-dynamic {
+    --theme-surface-color: var(--theme-dynamic-color, transparent);
+    --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+}
+
+//
+@mixin ux-dynamic-transparent {
+    --theme-surface-color: oklch(from var(--theme-dynamic-color, transparent) l c h / 0.0);
+    --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(sign(calc(0.5 - l)) * 0.5 + 0.5) calc(c * 0.01) h);
+}
 
 
 //
@@ -53,11 +64,12 @@
 @layer ux-colors {
 
     :root, :where(html) {
+        --theme-dynamic-color: var(--theme-base-color, transparent);
         --theme-is-dark: 0; color-scheme: light;
         @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; }
         @media (prefers-color-scheme: dark)  { --theme-is-dark: 1; color-scheme: dark; }
     }
-    
+
     //
     :root, :host, :scope, :where(html, body) {
         --theme-glyph-color: #{cl.$glyphColor};
@@ -66,7 +78,7 @@
         --theme-chroma-color: #{cl.$chromaColor};
         --highlight-coefficient: 0.0;
     }
-    
+
     //
     :root, :host, :scope, :where(*, *::before, *::after) {
         --theme-chroma-mod: oklch(from #{cl.$baseColor} l 0.99 h);
