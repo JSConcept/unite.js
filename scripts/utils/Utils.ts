@@ -6,10 +6,9 @@ export const or_mod = {
     "portrait-secondary": [-1, -1, 0],
 };
 
-const zoomSupport = "currentCSSZoom" in document.documentElement;
-
 //
 export const zoomOf = () => {
+    const zoomSupport = "currentCSSZoom" in document.documentElement;
     // @ts-ignore
     if (zoomSupport) { return ((document.documentElement.currentCSSZoom as number) || 1); }
     return parseFloat(document.documentElement.style.getPropertyValue("--scaling")) || 1;
@@ -58,25 +57,24 @@ export const EmbedStyleURL = async (shadow, url) => {
 };
 
 //
-const parser = new DOMParser();
 export const html = (source, type: DOMParserSupportedType = 'text/html') => {
+    const parser = new DOMParser();
     const parsed = parser.parseFromString(source, type);
     return parsed.querySelector('template') ?? parsed.querySelector("*");
 };
 
 //
-const toMatch = [
-    /Android/i,
-    /webOS/i,
-    /iPhone/i,
-    /iPad/i,
-    /iPod/i,
-    /BlackBerry/i,
-    /Windows Phone/i
-];
-
-//
 export const detectMobile = () => {
+    //
+    const toMatch = [
+        /Android/i,
+        /webOS/i,
+        /iPhone/i,
+        /iPad/i,
+        /iPod/i,
+        /BlackBerry/i,
+        /Windows Phone/i
+    ];
     return toMatch.some(navigator.userAgent.match.bind(navigator.userAgent)) && (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement) && window.matchMedia("(pointer: coarse)").matches;
 };
 
@@ -150,7 +148,6 @@ export const MOC = (element: HTMLElement, selector: string): boolean => {
 export const MOCElement = (element: HTMLElement, selector: string): HTMLElement | null => {
     return ((!!element.matches(selector) ? element : null) || element.closest(selector));
 };
-
 
 //
 export const whenAnyScreenChanges = (cb)=>{
