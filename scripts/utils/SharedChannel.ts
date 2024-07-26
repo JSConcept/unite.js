@@ -15,12 +15,12 @@ export default class SharedChannel {
     }
 
     //
-    resolveWith(binaryData) {
+    resolveWith(binaryData: Uint8Array | Uint8ClampedArray | Int8Array) {
         if (this.#sharedBuffer) {
             // grow when is possible...
-            if (this.#sharedBuffer.byteLength < (binaryData.byteLength+8)) {
+            if ((this.#sharedBuffer.byteLength-this.#byteOffset) < (binaryData.byteLength+8)) {
                 // @ts-ignore
-                this.#sharedBuffer?.grow?.(binaryData.byteLength+8);
+                this.#sharedBuffer?.grow?.(this.#byteOffset + binaryData.byteLength+8);
             }
 
             //
