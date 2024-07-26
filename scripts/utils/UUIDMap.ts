@@ -1,7 +1,7 @@
-import {UUIDv4} from "../utils/Utils.ts";
+import {UUIDv4} from "./Utils.ts";
 
 //
-export class UUIDMap {
+export default class UUIDMap {
     #weakMap = new WeakMap<object, string>();
     #registry = new FinalizationRegistry((_: string) => {});
     #refMap = new Map<string, WeakRef<object>>();
