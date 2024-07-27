@@ -15,6 +15,10 @@ let cssIsDark = parseInt(localStorage.getItem("--theme-wallpaper-is-dark") || "0
 
 //
 const updateStyleRule = ()=>{
+    localStorage.setItem("--theme-base-color", baseColor);
+    localStorage.setItem("--theme-wallpaper-is-dark", cssIsDark as unknown as string);
+
+    //
     setStyleRule(":host, :root, :scope, :where(*)", {
         "--theme-base-color": baseColor,
         "--theme-wallpaper-is-dark": cssIsDark,
@@ -48,17 +52,11 @@ export const colorScheme = async (blob) => {
     const [chroma, common] = await sourceColorFromImage(image);
 
     //
-    const chromaHex = hexFromArgb(chroma);
-    const commonHex = hexFromArgb(common);
+    const chromaOkLch: any = oklch(parse(hexFromArgb(chroma)));
+    const commonOkLch: any = oklch(parse(hexFromArgb(common)));
 
     //
-    const chromaOkLch = oklch(parse(chromaHex));
-    const commonOkLch = oklch(parse(commonHex));
-
-    //
-    const cssIsDark: number = Math.sign(0.65 - commonOkLch.l) * 0.5 + 0.5;
-
-    //
+    cssIsDark  = Math.sign(0.65 - commonOkLch.l) * 0.5 + 0.5;
     baseColorI = interpolate([commonOkLch, chromaOkLch], "oklch", {
         // spline instead of linear interpolation:
     })(0.8);
@@ -68,15 +66,7 @@ export const colorScheme = async (blob) => {
     baseColor = formatCss(baseColorI);
 
     //
-    if (baseColor) {
-        updateStyleRule();
-
-        //
-        localStorage.setItem("--theme-base-color", baseColor);
-        localStorage.setItem("--theme-wallpaper-is-dark", cssIsDark as unknown as string);
-    }
-
-    //
+    updateStyleRule();
     switchTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
 };
 
