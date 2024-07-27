@@ -2,13 +2,13 @@ import PromiseStack from '../utils/PromiseStack';
 
 // FLOW - is web worker library core (low-level)...
 export default class FLOW {
-    #worker: Worker | null = null;
-    #promiseStack: PromiseStack | null = null;
+    #worker: Worker | WorkerGlobalScope | null = null;//new Worker("./FLOW-Unit.ts");
+    #promiseStack: PromiseStack = new PromiseStack();
     #imports = {};
 
     //
-    constructor(worker) {
-        this.#worker = worker || new Worker("./FLOW-Unit.ts");
+    constructor(worker: WorkerGlobalScope | Worker | null = null) {
+        this.#worker = worker || new Worker(new URL("./FLOW-Unit.ts", import.meta.url).href);
         this.#promiseStack = new PromiseStack();
         this.#imports = {};
 
@@ -20,6 +20,7 @@ export default class FLOW {
                 if (cmd == "import") {
                     import(ev.data.source).then((m)=>{
                         Object.assign(this.#imports, m);
+                        // @ts-ignore
                         self?.postMessage({ cmd, uuid, dir: "res", result: "ok" });
                     });
                 } else
@@ -28,6 +29,7 @@ export default class FLOW {
                     const syncOrAsync = this.#imports[ev.data.name]?.apply(self, ev.data.args);
                     const resolveWith = (pass)=>{
                         const [result, transfer] = pass;
+                        // @ts-ignore
                         self?.postMessage({ cmd, uuid, dir: "res", result }, [...new Set(transfer||[])] as StructuredSerializeOptions);
                     }
 
@@ -54,6 +56,7 @@ export default class FLOW {
     //
     importToUnit(source) {
         const pair = this.#promiseStack?.create();
+        // @ts-ignore
         this.#worker?.postMessage?.({
             cmd: "import",
             dir: "req",
@@ -66,6 +69,7 @@ export default class FLOW {
     //
     callTask(args = [], transfer = []) {
         const pair = this.#promiseStack?.create();
+        // @ts-ignore
         this.#worker?.postMessage?.({
             cmd: "call",
             dir: "req",
