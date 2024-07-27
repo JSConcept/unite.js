@@ -55,11 +55,11 @@
         //
         scroll-timeline: --scroll-y vertical, --scroll-x horizontal;
         scroll-timeline: --scroll-y block, --scroll-x inline;
-        
+
         //
         scrollbar-gutter: stable both-edges;
         scrollbar-width: none;
-        
+
         //
         --sb-color: #101010;
 
@@ -68,22 +68,19 @@
              //
             will-change: scroll-position, contents;
             touch-action: pan-x pan-y manipulation;
-            
+
             //
             pointer-events: auto;
-            pointer-events: bounding-box;
         }
 
         //
         & :where(.scrollbar-x, .scrollbar-y) {
             user-select: none;
             pointer-events: none;
-        
+
             position: fixed;
             display: block;
             inset: 0px;
-
-            user-select: none;
 
             --percent: 0.0;
 
@@ -98,14 +95,11 @@
 
             & :where(.thumb) {
                 pointer-events: auto;
-                pointer-events: bounding-box;
-            
+
                 position: static;
                 display: block;
 
                 border-radius: 0.125rem;
-                
-                background-color: #101010;
                 background-color: var(--sb-color, #101010);
 
                 user-select: none;
@@ -118,7 +112,7 @@
                 }
             }
         }
-        
+
         & :is(.scrollbar-y) {
             inset-inline-start: auto;
             inset-inline-end: 0px;

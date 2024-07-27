@@ -174,7 +174,10 @@
         display: flex;
 
         //
-        image-rendering: fallback(high-quality, smooth, optimizeQuality, auto);
+        image-rendering: auto;
+        image-rendering: optimizeQuality;
+        image-rendering: smooth;
+        image-rendering: high-quality;
 
         //
         object-fit: cover;
@@ -216,7 +219,7 @@
 
         //
         cursor: pointer;
-        pointer-events: fallback(bounding-box, auto);
+        pointer-events: auto;
 
         //
         padding: 0px;

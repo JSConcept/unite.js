@@ -1,5 +1,5 @@
 import Timer from "../performance/Time.ts";
-import {zoomOf} from "../../svelte/utils/Utils.ts";
+import {zoomOf} from "../utils/Utils.ts";
 
 //
 export class DynamicHandler {

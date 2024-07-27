@@ -6,22 +6,20 @@
 
     // usable for grid-items
     @mixin auto-space {
-        inline-size: fallback(stretch, auto);
-        block-size: fallback(stretch, auto);
+        inline-size: auto;
+        inline-size: stretch;
+        block-size: auto;
+        block-size: stretch;
     }
 
     //
     @mixin stretch {
-        //inline-size: fallback(stretch, 100%);
-        //block-size: fallback(stretch, 100%);
-
-        //
         inline-size: 100%;
         block-size: 100%;
 
         //
-        max-inline-size: fallback(stretch, none);
-        max-block-size: fallback(stretch, none);
+        max-inline-size: 100%;
+        max-block-size: 100%;
     }
 
     //
@@ -71,7 +69,7 @@
 
     //
     @mixin pointer-events-enable {
-        pointer-events: fallback(bounding-box, auto);
+        pointer-events: auto;
     }
 
     //

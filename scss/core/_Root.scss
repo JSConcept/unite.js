@@ -7,12 +7,12 @@
 //
 :root, :host, :scope, :where(body) {
     will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
-    pointer-events: fallback(bounding-box, auto) !important;
+    pointer-events: auto !important;
 
     //
     //--keyboard-inset-bottom: env(keyboard-inset-bottom, 0px) !important;
     //--keyboard-inset-height: env(keyboard-inset-height, 0px) !important;
-    
+
     //
     --keyboard-inset-bottom: calc(env(keyboard-inset-bottom, 0px) / var(--zoom, 1));
     --keyboard-inset-height: calc(env(keyboard-inset-height, 0px) / var(--zoom, 1));

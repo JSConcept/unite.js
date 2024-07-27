@@ -20,7 +20,6 @@
         
         //
         pointer-events: auto;
-        pointer-events: bounding-box;
         
         //
         --translate-x: clamp(0px, calc(50cqi - 50%), calc(100cqi - 100%));
@@ -66,7 +65,7 @@
         
         //
         & :where(.ux-modal-frame, .ux-modal) {
-            pointer-events: fallback(bounding-box, auto);
+            pointer-events: auto;
         }
     }
 
