@@ -288,8 +288,8 @@
 
             //
             /*@media screen and ((hover: none) and (pointer: coarse)) {
-                --vp-i-size: max(calc(var(--avail-width) / var(--zoom, 1)), calc(100lvi / var(--zoom, 1)));
-                --vp-b-size: max(calc(var(--avail-height) / var(--zoom, 1)), calc(100lvb / var(--zoom, 1)));
+                --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+                --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
             }*/
 
             //
@@ -332,7 +332,7 @@
             //
             container-type: size;
             contain: content;
-            
+
             //
             isolation: auto;
 
