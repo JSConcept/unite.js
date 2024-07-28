@@ -45,7 +45,7 @@ CSS?.registerProperty?.({
 //
 CSS?.registerProperty?.({
     name: "--grid-column",
-    syntax: CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
+    syntax: "<number>",//CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
     inherits: true,
     initialValue: "0",
 });
@@ -53,7 +53,7 @@ CSS?.registerProperty?.({
 //
 CSS?.registerProperty?.({
     name: "--grid-row",
-    syntax: CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
+    syntax: "<number>",//CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
     inherits: true,
     initialValue: "0",
 });

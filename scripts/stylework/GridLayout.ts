@@ -56,11 +56,10 @@ export const getOrientedPoint = () => {
             };
     }
 };
-
+//CSS.supports("display", "layout(grid-page)") ?
 //
 export const animationSequence = () => {
-    return CSS.supports("display", "layout(grid-page)") ?
-        [
+    return [
             {
                 "--translate-x": "calc(var(--drag-x) * 1px)",
                 "--translate-y": "calc(var(--drag-y) * 1px)",
@@ -77,7 +76,7 @@ export const animationSequence = () => {
                 easing: "linear",
                 offset: 1,
             }
-        ] : [
+        ]; /*: [
             {
                 "--translate-x": "calc(var(--drag-x) * 1px)",
                 "--translate-y": "calc(var(--drag-y) * 1px)",
@@ -111,7 +110,7 @@ export const animationSequence = () => {
                 easing: "step-start",
                 offset: 1,
             },
-        ];
+        ];*/
 };
 
 
