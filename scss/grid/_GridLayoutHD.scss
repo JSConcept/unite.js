@@ -1,0 +1,18 @@
+// when houdini not supported, also do gaps (include edges)...
+@layer ux-grid-layout {
+
+    // HOUDINI: if supported...
+    @supports (display: layout(grid-page)) {
+        .ux-grid-layout {
+            display: layout(grid-page);
+
+            & > :where(*) {
+                transform: translate3d(
+                    var(--translate-x),
+                    var(--translate-y),
+                    0px);
+            }
+        }
+    }
+
+}
