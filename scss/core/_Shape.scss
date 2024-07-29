@@ -20,10 +20,11 @@
 
 // F(X):[x,y] where X:[0..1]
 @function WavyFx($step: 0) {
-    $angle: calc(#{$step}rad * #{"pi"} * 2);
-    $variant: calc(calc(cos(calc(var(--clip-freq) * #{$angle})) * 0.5 + 0.5) * var(--clip-amplitude));
-    $x: calc(calc(0.5 + calc(cos(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
-    $y: calc(calc(0.5 + calc(sin(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
+    $angle: calc(($step * 2) * 1rad * #{"pi"});
+    $variant: calc(cos(var(--clip-freq) * #{$angle}) * 0.5 + 0.5);
+    $adjust: calc($variant * var(--clip-amplitude));
+    $x: calc(calc(0.5 + calc(cos(#{$angle}) * calc(0.5 - #{$adjust}))) * 100%);
+    $y: calc(calc(0.5 + calc(sin(#{$angle}) * calc(0.5 - #{$adjust}))) * 100%);
     @return "#{$x} #{$y}";
 }
 
