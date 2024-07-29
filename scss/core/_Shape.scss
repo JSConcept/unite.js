@@ -1,4 +1,5 @@
 @use '@sass-fairy/list';
+@use "sass:math";
 
 // if you don't want to use deps...
 @function join($list, $glue: '', $is-nested: false) {
@@ -33,7 +34,7 @@
     $fx: get-function($name);
     $points: ();
     @for $i from 1 through $steps {
-        $points: append($points, call($fx, $step: $i / $steps));
+        $points: append($points, call($fx, math.div($i, $steps)));
     }
     @return polygon(#{list.join($points, ", ")});
 }
