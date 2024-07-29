@@ -3,10 +3,8 @@
 // if you don't want to use deps...
 @function join($list, $glue: '', $is-nested: false) {
     $result: null;
-
     @for $i from 1 through length($list) {
         $e: nth($list, $i);
-
         @if type-of($e) == list {
             $result: $result#{join($e, $glue, true)};
         } @else {
@@ -17,20 +15,24 @@
             );
         }
     }
-
     @return $result;
 };
 
+// F(X):[x,y] where X:[0..1]
+@function WavyFx($step: 0) {
+    $angle: calc(#{$step}rad * #{"pi"} * 2);
+    $variant: calc(calc(cos(calc(var(--clip-freq) * #{$angle})) * 0.5 + 0.5) * var(--clip-amplitude));
+    $x: calc(calc(0.5 + calc(cos(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
+    $y: calc(calc(0.5 + calc(sin(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
+    @return "#{$x} #{$y}";
+}
+
 // space cadet or cheater-tale
-@function WavyShapedCircle($steps: 100) {
+@function Integrate($name, $steps: 100) {
+    $fx: get-function($name);
     $points: ();
     @for $i from 1 through $steps {
-        $step: $i / $steps;
-        $angle: calc(#{$step}rad * #{"pi"} * 2);
-        $variant: calc(calc(cos(calc(var(--clip-freq) * #{$angle})) * 0.5 + 0.5) * var(--clip-amplitude));
-        $x: calc(calc(0.5 + calc(cos(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
-        $y: calc(calc(0.5 + calc(sin(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
-        $points: append($points, "#{$x} #{$y}");
+        $points: append($points, call($fx, $step: $i / $steps));
     }
     @return polygon(#{list.join($points, ", ")});
 }
@@ -39,5 +41,5 @@
 :where(.wavy-shaped) {
     --clip-amplitude: 0.06;
     --clip-freq: 8;
-    --clip-path: #{WavyShapedCircle()};
+    --clip-path: #{Integrate("WavyFx", 100)};
 }
