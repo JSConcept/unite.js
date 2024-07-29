@@ -93,7 +93,7 @@
         --theme-light-down-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{cl.$baseColor});
         --theme-light-up-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{cl.$baseColor});
     }
-    
+
     //
     :root, :host, :scope, :where(html, body, *, *::before, *::after) {
         --current-glyph-color: var(--theme-glyph-color);
@@ -101,10 +101,10 @@
         --current-accent-color: var(--theme-accent-color);
         --current-chroma-color: var(--theme-chroma-color);
         --highlight-coefficient: 0.0;
-        
+
         //
         @include cu.var-dependent();
-        
+
         //
         //:where(*) {
             --highlight-transition-duration: 0.2s;
@@ -112,13 +112,13 @@
             --highlight-transition-property: --highlight-coefficient;
             transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
         //}
-        
+
         //
         @supports(color: light-dark(white, black)) {
             @include cu.scheme-dependent;
         }
     }
-    
+
     :root {
 		--range-slider:          #{cu.theme-mod-up(cl.$baseColor, 90%)};; /* slider main background color */
 		--range-handle-inactive: #{cu.theme-mod-up(cl.$baseColor, 80%)};; /* inactive handle color */
@@ -131,20 +131,20 @@
 		--range-float:           var(--range-handle-focus); /* floating label background color */
 		--range-float-text:      #{cu.theme-mod-up(cl.$baseColor, 100%)};; /* text color on floating label */
 	}
-	
+
     //
 	:root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*, *::before, *::after) {
         accent-color: var(--current-glyph-color);
         color: var(--current-glyph-color);
         background-color: var(--current-surface-color);
         stroke: var(--current-glyph-color);
-        
+
         //
         ::selection {
             background: var(--current-glyph-color);
             color: var(--current-surface-color);
         }
-        
+
         //
         & :where(svg) {
             stroke: var(--current-glyph-color);
@@ -163,21 +163,24 @@
 
 	//
     @media screen and ((hover: hover) or (pointer: fine)) {
-        *[data-highlight-hover="1"]:hover { --highlight-coefficient: 6; }
-        *[data-highlight-hover="2"]:hover { --highlight-coefficient: 12; }
-        *[data-highlight-hover="3"]:hover { --highlight-coefficient: 16; }
+        *[data-highlight-hover="1"]:hover { --highlight-coefficient: 3; }
+        *[data-highlight-hover="2"]:hover { --highlight-coefficient: 6; }
+        *[data-highlight-hover="3"]:hover { --highlight-coefficient: 12; }
+        *[data-highlight-hover="4"]:hover { --highlight-coefficient: 16; }
     }
 
     //
     @media screen and (hover: none) and (pointer: coarse) {
-        *[data-highlight-hover="1"]:active { --highlight-coefficient: 6; }
-        *[data-highlight-hover="2"]:active { --highlight-coefficient: 12; }
-        *[data-highlight-hover="3"]:active { --highlight-coefficient: 16; }
+        *[data-highlight-hover="1"]:active { --highlight-coefficient: 3; }
+        *[data-highlight-hover="2"]:active { --highlight-coefficient: 6; }
+        *[data-highlight-hover="3"]:active { --highlight-coefficient: 12; }
+        *[data-highlight-hover="4"]:active { --highlight-coefficient: 16; }
     }
-    
+
     //
-    *[data-highlight="1"] { --highlight-coefficient: 6; }
-    *[data-highlight="2"] { --highlight-coefficient: 12; }
+    *[data-highlight="1"] { --highlight-coefficient: 3; }
+    *[data-highlight="2"] { --highlight-coefficient: 6; }
+    *[data-highlight="3"] { --highlight-coefficient: 12; }
 
     //
     *[data-theme="dark"] { --theme-is-dark: 1; color-scheme: dark; }
@@ -198,13 +201,13 @@
     :where(span) {
         background-color: transparent;
     }
-	
+
 	//
 	:where(svg) {
         background-color: transparent;
         stroke: var(--current-glyph-color);
 	}
-	
+
 	//
 	:where(x-scrollbox) {
         --sb-color: #{cu.theme-mod-down(cu.theme-mod-up(cl.$baseColor, 80%), 20%)};
