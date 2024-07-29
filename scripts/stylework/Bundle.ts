@@ -4,5 +4,6 @@ export default Promise.allSettled([
     import("./StyleRules.ts"),
     import("./Viewport.ts"),
     import("./Orientation.ts"),
+    import("./Appear.ts"),
     import("./Wallpaper.ts").then(()=>import("./WCanvas.ts"))
 ]);

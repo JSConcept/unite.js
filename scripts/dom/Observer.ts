@@ -78,51 +78,54 @@ export const observeAttribute = (element, attribute, cb) => {
         }
     });
     observer.observe(element, {
-        attributes: true
+        attributeOldValue: true,
+        attributes: true,
+        attributeFilter: [attribute]
     });
 };
 
-const defer = ()=>{
-    const resolveOf = async (x) => {
-        if (
-            ["loading", "interactive", "complete"].indexOf(
-                document.readyState
-            ) >= 1
-        ) {
-            await Timer.raf;
-            x({});
-            return true;
-        }
-        return false;
-    };
-    return new Promise(async (x) => {
-        if (!(await resolveOf(x))) {
-            document.documentElement.addEventListener(
-                "readystatechange",
-                (_) => resolveOf(x),
-                {once: false, passive: true}
-            );
+//
+export const observeAttributeBySelector = async (element, attribute, selector, cb) => {
+    const observer = new MutationObserver((mutationList, observer) => {
+        for (const mutation of mutationList) {
+            if ((mutation.target as HTMLElement)?.matches?.(selector)) {
+                cb(mutation, observer);
+            }
         }
     });
-}
+
+    //
+    observer.observe(element, {
+        attributeOldValue: true,
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: [attribute],
+        characterData: true
+    });
+
+    //
+    Array.from(element.querySelectorAll(selector)).forEach((target)=>{
+        cb({ target, type: "attributes", attributeName: attribute }, observer);
+    });
+
+};
 
 //
 export const observeBySelector = async (element, selector, cb) => {
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type == "childList") {
+                const addedNodes = Array.from(mutation.addedNodes || []);
+                const removedNodes = Array.from(mutation.removedNodes || []);
                 cb({
                     ...mutation,
-                    addedNodes: Array.from(mutation.addedNodes || []).filter((el) => (<HTMLElement>el)?.matches?.(selector)),
-                    removedNodes: Array.from(mutation.removedNodes || []).filter((el) => (<HTMLElement>el)?.matches?.(selector)),
+                    addedNodes: addedNodes.filter((el) => (<HTMLElement>el)?.matches?.(selector)),
+                    removedNodes: removedNodes.filter((el) => (<HTMLElement>el)?.matches?.(selector)),
                 }, observer);
             }
         }
     });
-
-    //
-    await defer;
-    await new Promise((r)=>requestAnimationFrame(r));
 
     //
     observer.observe(element, {
