@@ -1,4 +1,4 @@
-//
+// Currently, I'm using SASS version of such p.sheet
 export const WavyShapedCircle = (steps = 100, amplitude = 0.06, freq = 8) => {
     const points: number[] = [];
     for (let i = 0; i < steps; i++) { points.push(i / steps); }

@@ -1,0 +1,46 @@
+@use '@sass-fairy/list';
+
+// if you don't want to use deps...
+@function join($list, $glue: '', $is-nested: false) {
+    $result: null;
+
+    @for $i from 1 through length($list) {
+        $e: nth($list, $i);
+
+        @if type-of($e) == list {
+            $result: $result#{join($e, $glue, true)};
+        } @else {
+            $result: if(
+                $i != length($list) or $is-nested,
+                $result#{$e}#{$glue},
+                $result#{$e}
+            );
+        }
+    }
+
+    @return $result;
+};
+
+// space cadet or cheater-tale
+@function WavyShapedCircle($steps: 100) {
+    $points: ();
+    @for $i from 1 through $steps {
+        $step: $i / $steps;
+        $angle: calc(#{$step}rad * pi * 2);
+        $variant: calc(calc(cos(calc(var(--clip-freq) * #{$angle})) * 0.5 + 0.5) * var(--clip-amplitude));
+        $x: calc(calc(0.5 + calc(cos(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
+        $y: calc(calc(0.5 + calc(sin(#{$angle}) * calc(0.5 - #{$variant}))) * 100%);
+        $points: append($points, "#{$x} #{$y}");
+    }
+    @return polygon(#{list.join($points, ", ")});
+}
+
+//--clip-amplitude: 0.06;
+//--clip-freq: 8
+
+//
+:where(.wavy-shaped) {
+    --clip-amplitude: 0.06;
+    --clip-freq: 8;
+    --clip-path: #{WavyShapedCircle()};
+}

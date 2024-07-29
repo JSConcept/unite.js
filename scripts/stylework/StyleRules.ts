@@ -30,5 +30,5 @@ export const setStyleRules = (classes: StyleTuple[]) => {
 
 
 // extras...
-import { WavyShapedCircle } from "./StyleUtils.ts";
-setStyleRule(":where(.wavy-shaped)", WavyShapedCircle())
+//import { WavyShapedCircle } from "./StyleUtils.ts";
+//setStyleRule(":where(.wavy-shaped)", WavyShapedCircle())
