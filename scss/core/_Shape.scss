@@ -23,8 +23,8 @@
     $angle: calc(($step * 2) * 1rad * #{"pi"});
     $variant: calc(cos(var(--clip-freq) * #{$angle}) * 0.5 + 0.5);
     $adjust: calc($variant * var(--clip-amplitude));
-    $x: calc(calc(0.5 + calc(cos(#{$angle}) * calc(0.5 - #{$adjust}))) * 100%);
-    $y: calc(calc(0.5 + calc(sin(#{$angle}) * calc(0.5 - #{$adjust}))) * 100%);
+    $x: calc((0.5 + (cos(#{$angle}) * (0.5 - #{$adjust}))) * 100%);
+    $y: calc((0.5 + (sin(#{$angle}) * (0.5 - #{$adjust}))) * 100%);
     @return "#{$x} #{$y}";
 }
 
