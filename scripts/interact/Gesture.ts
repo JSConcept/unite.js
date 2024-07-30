@@ -47,7 +47,7 @@ interface InteractStatus {
 const getPxValue = (element, name)=>{
     if ("computedStyleMap" in element) {
         const cm = element?.computedStyleMap();
-        return cm.get(name).value;
+        return cm.get(name)?.value || 0;
     } else {
         const cs = getComputedStyle(element, "");
         return (parseFloat(cs.getPropertyValue(name)?.replace?.("px", "")) || 0);
