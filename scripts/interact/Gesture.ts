@@ -66,8 +66,8 @@ const doContentObserve = (element) => {
         });
 
         //
-        element[contentBoxWidth] = element.offsetWidth * zoomOf();
-        element[contentBoxHeight] = element.offsetHeight * zoomOf();
+        element[contentBoxWidth] = element.clientWidth * zoomOf();
+        element[contentBoxHeight] = element.clientHeight * zoomOf();
 
         //
         onContentObserve.set(element, observer);
@@ -92,8 +92,8 @@ const doBorderObserve = (element) => {
         });
 
         //
-        element[borderBoxWidth] = element.clientWidth * zoomOf();
-        element[borderBoxHeight] = element.clientHeight * zoomOf();
+        element[borderBoxWidth] = element.offsetWidth * zoomOf();
+        element[borderBoxHeight] = element.offsetHeight * zoomOf();
 
         //
         onBorderObserve.set(element, observer);
@@ -126,13 +126,13 @@ export default class AxGesture {
 
         //
         document.documentElement.addEventListener("scaling", ()=>{
-            this.#holder[borderBoxWidth] = this.#holder.clientWidth * zoomOf();
-            this.#holder[borderBoxHeight] = this.#holder.clientHeight * zoomOf();
+            this.#holder[borderBoxWidth] = this.#holder.offsetWidth * zoomOf();
+            this.#holder[borderBoxHeight] = this.#holder.offsetHeight * zoomOf();
 
             //
             if (this.#holder.parentNode) {
-                this.#holder.parentNode[contentBoxWidth] = this.#holder.offsetWidth * zoomOf();
-                this.#holder.parentNode[contentBoxHeight] = this.#holder.offsetHeight * zoomOf();
+                this.#holder.parentNode[contentBoxWidth] = this.#holder.clientWidth * zoomOf();
+                this.#holder.parentNode[contentBoxHeight] = this.#holder.clientHeight * zoomOf();
             }
         });
     }

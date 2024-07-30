@@ -44,7 +44,7 @@ export const orientationAngle = (): Readable<number> => {
 export const whenResize = (element, box: ResizeObserverBoxOptions = "border-box") => {
     if (!element) return null;
     return readable(
-        [element?.clientWidth || 0, element?.clientHeight || 0],
+        [element?.offsetWidth || 0, element?.offsetHeight || 0],
         (set) => {
             //
             const obs = new ResizeObserver((entries) => {

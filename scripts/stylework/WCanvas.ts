@@ -67,8 +67,8 @@ export class WCanvas extends HTMLCanvasElement {
     //
     connectedCallback() {
         const parent: HTMLElement = this.parentNode as HTMLElement;
-        this.width = Math.max((this.offsetWidth || parent?.offsetWidth || 0) * devicePixelRatio, 0);
-        this.height = Math.max((this.offsetHeight || parent?.offsetHeight || 0) * devicePixelRatio, 0);
+        this.width = Math.max((this.clientWidth || parent?.clientWidth || 0) * devicePixelRatio, 0);
+        this.height = Math.max((this.clientHeight || parent?.clientHeight || 0) * devicePixelRatio, 0);
     }
 
     //
@@ -106,8 +106,8 @@ export class WCanvas extends HTMLCanvasElement {
 
         //
         const fixSize = () => {
-            this.width = Math.max((this.offsetWidth || parent?.offsetWidth || 0) * devicePixelRatio, 0);
-            this.height = Math.max((this.offsetHeight || parent?.offsetHeight || 0) * devicePixelRatio, 0);
+            this.width = Math.max((this.clientWidth || parent?.clientWidth || 0) * devicePixelRatio, 0);
+            this.height = Math.max((this.clientHeight || parent?.clientHeight || 0) * devicePixelRatio, 0);
             this.#render();
         }
 

@@ -22,8 +22,8 @@ export const observeContentBox = (element, cb) => {
 
         //
         cb?.({
-            inlineSize: element.offsetWidth,
-            blockSize: element.offsetHeight,
+            inlineSize: element.clientWidth,
+            blockSize: element.clientHeight,
         }, observer);
 
         //
@@ -54,8 +54,8 @@ export const observeBorderBox = (element, cb) => {
 
         //
         cb?.({
-            inlineSize: element.clientWidth,
-            blockSize: element.clientHeight,
+            inlineSize: element.offsetWidth,
+            blockSize: element.offsetHeight,
         }, observer);
 
         //
