@@ -9,23 +9,23 @@
         z-index: 99;
         content: "";
         display: block;
-        
+
         //
         contain: none;
         container-type: normal;
-        
+
         //
         backdrop-filter: blur(1rem);
         background-color: #00000040;
-        
+
         //
         pointer-events: auto;
-        
+
         //
         --translate-x: clamp(0px, calc(50cqi - 50%), calc(100cqi - 100%));
         --translate-y: clamp(0px, calc(50cqb - 50%), calc(100cqb - 100%));
     }
-    
+
     //
     :where(div, dialog).ux-dialog-wrapper {
         z-index: 9999;
@@ -33,16 +33,16 @@
         min-block-size: 100%;
         position: fixed;
         overflow: visible;
-        
+
         //
         background-color: transparent;
         pointer-events: none;
-        
+
         //
         display: contents;
         contain: none;
         container-type: normal;
-        
+
         // fallback to fix issue
         &::backdrop {
             background-color: transparent;
@@ -50,19 +50,19 @@
             display: contents;
             backdrop-filter: blur(0px);
         }
-        
+
         //
         &:not(::backdrop) {
             &::before {
                 @include backdrop-style;
             }
         }
-        
+
         // re-apply effects
         &::backdrop {
             @include backdrop-style;
         }
-        
+
         //
         & :where(.ux-modal-frame, .ux-modal) {
             pointer-events: auto;
