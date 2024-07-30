@@ -1,9 +1,126 @@
-@use "./ClassMods" as cm;
+@use "./CMixins" as cm;
 
 //
 @layer ux-classlets {
 
-    .pe-none { @include cm.pe-none; }
-    .pe-enable { @include cm.pe-enable; }
+    //
+    .vp-vars {
+        --vp-i-size: calc(100dvi / var(--zoom, 1));
+        --vp-b-size: calc(100dvb / var(--zoom, 1));
+
+        //
+        /*@media screen and ((hover: none) and (pointer: coarse)) {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }*/
+
+        //
+        @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+
+        //
+        @at-root :fullscreen & {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+    }
+
+
+    //
+    .vp-vars-keyboard-dependent {
+        --vp-i-size: calc(100dvi / var(--zoom, 1));
+        --vp-b-size: calc(100dvb / var(--zoom, 1));
+
+        //
+        @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+
+        //
+        @at-root :fullscreen & {
+            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
+            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+        }
+    }
+
+    // bit-complex element
+    .grid-based-box {
+        inline-size: 100%;
+        block-size: 100%;
+
+        //
+        pointer-events: none;
+        place-content: center;
+        place-items: center;
+
+        //
+        container-type: size;
+        contain: content;
+
+        //
+        isolation: auto;
+
+        //
+        display: grid;
+        grid-template-columns: minmax(0px, 1fr);
+        grid-template-rows: minmax(0px, 1fr);
+        position: fixed;
+        inset: 0px;
+
+        //
+        overflow: visible;
+
+        //
+        align-items: start;
+        align-content: start;
+        align-self: start;
+
+        //
+        & > :where(*) {
+            @include cm.grid-inside;
+
+            //
+            pointer-events: none;
+            place-content: center;
+            place-items: center;
+
+            //
+            align-items: start;
+            align-content: start;
+            align-self: start;
+        }
+    }
 
 }
+
+//
+@mixin vp-vars {
+    @extend .vp-vars;
+}
+
+//
+@mixin vp-vars-keyboard-dependent {
+    @extend .vp-vars-keyboard-dependent;
+}
+
+//
+@mixin grid-based-box {
+    @extend .grid-based-box;
+}
+
+// depends from virtual keyboards
+@mixin fit-viewport {
+    @include vp-vars;
+
+    //
+    inline-size: var(--vp-i-size);
+    block-size: var(--vp-b-size);
+
+    //
+    max-inline-size: var(--vp-i-size);
+    max-block-size: var(--vp-b-size);
+}
+

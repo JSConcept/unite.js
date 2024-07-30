@@ -4,7 +4,7 @@
 @property --resize-y { syntax: "<number>"; initial-value: 0; inherits: true; }
 
 //
-@property --ppx {
+@property --zpx {
     syntax: "<length-percentage>";
     initial-value: 1px;
     inherits: true;

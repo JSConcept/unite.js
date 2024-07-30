@@ -1,4 +1,4 @@
-@use "../core/ClassMods" as cm;
+@use "../core/CMixins" as cm;
 
 //
 @use "./GridLayoutMetric";
@@ -7,8 +7,9 @@
 
 //
 @layer ux-grid-layout {
-    .ux-grid-layout {
-        @include cm.stretch;
+    .ux-grid-layout {//
+        inline-size: 100%;
+        block-size: 100%;
 
         // in rems!
         --c-gap: 0;
@@ -40,9 +41,6 @@
         }
 
         .ux-grid-item {
-            @include cm.stretch;
-
-            //
             overflow: hidden;
             pointer-events: none;
             touch-action: none;

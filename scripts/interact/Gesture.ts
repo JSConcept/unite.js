@@ -136,8 +136,8 @@ export default class AxGesture {
                 if (ev.target == options?.handler) {
                     swipes.set(ev.pointerId, {
                         target: ev.target,
-                        start: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
-                        current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
+                        start: [ev.clientX, ev.clientY],
+                        current: [ev.clientX, ev.clientY],
                         pointerId: ev.pointerId,
                         startTime: performance.now(),
                         time: performance.now(),
@@ -153,7 +153,7 @@ export default class AxGesture {
                     const swipe = swipes.get(ev.pointerId);
                     Object.assign(swipe || {}, {
                         //speed: (swipe.speed == 0 ? speed : (speed * 0.8 + swipe.speed * 0.2)),
-                        current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
+                        current: [ev.clientX, ev.clientY],
                         pointerId: ev.pointerId,
                         time: performance.now(),
                     });
@@ -263,8 +263,9 @@ export default class AxGesture {
 
     //
     limitResize(real, virtual, holder, container) {
-        const widthDiff = container[contentBoxWidth] - (holder[borderBoxWidth] - (this.propGet("--resize-x") || 0) + (this.propGet("--drag-x") || 0));
-        const heightDiff = container[contentBoxHeight] - (holder[borderBoxHeight] - (this.propGet("--resize-y") || 0) + (this.propGet("--drag-y") || 0));
+        const zoom = zoomOf()
+        const widthDiff = container[contentBoxWidth] * zoom - (holder[borderBoxWidth] * zoom - (this.propGet("--resize-x") || 0) + (this.propGet("--drag-x") || 0));
+        const heightDiff = container[contentBoxHeight] * zoom - (holder[borderBoxHeight] * zoom - (this.propGet("--resize-y") || 0) + (this.propGet("--drag-y") || 0));
 
         // if relative of un-resized to edge corner max-size
         // discount of dragging offset!
@@ -274,8 +275,9 @@ export default class AxGesture {
 
     //
     limitDrag(real, virtual, holder, container) {
-        const widthDiff = container[contentBoxWidth] - holder[borderBoxWidth];
-        const heightDiff = container[contentBoxHeight] - holder[borderBoxHeight];
+        const zoom = zoomOf();
+        const widthDiff = (container[contentBoxWidth] - holder[borderBoxWidth])*zoom;
+        const heightDiff = (container[contentBoxHeight] - holder[borderBoxHeight])*zoom;
 
         // if centered
         //real[0] = clamp(-widthDiff * 0.5, virtual[0], widthDiff * 0.5);
@@ -500,8 +502,8 @@ export default class AxGesture {
         const registerCoord = [
             (ev) => {
                 if (ev.pointerId == action.pointerId) {
-                    action.lastCoord[0] = ev.clientX / zoomOf();
-                    action.lastCoord[1] = ev.clientY / zoomOf();
+                    action.lastCoord[0] = ev.client;
+                    action.lastCoord[1] = ev.clientY;
                 }
             },
             {capture: true, passive: true},
@@ -510,8 +512,8 @@ export default class AxGesture {
         //
         const triggerOrCancel = (ev) => {
             if (ev.pointerId == action.pointerId) {
-                action.lastCoord[0] = ev.clientX / zoomOf();
-                action.lastCoord[1] = ev.clientY / zoomOf();
+                action.lastCoord[0] = ev.clientX;
+                action.lastCoord[1] = ev.clientY;
 
                 //
                 ev.preventDefault();
@@ -529,8 +531,8 @@ export default class AxGesture {
         //
         const cancelWhenMove = (ev) => {
             if (ev.pointerId == action.pointerId) {
-                action.lastCoord[0] = ev.clientX / zoomOf();
-                action.lastCoord[1] = ev.clientY / zoomOf();
+                action.lastCoord[0] = ev.clientX;
+                action.lastCoord[1] = ev.clientY;
 
                 //
                 ev.preventDefault();
@@ -561,12 +563,12 @@ export default class AxGesture {
 
                     //
                     action.pageCoord = [
-                        ev.clientX / zoomOf(),
-                        ev.clientY / zoomOf(),
+                        ev.clientX,
+                        ev.clientY,
                     ];
                     action.lastCoord = [
-                        ev.clientX / zoomOf(),
-                        ev.clientY / zoomOf(),
+                        ev.clientX,
+                        ev.clientY,
                     ];
                     action.pointerId = ev.pointerId;
 

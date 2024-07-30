@@ -134,7 +134,7 @@
                 translate: 0px calc(var(--percent) * var(--scrollAvail) * 1px) 0px;
             }
         }
-        
+
         & :is(.scrollbar-x) {
             inset-block-start: auto;
             inset-block-end: 0px;

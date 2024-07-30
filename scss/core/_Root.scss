@@ -1,17 +1,13 @@
 //
 :root, :where(html) {
     container-type: size;
-    container-name: html root !important;
+    container-name: html root;
 }
 
 //
 :root, :host, :scope, :where(body) {
     will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
-    pointer-events: auto !important;
-
-    //
-    //--keyboard-inset-bottom: env(keyboard-inset-bottom, 0px) !important;
-    //--keyboard-inset-height: env(keyboard-inset-height, 0px) !important;
+    pointer-events: auto;
 
     //
     --keyboard-inset-bottom: calc(env(keyboard-inset-bottom, 0px) / var(--zoom, 1));

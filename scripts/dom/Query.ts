@@ -410,8 +410,8 @@ export default class AxQuery {
                         : $e;
                 e.stopPropagation();
                 let target = document?.elementFromPoint?.(
-                    e.clientX / zoomOf(),
-                    e.clientY / zoomOf()
+                    e.clientX,
+                    e.clientY
                 );
                 if (target != null) {
                     if (
@@ -431,8 +431,8 @@ export default class AxQuery {
                             dynamic.indexOf(target) >= 0 &&
                             Array.from(
                                 document?.elementsFromPoint?.(
-                                    (e.clientX / zoomOf()) * devicePixelRatio,
-                                    (e.clientY / zoomOf()) * devicePixelRatio
+                                    e.clientX,
+                                    e.clientY
                                 )
                             ).indexOf(target) >= 0
                         ) {

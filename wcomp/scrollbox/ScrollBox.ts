@@ -85,7 +85,7 @@ class ScrollBar {
                 if (this.status.pointerId < 0) {
                     this.status.pointerId = ev.pointerId;
                     this.status.pointerLocation =
-                        ev[["clientX", "clientY"][axis]] / zoomOf();
+                        ev[["clientX", "clientY"][axis]];
                     this.status.virtualScroll =
                         this.holder[["scrollLeft", "scrollTop"][axis]];
                 }
@@ -98,7 +98,7 @@ class ScrollBar {
 
                 //
                 const previous = this.holder[["scrollLeft", "scrollTop"][axis]];
-                const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
+                const coord = ev[["clientX", "clientY"][axis]];
 
                 //
                 this.status.virtualScroll +=

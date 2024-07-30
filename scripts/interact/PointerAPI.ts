@@ -85,8 +85,8 @@ document.documentElement.addEventListener(
             const np: PointerObject = {
                 id: ev.pointerId,
                 event: ev,
-                current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
-                down: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
+                current: [ev.clientX, ev.clientY],
+                down: [ev.clientX, ev.clientY],
                 movement: [0, 0],
             };
 
@@ -182,7 +182,7 @@ document.documentElement.addEventListener(
         const np: PointerObject = {
             id: ev.pointerId,
             event: ev,
-            current: [ev.clientX / zoomOf(), ev.clientY / zoomOf()],
+            current: [ev.clientX, ev.clientY],
             movement: [0, 0],
         };
 

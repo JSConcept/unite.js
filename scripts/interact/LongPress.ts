@@ -35,8 +35,8 @@ export const longPress = (node, threshold = 60) => {
                 if (
                     ev.pointerId == pointerId &&
                     Math.hypot(
-                        begin[0] - ev.clientX / zoomOf(),
-                        begin[1] - ev.clientY / zoomOf()
+                        begin[0] - ev.clientX,
+                        begin[1] - ev.clientY
                     ) > 10
                 ) {
                     cancel(ev);

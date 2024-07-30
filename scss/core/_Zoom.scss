@@ -2,10 +2,18 @@
 @property --scaling { syntax: "<number>"; initial-value: 1; inherits: true; };
 
 //
+@property --zpx {
+    syntax: "<length-percentage>";
+    initial-value: 1px;
+    inherits: true;
+};
+
+//
 .__exp-use-zoom {
     zoom: var(--zoom);
-    font-size: initial !important;
+    font-size: 16px !important;
     --zoom: var(--scaling, 1);
+    --zpx: calc(1px / var(--zoom));
 }
 
 //
@@ -13,4 +21,5 @@
     zoom: var(--zoom);
     font-size: calc(16px * var(--scaling, 1));
     --zoom: 1;
+    --zpx: calc(1px / var(--zoom));
 }

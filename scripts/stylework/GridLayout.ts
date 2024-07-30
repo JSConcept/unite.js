@@ -60,57 +60,23 @@ export const getOrientedPoint = () => {
 //
 export const animationSequence = () => {
     return [
-            {
-                "--translate-x": "calc(var(--drag-x) * 1px)",
-                "--translate-y": "calc(var(--drag-y) * 1px)",
-                "--grid-column": "var(--fp-cell-x)",
-                "--grid-row": "var(--fp-cell-y)",
-                easing: "linear",
-                offset: 0.0,
-            },
-            {
-                "--translate-x": "0px",
-                "--translate-y": "0px",
-                "--grid-column": "var(--fc-cell-x)",
-                "--grid-row": "var(--fc-cell-y)",
-                easing: "linear",
-                offset: 1,
-            }
-        ]; /*: [
-            {
-                "--translate-x": "calc(var(--drag-x) * 1px)",
-                "--translate-y": "calc(var(--drag-y) * 1px)",
-                "--grid-column": "var(--fp-cell-x)",
-                "--grid-row": "var(--fp-cell-y)",
-                easing: "step-end",
-                offset: 0.0,
-            },
-            {
-                "--translate-x": "calc(var(--drag-x) * 1px)",
-                "--translate-y": "calc(var(--drag-y) * 1px)",
-                "--grid-column": "var(--fp-cell-x)",
-                "--grid-row": "var(--fp-cell-y)",
-                easing: "linear",
-                offset: 0.01,
-            },
-            {
-                "--grid-column": "var(--fp-cell-x)",
-                "--grid-row": "var(--fp-cell-y)",
-                ...getOrientedPoint(),
-                easing: "step-start",
-                offset: 0.99,
-            },
-            {
-                "--grid-column": "var(--fc-cell-x)",
-                "--grid-row": "var(--fc-cell-y)",
-                "--drag-x": 0,
-                "--drag-y": 0,
-                "--translate-x": "0px",
-                "--translate-y": "0px",
-                easing: "step-start",
-                offset: 1,
-            },
-        ];*/
+        {
+            "--translate-x": "calc(var(--drag-x) * var(--zpx, 1px))",
+            "--translate-y": "calc(var(--drag-y) * var(--zpx, 1px))",
+            "--grid-column": "var(--fp-cell-x)",
+            "--grid-row": "var(--fp-cell-y)",
+            easing: "linear",
+            offset: 0.0,
+        },
+        {
+            "--translate-x": "0px",
+            "--translate-y": "0px",
+            "--grid-column": "var(--fc-cell-x)",
+            "--grid-row": "var(--fc-cell-y)",
+            easing: "linear",
+            offset: 1,
+        }
+    ];
 };
 
 

@@ -1,5 +1,5 @@
 //@use "@scss/fonts/xo_cal;iburn" as dFont;
-@use "./ClassMods" as cm;
+@use "./CMixins" as cm;
 
 //
 @layer ux-normalize {
@@ -28,9 +28,9 @@
     }
 
     //
-    :where(div, span) {
+    /*:where(div, span) {
         background-color: transparent;
-    }
+    }*/
 
     //
     :where(html, body) {
@@ -49,21 +49,16 @@
         font-family: Calibri, Carlito, Caliburn, Seravek, 'Gill Sans Nova', Ubuntu, 'DejaVu Sans', Candara, Segoe, "Segoe UI", Optima, source-sans-pro, sans-serif;
     }
 
-    :where(body, html) {
-        font-size: 1rem;
-    }
-
+    //
     :where(body) {
         font-size: 0.9rem;
     }
 
     //
     head {
-        @include cm.pe-none;
-        @include cm.no-user-select;
-
-        //
-        display: none !important;
+        user-select: none;
+        pointer-events: none;
+        display: none;
     }
 
     //
@@ -93,15 +88,14 @@
         will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
 
         //
-        @include cm.fit-viewport;
+        inline-size: calc(100dvi / var(--zoom, 1));
+        block-size: calc(100dvb / var(--zoom, 1));
     }
 
     //
     :where(canvas, img, picture, video) {
-        @include cm.pe-none;
-        @include cm.no-user-select;
-
-        //
+        user-select: none;
+        pointer-events: none;
         overflow: hidden;
     }
 
@@ -112,7 +106,21 @@
 
     //
     :where(*) {
-        @include cm.no-user-select;
+        //
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        //
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        -ms-user-drag: none;
+        user-drag: none;
 
         //
         box-sizing: border-box;
@@ -128,9 +136,13 @@
     }
 
     //
-    :where(.lucide, svg) {
-        @include cm.stretch;
-        @include cm.pe-none;
+    :where(.lucide, svg) {//
+        inline-size: 100%;
+        block-size: 100%;
+
+        //
+        user-select: none;
+        pointer-events: none;
 
         //
         display: inline-block;
@@ -156,18 +168,19 @@
 
     //
     :where([inert], *[inert]) {
-        @include cm.pointer-events-none
+        pointer-events: none !important;
     }
 
     //
-    :where(canvas):is([is="w-canvas"]) {
-        @include cm.stretch;
-        @include cm.align-center;
+    :where(canvas):is([is="w-canvas"]) {//
+        inline-size: 100cqi;
+        block-size: 100cqb;
 
         //
-        align-items: start;
-        align-content: start;
-        align-self: start;
+        pointer-events: none;
+        place-content: center;
+        place-items: center;
+        place-self: center;
 
         //
         aspect-ratio: auto;
@@ -184,7 +197,7 @@
         object-position: center;
 
         //
-        background-color: var(--theme-base-color, transparent) !important;
+        background-color: var(--theme-base-color, transparent);
         border-image-source: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 
         //
