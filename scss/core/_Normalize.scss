@@ -135,6 +135,18 @@
         touch-action: pan-y pan-x;
     }
 
+    // default effects
+    :where(*) {
+        --translate-x: 0px;
+        --translate-y: 0px;
+        --scale: 1;
+        --opacity: 1;
+
+        //
+        transform: translate3d(var(--translate-x, 0px), var(--translate-y, 0px), 0px) scale3d(var(--scale, 1), var(--scale, 1), 1);
+        filter: opacity(var(--opacity, 1));
+    }
+
     //
     :where(.lucide, svg) {//
         inline-size: 100%;

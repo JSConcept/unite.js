@@ -7,14 +7,6 @@ export const or_mod = {
 };
 
 //
-export const zoomOf = () => {
-    const zoomSupport = "currentCSSZoom" in document.documentElement;
-    // @ts-ignore
-    if (zoomSupport) { return ((document.documentElement.currentCSSZoom as number) || 1); }
-    return parseFloat(document.documentElement.style.getPropertyValue("--scaling")) || 1;
-};
-
-//
 export const EmbedStyle = async (shadow, styles) => {
     const style = document.createElement("style");
     //style.setAttribute("scoped", "");

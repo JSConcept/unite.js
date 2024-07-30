@@ -1,5 +1,5 @@
 //
-import {zoomOf} from "../../scripts/utils/Utils.ts";
+import {zoomOf} from "../../scripts/utils/Zoom.ts";
 import {observeContentBox} from "../../scripts/dom/Observer.ts";
 
 // @ts-ignore
@@ -130,6 +130,7 @@ class ScrollBar {
         };
 
         //
+        document.documentElement.addEventListener("scaling", onChanges);
         document.documentElement.addEventListener("click", onChanges);
         document.documentElement.addEventListener("pointerup", stopScroll, {});
         document.documentElement.addEventListener(

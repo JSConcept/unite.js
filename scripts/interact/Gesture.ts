@@ -1,4 +1,4 @@
-import {zoomOf} from "../utils/Utils.ts";
+import {zoomOf} from "../utils/Zoom.ts";
 import {grabForDrag} from "./PointerAPI.ts";
 
 //
@@ -58,16 +58,16 @@ const doContentObserve = (element) => {
                 if (entry.contentBoxSize) {
                     const contentBoxSize = entry.contentBoxSize[0];
                     if (contentBoxSize) {
-                        element[contentBoxWidth] = contentBoxSize.inlineSize;
-                        element[contentBoxHeight] = contentBoxSize.blockSize;
+                        element[contentBoxWidth] = contentBoxSize.inlineSize * zoomOf();
+                        element[contentBoxHeight] = contentBoxSize.blockSize * zoomOf();
                     }
                 }
             }
         });
 
         //
-        element[contentBoxWidth] = element.offsetWidth;
-        element[contentBoxHeight] = element.offsetHeight;
+        element[contentBoxWidth] = element.offsetWidth * zoomOf();
+        element[contentBoxHeight] = element.offsetHeight * zoomOf();
 
         //
         onContentObserve.set(element, observer);
@@ -84,16 +84,16 @@ const doBorderObserve = (element) => {
                 if (entry.borderBoxSize) {
                     const borderBoxSize = entry.borderBoxSize[0];
                     if (borderBoxSize) {
-                        element[borderBoxWidth] = borderBoxSize.inlineSize;
-                        element[borderBoxHeight] = borderBoxSize.blockSize;
+                        element[borderBoxWidth] = borderBoxSize.inlineSize * zoomOf();
+                        element[borderBoxHeight] = borderBoxSize.blockSize * zoomOf();
                     }
                 }
             }
         });
 
         //
-        element[borderBoxWidth] = element.clientWidth;
-        element[borderBoxHeight] = element.clientHeight;
+        element[borderBoxWidth] = element.clientWidth * zoomOf();
+        element[borderBoxHeight] = element.clientHeight * zoomOf();
 
         //
         onBorderObserve.set(element, observer);
@@ -123,6 +123,18 @@ export default class AxGesture {
         //
         doBorderObserve(this.#holder);
         doContentObserve(this.#holder.parentNode);
+
+        //
+        document.documentElement.addEventListener("scaling", ()=>{
+            this.#holder[borderBoxWidth] = this.#holder.clientWidth * zoomOf();
+            this.#holder[borderBoxHeight] = this.#holder.clientHeight * zoomOf();
+
+            //
+            if (this.#holder.parentNode) {
+                this.#holder.parentNode[contentBoxWidth] = this.#holder.offsetWidth * zoomOf();
+                this.#holder.parentNode[contentBoxHeight] = this.#holder.offsetHeight * zoomOf();
+            }
+        });
     }
 
     //
@@ -263,9 +275,8 @@ export default class AxGesture {
 
     //
     limitResize(real, virtual, holder, container) {
-        const zoom = zoomOf()
-        const widthDiff = container[contentBoxWidth] * zoom - (holder[borderBoxWidth] * zoom - (this.propGet("--resize-x") || 0) + (this.propGet("--drag-x") || 0));
-        const heightDiff = container[contentBoxHeight] * zoom - (holder[borderBoxHeight] * zoom - (this.propGet("--resize-y") || 0) + (this.propGet("--drag-y") || 0));
+        const widthDiff = container[contentBoxWidth] - (holder[borderBoxWidth] - (this.propGet("--resize-x") || 0) + (this.propGet("--drag-x") || 0));
+        const heightDiff = container[contentBoxHeight] - (holder[borderBoxHeight] - (this.propGet("--resize-y") || 0) + (this.propGet("--drag-y") || 0));
 
         // if relative of un-resized to edge corner max-size
         // discount of dragging offset!
@@ -275,9 +286,8 @@ export default class AxGesture {
 
     //
     limitDrag(real, virtual, holder, container) {
-        const zoom = zoomOf();
-        const widthDiff = (container[contentBoxWidth] - holder[borderBoxWidth])*zoom;
-        const heightDiff = (container[contentBoxHeight] - holder[borderBoxHeight])*zoom;
+        const widthDiff = (container[contentBoxWidth] - holder[borderBoxWidth]);
+        const heightDiff = (container[contentBoxHeight] - holder[borderBoxHeight]);
 
         // if centered
         //real[0] = clamp(-widthDiff * 0.5, virtual[0], widthDiff * 0.5);

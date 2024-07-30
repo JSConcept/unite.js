@@ -11,6 +11,20 @@
 }
 
 //
+@property --scale {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --opacity {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
 @property --translate-x {
     syntax: "<length-percentage>";
     initial-value: 0px;

@@ -1,4 +1,4 @@
-import {zoomOf} from "../utils/Utils.ts";
+import {zoomOf} from "../utils/Zoom.ts";
 
 //
 class PointerEdge {

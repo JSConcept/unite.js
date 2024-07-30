@@ -17,8 +17,8 @@ const animateHide = async (target)=>{
 
                 //
                 display: target[computed]?.display || "revert-layer",
-                opacity: target[computed]?.opacity || "revert-layer",
-                scale: target[computed]?.scale || "revert-layer",
+                "--opacity": target[computed]?.opacity || "revert-layer",
+                "--scale": target[computed]?.scale || "revert-layer",
                 pointerEvents: "none"
             },
             {
@@ -27,8 +27,8 @@ const animateHide = async (target)=>{
 
                 //
                 display: target[computed]?.display || "revert-layer",
-                opacity: 0,
-                scale: 0.8,
+                "--opacity": 0,
+                "--scale": 0.8,
                 pointerEvents: "none"
             },
             {
@@ -37,8 +37,8 @@ const animateHide = async (target)=>{
 
                 //
                 display: "none",
-                opacity: 0,
-                scale: 0.8,
+                "--opacity": 0,
+                "--scale": 0.8,
                 pointerEvents: "none"
             }
         ],  {
@@ -68,8 +68,8 @@ const animateShow = async (target)=>{
 
                 //
                 display: "none",
-                opacity: 0,
-                scale: 0.8,
+                "--opacity": 0,
+                "--scale": 0.8,
                 pointerEvents: "none"
             },
             {
@@ -78,8 +78,8 @@ const animateShow = async (target)=>{
 
                 //
                 display: target[computed]?.display || "revert-layer",
-                opacity: 0,
-                scale: 0.8,
+                "--opacity": 0,
+                "--scale": 0.8,
                 pointerEvents: "none"
             },
             {
@@ -88,8 +88,8 @@ const animateShow = async (target)=>{
 
                 //
                 display: target[computed]?.display || "revert-layer",
-                opacity: target[computed]?.opacity || "revert-layer",
-                scale: target[computed]?.scale || "revert-layer",
+                "--opacity": target[computed]?.opacity || "revert-layer",
+                "--scale": target[computed]?.scale || "revert-layer",
                 pointerEvents: target[computed]?.pointerEvents || "revert-layer"
             }
         ], {

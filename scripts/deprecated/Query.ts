@@ -5,7 +5,7 @@
 
 //
 import Timer from "../performance/Time.ts";
-import {zoomOf} from "../utils/Utils.ts";
+import {zoomOf} from "../utils/Zoom.ts";
 
 //
 export class DynamicHandler {
