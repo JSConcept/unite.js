@@ -132,13 +132,13 @@ export const isMobile = () => {
 };
 
 //
-export const MOC = (element: HTMLElement, selector: string): boolean => {
-    return (!!element.matches(selector) || !!element.closest(selector));
+export const MOC = (element: HTMLElement | null, selector: string): boolean => {
+    return (!!element?.matches?.(selector) || !!element?.closest?.(selector));
 };
 
 //
-export const MOCElement = (element: HTMLElement, selector: string): HTMLElement | null => {
-    return ((!!element.matches(selector) ? element : null) || element.closest(selector));
+export const MOCElement = (element: HTMLElement | null, selector: string): HTMLElement | null => {
+    return ((!!element?.matches?.(selector) ? element : null) || element?.closest?.(selector)) as HTMLElement | null;
 };
 
 //

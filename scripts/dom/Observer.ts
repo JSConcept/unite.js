@@ -3,7 +3,7 @@
 const onBorderObserve = new WeakMap<HTMLElement, Function[]>();
 const onContentObserve = new WeakMap<HTMLElement, Function[]>();
 
-//
+// TODO: support of fragments
 export const observeContentBox = (element, cb) => {
     if (!onContentObserve.has(element)) {
         const callbacks: Function[] = [];
@@ -35,8 +35,7 @@ export const observeContentBox = (element, cb) => {
     onContentObserve.get(element)?.push(cb);
 };
 
-
-//
+// TODO: support of fragments
 export const observeBorderBox = (element, cb) => {
     if (!onBorderObserve.has(element)) {
         const callbacks: Function[] = [];
@@ -70,9 +69,10 @@ export const observeBorderBox = (element, cb) => {
 
 //
 export const observeAttribute = (element, attribute, cb) => {
+    const attributeList = new Set<string>((attribute.split(",") || [attribute]).map((s) => s.trim()));
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
-            if (mutation.type == "attributes" && new Set((attribute.split(",") || [attribute]).map((s) => s.trim())).has(mutation.attributeName)) {
+            if (mutation.attributeName && attributeList.has(mutation.attributeName)) {
                 cb(mutation, observer);
             }
         }
@@ -80,15 +80,16 @@ export const observeAttribute = (element, attribute, cb) => {
     observer.observe(element, {
         attributeOldValue: true,
         attributes: true,
-        attributeFilter: [attribute]
+        attributeFilter: [...attributeList]
     });
 };
 
 //
-export const observeAttributeBySelector = async (element, attribute, selector, cb) => {
+export const observeAttributeBySelector = (element, selector, attribute, cb) => {
+    const attributeList = new Set<string>((attribute.split(",") || [attribute]).map((s) => s.trim()));
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
-            if ((mutation.target as HTMLElement)?.matches?.(selector)) {
+            if ((mutation.target as HTMLElement)?.matches?.(selector) && (mutation.attributeName && attributeList.has(mutation.attributeName))) {
                 cb(mutation, observer);
             }
         }
@@ -100,26 +101,35 @@ export const observeAttributeBySelector = async (element, attribute, selector, c
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: [attribute],
+        attributeFilter: [...attributeList],
         characterData: true
     });
 
     //
     Array.from(element.querySelectorAll(selector)).forEach((target)=>{
-        cb({ target, type: "attributes", attributeName: attribute }, observer);
+        attributeList.forEach((attribute)=>{
+            cb({ target, type: "attributes", attributeName: attribute }, observer);
+        });
     });
-
 };
 
 //
-export const observeBySelector = async (element, selector, cb) => {
+export const observeBySelector = (element, selector, cb) => {
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type == "childList") {
                 const addedNodes = Array.from(mutation.addedNodes || []);
                 const removedNodes = Array.from(mutation.removedNodes || []);
-                cb({
-                    ...mutation,
+
+                //
+                cb?.({
+                    type: mutation.type,
+                    target: mutation.target,
+                    attributeName: mutation.attributeName,
+                    attributeNamespace: mutation.attributeNamespace,
+                    nextSibling: mutation.nextSibling,
+                    oldValue: mutation.oldValue,
+                    previousSibling: mutation.previousSibling,
                     addedNodes: addedNodes.filter((el) => (<HTMLElement>el)?.matches?.(selector)),
                     removedNodes: removedNodes.filter((el) => (<HTMLElement>el)?.matches?.(selector)),
                 }, observer);
@@ -134,5 +144,5 @@ export const observeBySelector = async (element, selector, cb) => {
     });
 
     //
-    cb({ addedNodes: Array.from(element.querySelectorAll(selector)) }, observer);
+    cb?.({ addedNodes: Array.from(element.querySelectorAll(selector)) }, observer);
 };

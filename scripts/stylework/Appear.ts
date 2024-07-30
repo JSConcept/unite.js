@@ -1,4 +1,4 @@
-import { observeBySelector, observeAttributeBySelector } from "../dom/Observer.ts";
+import { observeAttributeBySelector } from "../dom/Observer.ts";
 
 //
 const computed = Symbol("@computed");
@@ -105,26 +105,9 @@ const animateShow = async (target)=>{
 }
 
 //
-const observed = new WeakSet();
-/*const observer = new MutationObserver((mutations)=>{
-    mutations.forEach((mutation)=>{
-        
-    });
-});*/
-
-//
-const observer = observeAttributeBySelector(document.body, "data-hidden", "*[data-hidden]", (mutation)=>{
-    //
-    /*addedNodes.forEach((node)=>{
-        if (!observed.has(node)) {
-            observer.observe(node, { attributes: true, attributeOldValue : true });
-            observed.add(node);
-        }
-    });*/
+observeAttributeBySelector(document.body, "*[data-hidden]", "data-hidden", (mutation)=>{
     if (mutation.attributeName == 'data-hidden') {
         const target = mutation.target as HTMLElement;
-
-        //
         if (target.dataset.hidden != mutation.oldValue) {
             if ((target.dataset.hidden && target.dataset.hidden != "false")) {
                 animateHide(target);
@@ -133,5 +116,4 @@ const observer = observeAttributeBySelector(document.body, "data-hidden", "*[dat
             }
         }
     }
-
 });
