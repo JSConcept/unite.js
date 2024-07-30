@@ -3,6 +3,20 @@
 const onBorderObserve = new WeakMap<HTMLElement, Function[]>();
 const onContentObserve = new WeakMap<HTMLElement, Function[]>();
 
+
+//
+const getPxValue = (element, name)=>{
+    if ("computedStyleMap" in element) {
+        const cm = element?.computedStyleMap();
+        return cm.get(name).value;
+    } else {
+        const cs = getComputedStyle(element, "");
+        return (parseFloat(cs.getPropertyValue(name)?.replace?.("px", "")) || 0);
+    }
+}
+
+
+
 // TODO: support of fragments
 export const observeContentBox = (element, cb) => {
     if (!onContentObserve.has(element)) {
@@ -22,8 +36,8 @@ export const observeContentBox = (element, cb) => {
 
         //
         cb?.({
-            inlineSize: element.clientWidth,
-            blockSize: element.clientHeight,
+            inlineSize: element.clientWidth - (getPxValue(element, "padding-left") + getPxValue(element, "padding-right")),
+            blockSize: element.clientHeight - (getPxValue(element, "padding-top") + getPxValue(element, "padding-bottom")),
         }, observer);
 
         //

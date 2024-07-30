@@ -43,6 +43,17 @@ interface InteractStatus {
 }
 
 
+//
+const getPxValue = (element, name)=>{
+    if ("computedStyleMap" in element) {
+        const cm = element?.computedStyleMap();
+        return cm.get(name).value;
+    } else {
+        const cs = getComputedStyle(element, "");
+        return (parseFloat(cs.getPropertyValue(name)?.replace?.("px", "")) || 0);
+    }
+}
+
 
 //
 const onBorderObserve = new WeakMap<HTMLElement, ResizeObserver>();
@@ -66,8 +77,8 @@ const doContentObserve = (element) => {
         });
 
         //
-        element[contentBoxWidth] = element.clientWidth * zoomOf();
-        element[contentBoxHeight] = element.clientHeight * zoomOf();
+        element[contentBoxWidth] = (element.clientWidth - (getPxValue(element, "padding-left") + getPxValue(element, "padding-right"))) * zoomOf();
+        element[contentBoxHeight] = (element.clientHeight - (getPxValue(element, "padding-top") + getPxValue(element, "padding-bottom"))) * zoomOf();
 
         //
         onContentObserve.set(element, observer);
@@ -131,8 +142,8 @@ export default class AxGesture {
 
             //
             if (this.#holder.parentNode) {
-                this.#holder.parentNode[contentBoxWidth] = this.#holder.clientWidth * zoomOf();
-                this.#holder.parentNode[contentBoxHeight] = this.#holder.clientHeight * zoomOf();
+                this.#holder.parentNode[contentBoxWidth] = (this.#holder.clientWidth - (getPxValue(this.#holder, "padding-left") + getPxValue(this.#holder, "padding-right"))) * zoomOf();
+                this.#holder.parentNode[contentBoxHeight] = (this.#holder.clientHeight - (getPxValue(this.#holder, "padding-top") + getPxValue(this.#holder, "padding-bottom"))) * zoomOf();
             }
         });
     }
