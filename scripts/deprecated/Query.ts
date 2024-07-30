@@ -1,3 +1,9 @@
+// AX Query - DEPRECATED Due Outdated Mechanics
+// Used by first edition of IDC-LX, and will no more used...
+// Needs to rewriting! Planned to rewrite at end of 2024 years.
+
+
+//
 import Timer from "../performance/Time.ts";
 import {zoomOf} from "../utils/Utils.ts";
 
