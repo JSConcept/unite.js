@@ -143,8 +143,14 @@
         --opacity: 1;
 
         //
+        will-change: filter, transform, --translate-x, --translate-y, --scale, --opacity;
         transform: translate3d(var(--translate-x, 0px), var(--translate-y, 0px), 0px) scale3d(var(--scale, 1), var(--scale, 1), 1);
-        filter: opacity(var(--opacity, 1));
+
+        // mobile too slow
+        //filter: opacity(var(--opacity, 1));
+        //opacity: 1;
+
+        opacity: var(--opacity, 1);
     }
 
     //

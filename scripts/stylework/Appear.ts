@@ -17,8 +17,8 @@ const animateHide = async (target)=>{
 
                 //
                 display: target[computed]?.display || "revert-layer",
-                "--opacity": target[computed]?.opacity || "revert-layer",
-                "--scale": target[computed]?.scale || "revert-layer",
+                "--opacity": target[computed]?.getPropertyValue("--opacity") || "revert-layer",
+                "--scale": target[computed]?.getPropertyValue("--scale") || "revert-layer",
                 pointerEvents: "none"
             },
             {
@@ -88,8 +88,8 @@ const animateShow = async (target)=>{
 
                 //
                 display: target[computed]?.display || "revert-layer",
-                "--opacity": target[computed]?.opacity || "revert-layer",
-                "--scale": target[computed]?.scale || "revert-layer",
+                "--opacity": target[computed]?.getPropertyValue("--opacity") || "revert-layer",
+                "--scale": target[computed]?.getPropertyValue("--scale") || "revert-layer",
                 pointerEvents: target[computed]?.pointerEvents || "revert-layer"
             }
         ], {
