@@ -47,9 +47,11 @@ export const pickBgColor = (holder, x, y)=>{
 
 //
 export const pickFromCenter = (holder)=>{
-    const box = holder.getBoundingClientRect();
-    const xy: [number, number] = [(box.left + box.right) / 2, (box.top + box.bottom) / 2];
-    pickBgColor(holder, ...xy);
+    const box = holder?.getBoundingClientRect?.();
+    if (box) {
+        const xy: [number, number] = [(box.left + box.right) / 2, (box.top + box.bottom) / 2];
+        pickBgColor(holder, ...xy);
+    }
 }
 
 //
