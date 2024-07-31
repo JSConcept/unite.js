@@ -71,7 +71,7 @@ export const detectMobile = () => {
 };
 
 //
-export const provide = async (req: string | Request = "") => {
+export const provide = async (req: string | Request = "", rw = false) => {
     const path: string = (req as Request)?.url ?? req;
     const relPath = path.replace(location.origin, "");
     if (relPath.startsWith("/opfs")) {
@@ -86,18 +86,25 @@ export const provide = async (req: string | Request = "") => {
         for (let I = 0; I < parts.length - 1; I++) {
             if (!parts[I]) continue;
             dir = await dir
-                ?.getDirectoryHandle?.(parts[I], {create: false})
+                ?.getDirectoryHandle?.(parts[I], {create: rw})
                 ?.catch?.(console.warn.bind(console));
             if (!dir) break;
         }
 
         //
         const fileHandle = await dir?.getFileHandle?.(parts[parts.length - 1], {
-            create: false,
+            create: rw,
         });
-        return await fileHandle?.getFile?.();
+        return await fileHandle?.[rw ? "createWritable" : "getFile"]?.();
     } else {
-        return fetch(path).then((r) => r.blob());
+        return fetch(path).then(async (r) => {
+            const blob = await r.blob();
+            const lastModified = Date.parse(r.headers.get("Last-Modified") || "") || 0;
+            return new File([blob], relPath.substring(relPath.lastIndexOf('/') + 1), {
+                type: blob.type,
+                lastModified
+            });
+        });
     }
     return null;
 };
