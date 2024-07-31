@@ -154,7 +154,7 @@ export class WCanvas extends HTMLCanvasElement {
     }
 
     //
-    async $useImageAsSource(blob, doNotRewrite = false) {
+    async $useImageAsSource(blob, doNotRewrite = true) {
         const img = (blob instanceof ImageBitmap) ? blob : (await createImageBitmapCache(blob).catch((_) => null));
 
         //
@@ -179,7 +179,7 @@ export class WCanvas extends HTMLCanvasElement {
     //
     #preload(src) {
         return provide(src).then(async (blob: any) => {
-            return (await this.$useImageAsSource(blob).catch((_) => null));
+            return (await this.$useImageAsSource(blob, true).catch((_) => null));
         }).catch(console.warn.bind(console));
     }
 

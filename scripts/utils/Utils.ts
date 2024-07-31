@@ -95,7 +95,7 @@ export const provide = async (req: string | Request = "", rw = false) => {
         const fileHandle = await dir?.getFileHandle?.(parts[parts.length - 1], {
             create: rw,
         });
-        return await fileHandle?.[rw ? "createWritable" : "getFile"]?.();
+        return await fileHandle?.[rw ? "createWritable" : "getFile"]?.({ keepExistingData: true });
     } else {
         return fetch(path).then(async (r) => {
             const blob = await r.blob();

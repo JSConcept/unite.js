@@ -5,6 +5,7 @@ import { provide } from "../utils/Utils.ts";
 //
 window.addEventListener("wallpaper", (ev) => {
     const blob = ev?.detail?.blob;
+    const dnw = ev?.detail?.doNotRewrite ?? true;
     if (blob)
         colorScheme(blob)
             .then(() => {
@@ -12,7 +13,7 @@ window.addEventListener("wallpaper", (ev) => {
                     "/opfs?path=images/" + (blob.name || "wallpaper");
 
                 //
-                if (!ev.detail.doNotRewrite) {
+                if (!dnw) {
                     provide(filename, true)
                         .then(async (fw: any) => {
                             localStorage.setItem("@wallpaper", filename);
