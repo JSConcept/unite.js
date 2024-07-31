@@ -187,6 +187,8 @@
     *[data-theme="light"] { --theme-is-dark: 0; color-scheme: light; }
 
     //
+    *[data-scheme="dynamic-transparent"] { @include ux-dynamic-transparent; }
+    *[data-scheme="dynamic"] { @include ux-dynamic; }
     *[data-scheme="accent"] { @include ux-accent; }
     *[data-scheme="solid"] { @include ux-solid; }
     *[data-scheme="inverse"] { @include ux-inverse; }

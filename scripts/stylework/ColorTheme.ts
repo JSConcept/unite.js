@@ -25,12 +25,11 @@ const updateStyleRule = ()=>{
     });
 }
 
-//
-export const switchTheme = (isDark = false) => {
-    if (!baseColorI) return;
 
-    //
-    const source = Array.from(document.elementsFromPoint(window.innerWidth - 64, 30));
+
+//
+export const pickBgColor = (holder, x, y)=>{
+    const source = Array.from(document.elementsFromPoint(x, y));
     const opaque = source.filter((node)=>{
         const computed = getComputedStyle(node as HTMLElement, "");
         const parsed = parse(computed.backgroundColor);
@@ -39,11 +38,23 @@ export const switchTheme = (isDark = false) => {
 
     //
     const color = getComputedStyle(opaque[0] as HTMLElement, "")?.backgroundColor || baseColor;
-    if (document.documentElement.style.getPropertyValue("--theme-dynamic-color") != color) {
-        document.documentElement.style.setProperty("--theme-dynamic-color", color, "");
+    if (holder.style.getPropertyValue("--theme-dynamic-color") != color) {
+        holder.style.setProperty("--theme-dynamic-color", color, "");
         const media = document?.head?.querySelector?.('meta[data-theme-color]');
         if (media) { media.setAttribute("content", color); }
     }
+}
+
+//
+export const pickFromCenter = (holder)=>{
+    const box = holder.getBoundingClientRect();
+    const xy: [number, number] = [(box.left + box.right) / 2, (box.top + box.bottom) / 2];
+    pickBgColor(holder, ...xy);
+}
+
+//
+export const switchTheme = (isDark = false) => {
+    pickBgColor(document.documentElement, window.innerWidth - 64, 30);
 };
 
 //
