@@ -32,8 +32,9 @@ export const pickBgColor = (holder, x, y)=>{
     const source = Array.from(document.elementsFromPoint(x, y));
     const opaque = source.filter((node)=>{
         const computed = getComputedStyle(node as HTMLElement, "");
-        const parsed = parse(computed.backgroundColor);
-        return (parsed.alpha == null || parsed.alpha > 0.1);
+        const value  = computed.backgroundColor;
+        const parsed = parse(value);
+        return ((parsed.alpha == null || parsed.alpha > 0.1) && value != "transparent");
     });
 
     //
