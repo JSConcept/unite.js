@@ -11,7 +11,7 @@
         "composite": true,
         "lib": ["dom", "esnext", "webworker"],
         "module": "ESNext",
-        "target": "ES2022",
+        "target": "ESNext",
         "baseUrl": "./",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
