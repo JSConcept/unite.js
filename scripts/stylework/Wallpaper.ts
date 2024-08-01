@@ -20,6 +20,7 @@ window.addEventListener("wallpaper", (ev) => {
                             await fw?.write?.(blob);
                             await fw?.flush?.();
                             await fw?.close?.();
+                            window.dispatchEvent(new CustomEvent("file-upload", {detail: {blob}}));
                         })
                         .catch(console.warn.bind(console));
                 } else {

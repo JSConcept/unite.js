@@ -89,11 +89,20 @@ export const observeAttribute = (element, attribute, cb) => {
             }
         }
     });
+
+    //
     observer.observe(element, {
         attributeOldValue: true,
         attributes: true,
         attributeFilter: [...attributeList]
     });
+
+    //
+    attributeList.forEach((attribute)=>{
+        cb({ target: element, type: "attributes", attributeName: attribute, oldValue: (element as HTMLElement)?.getAttribute?.(attribute) }, observer);
+    });
+
+    //
     return observer;
 };
 
@@ -121,10 +130,11 @@ export const observeAttributeBySelector = (element, selector, attribute, cb) => 
     //
     Array.from(element.querySelectorAll(selector)).forEach((target)=>{
         attributeList.forEach((attribute)=>{
-            cb({ target, type: "attributes", attributeName: attribute }, observer);
+            cb({ target, type: "attributes", attributeName: attribute, oldValue: (target as HTMLElement)?.getAttribute?.(attribute) }, observer);
         });
     });
 
+    //
     return observer;
 };
 
@@ -161,5 +171,6 @@ export const observeBySelector = (element, selector, cb) => {
     //
     cb?.({ addedNodes: Array.from(element.querySelectorAll(selector)) }, observer);
 
+    //
     return observer;
 };

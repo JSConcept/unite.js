@@ -69,6 +69,11 @@ export class WCanvas extends HTMLCanvasElement {
         const parent: HTMLElement = this.parentNode as HTMLElement;
         this.width = Math.max((this.clientWidth || parent?.clientWidth || 0) * devicePixelRatio, 0);
         this.height = Math.max((this.clientHeight || parent?.clientHeight || 0) * devicePixelRatio, 0);
+
+        //
+        this.style.aspectRatio = `${this.width} / ${this.height}`;
+        this.style.containIntrinsicInlineSize = `${this.width}px`;
+        this.style.containIntrinsicBlockSize = `${this.height}px`;
     }
 
     //
@@ -99,6 +104,13 @@ export class WCanvas extends HTMLCanvasElement {
                 if (contentBox) {
                     this.width = Math.max(contentBox.inlineSize * devicePixelRatio, 0);
                     this.height = Math.max(contentBox.blockSize * devicePixelRatio, 0);
+
+                    //
+                    this.style.aspectRatio = `${this.width} / ${this.height}`;
+                    this.style.containIntrinsicInlineSize = `${this.width}px`;
+                    this.style.containIntrinsicBlockSize = `${this.height}px`;
+
+                    //
                     this.#render();
                 }
             }
@@ -108,6 +120,13 @@ export class WCanvas extends HTMLCanvasElement {
         const fixSize = () => {
             this.width = Math.max((this.clientWidth || parent?.clientWidth || 0) * devicePixelRatio, 0);
             this.height = Math.max((this.clientHeight || parent?.clientHeight || 0) * devicePixelRatio, 0);
+
+            //
+            this.style.aspectRatio = `${this.width} / ${this.height}`;
+            this.style.containIntrinsicInlineSize = `${this.width}px`;
+            this.style.containIntrinsicBlockSize = `${this.height}px`;
+
+            //
             this.#render();
         }
 
