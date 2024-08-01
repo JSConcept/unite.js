@@ -94,6 +94,8 @@ document.documentElement.addEventListener(
             const exists = (pointerMap.has(ev.pointerId)
                 ? pointerMap.get(ev.pointerId)
                 : np) || np;
+
+            //
             np.movement[0] = np.current[0] - exists.current[0];
             np.movement[1] = np.current[1] - exists.current[1];
 
@@ -263,7 +265,6 @@ document.documentElement.addEventListener(
                 document?.dispatchEvent?.(nev);
             }
         });
-        //}
     },
     {capture: true}
 );

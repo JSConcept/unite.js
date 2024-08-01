@@ -48,10 +48,12 @@ const getPxValue = (element, name)=>{
     if ("computedStyleMap" in element) {
         const cm = element?.computedStyleMap();
         return cm.get(name)?.value || 0;
-    } else {
+    } else
+    if (element instanceof HTMLElement) {
         const cs = getComputedStyle(element, "");
         return (parseFloat(cs.getPropertyValue(name)?.replace?.("px", "")) || 0);
     }
+    return 0;
 }
 
 
@@ -63,6 +65,7 @@ const onContentObserve = new WeakMap<HTMLElement, ResizeObserver>();
 
 //
 const doContentObserve = (element) => {
+    if (!(element instanceof HTMLElement)) return;
     if (!onContentObserve.has(element)) {
         const observer = new ResizeObserver((entries) => {
             for (const entry of entries) {
@@ -89,6 +92,7 @@ const doContentObserve = (element) => {
 
 //
 const doBorderObserve = (element) => {
+    if (!(element instanceof HTMLElement)) return;
     if (!onBorderObserve.has(element)) {
         const observer = new ResizeObserver((entries) => {
             for (const entry of entries) {
@@ -112,6 +116,31 @@ const doBorderObserve = (element) => {
     }
 }
 
+//
+const blockClickTrigger = (_: MouseEvent | PointerEvent | TouchEvent | null = null)=>{
+    const blocker = (ev)=>{
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.stopImmediatePropagation();
+
+        //
+        document.documentElement.removeEventListener("click", blocker, options);
+        document.documentElement.removeEventListener("contextmenu", blocker, options);
+    };
+
+    //
+    const options = { once: true, capture: true };
+    document.documentElement.addEventListener("click", blocker, options);
+    document.documentElement.addEventListener("contextmenu", blocker, options);
+
+    //
+    setTimeout(()=>{
+        document.documentElement.removeEventListener("click", blocker, options);
+        document.documentElement.removeEventListener("contextmenu", blocker, options);
+    }, 100);
+}
+
+
 
 //
 export default class AxGesture {
@@ -133,7 +162,9 @@ export default class AxGesture {
 
         //
         doBorderObserve(this.#holder);
-        doContentObserve(this.#holder.parentNode);
+        if (this.#holder.parentNode) {
+            doContentObserve(this.#holder.parentNode);
+        }
 
         //
         document.documentElement.addEventListener("scaling", ()=>{
@@ -463,6 +494,54 @@ export default class AxGesture {
         }
     }
 
+
+    //
+    longHover(options, fx = (ev) => {
+        ev.target.dispatchEvent(
+            new CustomEvent("long-hover", {detail: ev, bubbles: true})
+        );
+    }) {
+        const handler = options.handler || this.#holder;
+        const action: any = {
+            pointerId: -1,
+            timer: null
+        };
+
+        //
+        const initiate = (ev)=>{
+            if (ev.target.matches(options.selector) && action.pointerId < 0) {
+                action.pointerId = ev.pointerId;
+                action.timer = setTimeout(()=>{
+                    fx?.(ev);
+                    if (matchMedia("(pointer: coarse) and (hover: none)").matches) {
+                        blockClickTrigger();
+                    }
+                }, options.holdTime ?? 300);
+            }
+        }
+
+        //
+        handler.addEventListener("pointerover", initiate);
+        handler.addEventListener("pointerdown", initiate);
+
+        //
+        const cancelEv = (ev)=>{
+            if ((ev.target as HTMLElement)?.matches(options.selector) && action.pointerId == ev.pointerId) {
+                if (action.timer) {
+                    clearTimeout(action.timer);
+                }
+                action.timer = null;
+                action.pointerId = -1;
+            }
+        }
+
+        //
+        document.documentElement.addEventListener("pointerout", cancelEv);
+        document.documentElement.addEventListener("pointerup", cancelEv);
+        document.documentElement.addEventListener("pointercancel", cancelEv);
+    }
+
+
     //
     longPress(
         options: any = {},
@@ -472,6 +551,13 @@ export default class AxGesture {
             );
         }
     ) {
+        //
+        const trigger = (ev)=>{
+            blockClickTrigger(ev);
+            fx?.(ev);
+        }
+
+        //
         const handler = options.handler || this.#holder;
         const action: any = {
             pointerId: -1,
@@ -508,7 +594,7 @@ export default class AxGesture {
                 if (action.pointerId == ev.pointerId) {
                     if (inPlace()) {
                         resolve?.();
-                        fx?.(ev);
+                        trigger?.(ev);
                     }
                     action.cancelRv?.();
                 }
@@ -537,8 +623,8 @@ export default class AxGesture {
                 action.lastCoord[1] = ev.clientY;
 
                 //
-                ev.preventDefault();
-                ev.stopPropagation();
+                ev?.preventDefault();
+                ev?.stopPropagation();
 
                 // JS math logic megalovania...
                 if (action.ready) {
@@ -556,8 +642,8 @@ export default class AxGesture {
                 action.lastCoord[1] = ev.clientY;
 
                 //
-                ev.preventDefault();
-                ev.stopPropagation();
+                ev?.preventDefault();
+                ev?.stopPropagation();
 
                 // JS math logic megalovania...
                 if (!inPlace()) {
@@ -629,7 +715,7 @@ export default class AxGesture {
 
                     //
                     if (ev.pointerType == "mouse" && options.mouseImmediate) {
-                        fx?.(ev);
+                        trigger?.(ev);
                         action?.cancelRv?.();
                     } else {
                         //
