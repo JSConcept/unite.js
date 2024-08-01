@@ -15,8 +15,6 @@ const getPxValue = (element, name)=>{
     }
 }
 
-
-
 // TODO: support of fragments
 export const observeContentBox = (element, cb) => {
     if (!onContentObserve.has(element)) {
@@ -96,6 +94,7 @@ export const observeAttribute = (element, attribute, cb) => {
         attributes: true,
         attributeFilter: [...attributeList]
     });
+    return observer;
 };
 
 //
@@ -125,6 +124,8 @@ export const observeAttributeBySelector = (element, selector, attribute, cb) => 
             cb({ target, type: "attributes", attributeName: attribute }, observer);
         });
     });
+
+    return observer;
 };
 
 //
@@ -159,4 +160,6 @@ export const observeBySelector = (element, selector, cb) => {
 
     //
     cb?.({ addedNodes: Array.from(element.querySelectorAll(selector)) }, observer);
+
+    return observer;
 };
