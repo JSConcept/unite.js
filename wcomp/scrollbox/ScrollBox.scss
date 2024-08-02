@@ -1,44 +1,44 @@
+@property --percent {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --thumbSize {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --scrollAvail {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --scroll-left {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --scroll-top {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+@keyframes scroll-percent {
+    0% {
+        --percent: 0.0;
+    }
+
+    100% {
+        --percent: 1.0;
+    }
+}
+
 @layer ux-scrollbox {
-
-    @property --percent {
-        syntax: "<number>";
-        inherits: true;
-        initial-value: 0;
-    }
-    
-    @property --thumbSize {
-        syntax: "<number>";
-        inherits: true;
-        initial-value: 0;
-    }
-    
-    @property --scrollAvail {
-        syntax: "<number>";
-        inherits: true;
-        initial-value: 0;
-    }
-    
-    @property --scroll-left {
-        syntax: "<number>";
-        inherits: true;
-        initial-value: 0;
-    }
-    
-    @property --scroll-top {
-        syntax: "<number>";
-        inherits: true;
-        initial-value: 0;
-    }
-
-    @keyframes scroll-percent {
-        0% {
-            --percent: 0.0;
-        }
-
-        100% {
-            --percent: 1.0;
-        }
-    }
 
     :host(x-scrollbox) {
         display: block;
@@ -65,7 +65,6 @@
 
         //
         &, & > :where(*) {
-             //
             will-change: scroll-position, contents;
             touch-action: pan-x pan-y manipulation;
 

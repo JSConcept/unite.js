@@ -44,6 +44,7 @@
     --clip-amplitude: 0.06;
     --clip-freq: 8;
     --clip-path: #{Integrate("WavyFx", 100)};
+    --corrector: 1.1;
     clip-path: var(--clip-path);
     border-radius: calc(var(--icon-size, 100%) * 0.5);
 }

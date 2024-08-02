@@ -6,7 +6,7 @@
 
 //
 :root, :host, :scope, :where(body) {
-    will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
+    will-change: --keyboard-inset-bottom, --keyboard-inset-height, inset;
     pointer-events: auto;
 
     //

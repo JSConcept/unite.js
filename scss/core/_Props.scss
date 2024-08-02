@@ -86,3 +86,10 @@
     initial-value: 0px;
     inherits: true;
 }
+
+//
+@property --corrector {
+    syntax: "<number>";
+    initial-value: 1;
+    inherits: true;
+}

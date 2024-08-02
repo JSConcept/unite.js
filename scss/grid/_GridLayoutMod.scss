@@ -43,7 +43,7 @@
 
             //
             & > :where(*) {
-                will-change: transform, inset, --ox-column, --ox-row, --grid-column, --grid-row, --translate-x, --translate-y;
+                will-change: inset, --ox-column, --ox-row, --grid-column, --grid-row, --translate-x, --translate-y;
 
                 //
                 --ox-column: calc(#{lg.mix(var(--grid-row), var(--grid-column), var(--ox-orient))} - 1);
@@ -81,10 +81,9 @@
                 inset-block-end: auto;
 
                 //
-                transform: translate3d(
+                transform: translate(
                     calc(var(--translate-x) - 50%),
-                    calc(var(--translate-y) - 50%),
-                    0px);
+                    calc(var(--translate-y) - 50%)) scale(var(--scale, 1));
             }
         }
     }

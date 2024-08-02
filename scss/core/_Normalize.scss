@@ -2,6 +2,35 @@
 @use "./CMixins" as cm;
 
 //
+@mixin disableTransform() {
+    rotate: none;
+    scale: none;
+    translate: none;
+    transform: none;
+
+    //
+    transform-origin: 50% 50%;
+
+    //
+    backface-visibility: visible;
+
+    //
+    filter: none;
+    backdrop-filter: none;
+
+    //
+    will-change: auto;
+    perspective: none;
+
+    //
+    isolation: auto;
+
+    //
+    //contain: size style;
+    //container-type: normal;
+}
+
+//
 @layer ux-normalize {
 
     //
@@ -85,7 +114,7 @@
         contain: content;
 
         //
-        will-change: --keyboard-inset-bottom, --keyboard-inset-height, contents, inset;
+        will-change: --keyboard-inset-bottom, --keyboard-inset-height, inset;
 
         //
         inline-size: calc(100dvi / var(--zoom, 1));
@@ -133,18 +162,20 @@
 
         //
         touch-action: pan-y pan-x;
-    }
 
-    // default effects
-    :where(*) {
+        //
+        @include disableTransform();
+
+
+        // default effects
         --translate-x: 0px;
         --translate-y: 0px;
         --scale: 1;
         --opacity: 1;
 
         //
-        will-change: filter, transform, --translate-x, --translate-y, --scale, --opacity;
-        transform: translate3d(var(--translate-x, 0px), var(--translate-y, 0px), 0px) scale3d(var(--scale, 1), var(--scale, 1), 1);
+        will-change: --translate-x, --translate-y, --scale, --opacity;
+        transform: translate(var(--translate-x), var(--translate-y)) scale(var(--scale, 1));
 
         // mobile too slow
         //filter: opacity(var(--opacity, 1));
@@ -169,6 +200,7 @@
         contain: size;
         aspect-ratio: 1 / 1;
         position: relative;
+        will-change: auto;
 
         //
         object-fit: contain;
@@ -182,6 +214,23 @@
 
         //
         stroke: var(--current-glyph-color);
+
+        //
+        image-rendering: auto;
+        image-rendering: optimizeQuality;
+        image-rendering: smooth;
+        image-rendering: high-quality;
+
+        //
+        shape-rendering: geometricPrecision;
+
+        //
+        @include HQRendering();
+
+        //
+        transform: none;
+        filter: none;
+        backdrop-filter: none;
     }
 
     //

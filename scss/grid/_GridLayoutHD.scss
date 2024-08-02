@@ -7,10 +7,9 @@
             display: layout(grid-page);
 
             & > :where(*) {
-                transform: translate3d(
+                transform: translate(
                     var(--translate-x),
-                    var(--translate-y),
-                    0px);
+                    var(--translate-y)) scale(var(--scale, 1));
             }
         }
     }

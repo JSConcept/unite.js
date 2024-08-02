@@ -31,6 +31,7 @@ const updateStyleRule = ()=>{
 export const pickBgColor = (holder, x, y)=>{
     const source = Array.from(document.elementsFromPoint(x, y));
     const opaque = source.filter((node)=>{
+        if (!(node instanceof HTMLElement)) return false;
         const computed = getComputedStyle(node as HTMLElement, "");
         const value  = computed.backgroundColor;
         const parsed = parse(value);
@@ -38,11 +39,13 @@ export const pickBgColor = (holder, x, y)=>{
     });
 
     //
-    const color = getComputedStyle(opaque[0] as HTMLElement, "")?.backgroundColor || baseColor;
-    if (holder.style.getPropertyValue("--theme-dynamic-color") != color) {
-        holder.style.setProperty("--theme-dynamic-color", color, "");
-        const media = document?.head?.querySelector?.('meta[data-theme-color]');
-        if (media) { media.setAttribute("content", color); }
+    if (opaque[0] && opaque[0] instanceof HTMLElement) {
+        const color = getComputedStyle(opaque[0] as HTMLElement, "")?.backgroundColor || baseColor;
+        if (holder.style.getPropertyValue("--theme-dynamic-color") != color) {
+            holder.style.setProperty("--theme-dynamic-color", color, "");
+            const media = document?.head?.querySelector?.('meta[data-theme-color]');
+            if (media) { media.setAttribute("content", color); }
+        }
     }
 }
 
