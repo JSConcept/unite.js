@@ -1,4 +1,4 @@
-import { observeBySelector, observeContentBox } from "../dom/Observer.ts";
+import { observeBySelector, observeContentBox } from "../../scripts/dom/Observer.ts";
 
 // this flex-like supports animations
 export class FlexLike extends HTMLDivElement {
@@ -6,6 +6,7 @@ export class FlexLike extends HTMLDivElement {
 
     //
     connectedCallback() {
+        this.dataset.enableTransition = "false";
         this.#recalculate();
     }
 
@@ -27,7 +28,7 @@ export class FlexLike extends HTMLDivElement {
         });
 
         //
-        this.#recalculate();
+        //this.#recalculate();
     }
 
     // flex-direction: column
@@ -35,6 +36,7 @@ export class FlexLike extends HTMLDivElement {
     #recalculate() {
         //
         const ordered: any[] = [];
+        const gap = (this.dataset.gap ? parseFloat(this.dataset.gap) : 0) || 0;
 
         // @ts-ignore
         for (const child of this.children) { ordered.push(child); }
@@ -43,20 +45,17 @@ export class FlexLike extends HTMLDivElement {
         let height = 0;
         let width  = 0;
         ordered.sort((a,b)=>{
-            return Math.sign((a.dataset.order||0)-(b.dataset.order||0));
-        }).forEach((child)=>{
+            return Math.sign((parseInt(a.dataset.order)||0)-(parseInt(b.dataset.order)||0));
+        }).forEach((child, I, A)=>{
             child.style.setProperty("--inset-block-start", height + "px");
             height += child.offsetHeight;
+            if (I < (A.length-1)) height += gap;
             width = Math.max(width, child.offsetWidth);
         });
 
         //
         this.style.setProperty("--block-size", height + "px");
-    }
-
-    //
-    attributeChangedCallback(name, _, newValue) {
-
+        this.dataset.enableTransition = "true";
     }
 }
 
