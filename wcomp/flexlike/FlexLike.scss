@@ -20,6 +20,8 @@
         // when direction="column" condition
         inline-size: 100%;
         block-size: var(--block-size);
+        overflow: visible;
+        padding: 0px;
 
         // when direction="column" condition
         max-inline-size: 100%;
@@ -31,7 +33,6 @@
 
         //
         container-type: size;
-        contain: content;
 
         //
         //will-change: left, top, inset-inline-start, inset-block-start, --inset-inline-start, --inset-block-start;
