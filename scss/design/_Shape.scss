@@ -44,4 +44,22 @@
     --clip-amplitude: 0.06;
     --clip-freq: 8;
     --clip-path: #{Integrate("WavyFx", 100)};
+    clip-path: var(--clip-path);
+    border-radius: calc(var(--icon-size, 100%) * 0.5);
+}
+
+//
+:where(.tear-shaped) {
+    border-radius: calc(var(--icon-size, 100%) * 0.5);
+    border-end-end-radius: calc(var(--icon-size, 100%) * 0.125);
+}
+
+//
+:where(.circle-shaped) {
+    border-radius: calc(var(--icon-size, 100%) * 0.5);
+}
+
+//
+:where(.square-shaped) {
+    border-radius: calc(var(--icon-size, 100%) * 0.25);
 }
