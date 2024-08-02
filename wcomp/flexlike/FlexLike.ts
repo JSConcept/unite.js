@@ -1,4 +1,4 @@
-import { observeBySelector, observeContentBox } from "../../scripts/dom/Observer.ts";
+import { observeAttributeBySelector, observeBySelector, observeContentBox } from "../../scripts/dom/Observer.ts";
 
 // this flex-like supports animations
 export class FlexLike extends HTMLDivElement {
@@ -18,6 +18,14 @@ export class FlexLike extends HTMLDivElement {
         this.style.position = "relative";
 
         //
+        observeAttributeBySelector(document.documentElement, "*[data-hidden]", "data-hidden", (m)=>{
+            const has = Array.from(m.target.querySelectorAll("*[is=\"flex-like\"]"));
+            if (has.length > 0 && has.some((e)=>(e==this)) && (m.oldValue != m.target.dataset.hidden)) {
+                this.dataset.enableTransition = "false";
+            }
+        });
+
+        //
         observeBySelector(this, "*", (_)=>{
             this.#recalculate();
         });
@@ -26,14 +34,13 @@ export class FlexLike extends HTMLDivElement {
         observeContentBox(this, (_)=>{
             this.#recalculate();
         });
-
-        //
-        //this.#recalculate();
     }
 
     // flex-direction: column
     // TODO: support for wrap
     #recalculate() {
+        //await new Promise((r)=>requestAnimationFrame(r));
+
         //
         const ordered: any[] = [];
         const gap = (this.dataset.gap ? parseFloat(this.dataset.gap) : 0) || 0;
