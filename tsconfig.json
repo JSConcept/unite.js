@@ -6,7 +6,8 @@
         "paths": {
             "@": ["./"],
             "@src": ["./"],
-            "@unite": ["./"]
+            "@unite": ["./"],
+            "@assets": ["../assets/"]
         },
         "composite": true,
         "lib": ["dom", "esnext", "webworker"],

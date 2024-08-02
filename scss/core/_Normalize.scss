@@ -1,4 +1,4 @@
-//@use "@scss/fonts/xo_cal;iburn" as dFont;
+@use "@idc/Fonts/XO_Caliburn" as dFont;
 @use "./CMixins" as cm;
 
 //
@@ -71,11 +71,12 @@
 
         //
         @include HQRendering();
-        //@include dFont.applyFont(0.9rem);
     }
 
+    //
     :where(:root, body, html, button) {
         font-family: Calibri, Carlito, Caliburn, Seravek, 'Gill Sans Nova', Ubuntu, 'DejaVu Sans', Candara, Segoe, "Segoe UI", Optima, source-sans-pro, sans-serif;
+        @include dFont.applyFont(0.9rem);
     }
 
     //

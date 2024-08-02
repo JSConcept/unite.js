@@ -11,6 +11,13 @@
 }
 
 //
+@property --ppx {
+    syntax: "<length-percentage>";
+    initial-value: 1px;
+    inherits: true;
+}
+
+//
 @property --scale {
     syntax: "<number>";
     initial-value: 1;
