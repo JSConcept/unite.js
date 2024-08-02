@@ -552,12 +552,6 @@ export default class AxGesture {
         }
     ) {
         //
-        const trigger = (ev)=>{
-            blockClickTrigger(ev);
-            fx?.(ev);
-        }
-
-        //
         const handler = options.handler || this.#holder;
         const action: any = {
             pointerId: -1,
@@ -594,7 +588,10 @@ export default class AxGesture {
                 if (action.pointerId == ev.pointerId) {
                     if (inPlace()) {
                         resolve?.();
-                        trigger?.(ev);
+
+                        //
+                        fx?.(ev);
+                        blockClickTrigger(ev);
                     }
                     action.cancelRv?.();
                 }
@@ -715,7 +712,7 @@ export default class AxGesture {
 
                     //
                     if (ev.pointerType == "mouse" && options.mouseImmediate) {
-                        trigger?.(ev);
+                        fx?.(ev);
                         action?.cancelRv?.();
                     } else {
                         //
