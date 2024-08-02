@@ -6,6 +6,9 @@ export const whenHashChange = (): Readable<string> => {
         addEventListener("hashchange", ({}) => {
             set(location.hash);
         });
+        addEventListener("popstate", ({}) => {
+            set(location.hash);
+        });
     });
 };
 
