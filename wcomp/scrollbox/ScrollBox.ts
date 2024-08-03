@@ -14,7 +14,7 @@ interface ScrollBarStatus {
 }
 
 //
-const setProperty = (target, name, value)=>{
+const setProperty = (target, name, value, importance = "")=>{
     if ("attributeStyleMap" in target) {
         const prop = target.attributeStyleMap.get(name)?.[0];
         if (parseFloat(prop) != value && prop != value || prop == null) {
@@ -23,7 +23,7 @@ const setProperty = (target, name, value)=>{
     } else {
         const prop = target?.style?.getPropertyValue?.(name);
         if (parseFloat(prop) != value && prop != value || prop == null) {
-            target?.style?.setProperty?.(name, value, "");
+            target?.style?.setProperty?.(name, value, importance);
         }
     }
 }
@@ -71,9 +71,9 @@ class ScrollBar {
 
                 //
                 if (sizePercent >= 0.999) {
-                    setProperty(this.scrollbar, "visibility", "collapse");
+                    setProperty(this.scrollbar, "visibility", "collapse", "important");
                 } else {
-                    setProperty(this.scrollbar, "visibility", "visible");
+                    setProperty(this.scrollbar, "visibility", "visible", "important");
                 }
             }
         };

@@ -46,10 +46,11 @@
         overflow: scroll;
         isolation: isolate;
         inset: 0px;
+        padding: 0px;
 
         //
         contain: content;
-        container-type: size;
+        container-type: size !important;
         background-color: transparent;
 
         //
@@ -83,6 +84,7 @@
 
             --percent: 0.0;
 
+            background-color: transparent !important;
             animation-name: scroll-percent;
             animation-timing-function: linear;
             animation-duration: 1ms;
@@ -91,6 +93,7 @@
             will-change: --percent;
 
             touch-action: none;
+            z-index: 9999;
 
             & :where(.thumb) {
                 pointer-events: auto;
