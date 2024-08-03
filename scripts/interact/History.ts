@@ -77,6 +77,7 @@ addEventListener("popstate", _ => {
     const prevState = State.$story.at(State.$story.length - 1) ?? null;
     State.$story.pop();
     const state = State.$story.at(State.$story.length - 1) ?? null;
+
     window.dispatchEvent(
         new CustomEvent("mx-pop-state", {
             detail: {

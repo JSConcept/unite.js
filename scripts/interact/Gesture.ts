@@ -549,7 +549,7 @@ export default class AxGesture {
             ev.target.dispatchEvent(
                 new CustomEvent("long-press", {detail: ev, bubbles: true})
             );
-            requestAnimationFrame(()=>navigator?.vibrate?.([10]))
+            //requestAnimationFrame(()=>navigator?.vibrate?.([10]))
         }
     ) {
         //
