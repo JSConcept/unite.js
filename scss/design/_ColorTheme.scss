@@ -178,8 +178,10 @@
     }
 
     //
+    *[data-highlight="0.5"] { --highlight-coefficient: 1.5; }
     *[data-highlight="1"] { --highlight-coefficient: 3; }
     *[data-highlight="2"] { --highlight-coefficient: 6; }
+    *[data-highlight="2.5"] { --highlight-coefficient: 9; }
     *[data-highlight="3"] { --highlight-coefficient: 12; }
 
     //

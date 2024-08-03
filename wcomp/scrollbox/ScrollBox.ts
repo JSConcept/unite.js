@@ -1,6 +1,6 @@
 //
 import {zoomOf} from "../../scripts/utils/Zoom.ts";
-import {observeContentBox} from "../../scripts/dom/Observer.ts";
+import {observeBorderBox} from "../../scripts/dom/Observer.ts";
 
 // @ts-ignore
 import styles from "./ScrollBox.scss?inline";
@@ -172,7 +172,7 @@ class ScrollBar {
         });
 
         //
-        observeContentBox(this.holder, (box) => {
+        observeBorderBox(this.holder, (box) => {
             this.holder[contentBoxWidth] = box.inlineSize;
             this.holder[contentBoxHeight] = box.blockSize;
             onChanges();

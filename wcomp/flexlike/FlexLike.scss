@@ -20,6 +20,7 @@
         // when direction="column" condition
         inline-size: 100%;
         block-size: var(--block-size);
+        min-block-size: 100%;
         overflow: visible;
         padding: 0px;
 
