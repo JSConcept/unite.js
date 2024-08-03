@@ -135,6 +135,16 @@
     }
 
     //
+    :dir(rtl) :where(*), :where(*):dir(rtl) {
+        direction: rtl;
+    }
+
+    //
+    :dir(ltr) :where(*), :where(*):dir(ltr) {
+        direction: ltr;
+    }
+
+    //
     :where(*) {
         //
         -webkit-user-select: none;

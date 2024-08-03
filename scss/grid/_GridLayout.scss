@@ -8,6 +8,9 @@
 //
 @layer ux-grid-layout {
     .ux-grid-layout {//
+        direction: ltr;
+
+        //
         inline-size: 100%;
         block-size: 100%;
 
