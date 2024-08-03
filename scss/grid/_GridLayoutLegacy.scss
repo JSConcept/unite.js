@@ -7,10 +7,10 @@
             display: grid;
 
             //
-            padding-inline: calc(var(--c-gap) * 0.5rem);
-            padding-block : calc(var(--r-gap) * 0.5rem);
-            column-gap: calc(var(--c-gap) * 1rem);
-            row-gap: calc(var(--r-gap) * 1rem);
+            padding-inline: var(--c-gap);
+            padding-block : var(--r-gap);
+            column-gap: var(--c-gap);
+            row-gap: var(--r-gap);
 
             // when houdini not supported...
             place-items: center;

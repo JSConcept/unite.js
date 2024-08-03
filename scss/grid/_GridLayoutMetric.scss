@@ -28,15 +28,15 @@
 
 //
 @property --r-gap {
-    syntax: "<number>";
-    initial-value: 1;
+    syntax: "<length-percentage>";
+    initial-value: 0px;
     inherits: true;
 }
 
 //
 @property --c-gap {
-    syntax: "<number>";
-    initial-value: 1;
+    syntax: "<length-percentage>";
+    initial-value: 0px;
     inherits: true;
 }
 
@@ -84,7 +84,7 @@
         //
         & > :where(*) {
             @include calculateMetric();
-            --icon-size: min(calc(100cqmin / min(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap)) * 1rem), 4rem);
+            --icon-size: min(calc(100cqmin / min(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap))), 4rem);
             --grid-column: var(--fc-cell-x);
             --grid-row: var(--fc-cell-y);
 
