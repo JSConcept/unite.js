@@ -17,9 +17,7 @@
     ]
   },
   "browserslist": [
-    "defaults",
-    "not ie 11",
-    "not chrome <= 125",
-    "not firefox <= 126"
+    "chrome >= 128",
+    "firefox >= 128"
   ]
 }
