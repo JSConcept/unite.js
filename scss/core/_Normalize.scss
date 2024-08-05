@@ -173,6 +173,7 @@
 
         //
         touch-action: pan-y pan-x;
+        transition-behavior: allow-discrete;
 
         //
         @include disableTransform();

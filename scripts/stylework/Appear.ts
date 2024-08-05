@@ -44,8 +44,9 @@ const animateHide = async (target)=>{
         ],  {
             fill: "none",
             duration: 100,
-            rangeStart: "cover 0%",
-            rangeEnd: "cover 100%",
+            easing: "linear"
+            //rangeStart: "cover 0%",
+            //rangeEnd: "cover 100%",
         }).finished;
 
         //
@@ -95,8 +96,9 @@ const animateShow = async (target)=>{
         ], {
             fill: "none",
             duration: 100,
-            rangeStart: "cover 0%",
-            rangeEnd: "cover 100%",
+            easing: "linear"
+            //rangeStart: "cover 0%",
+            //rangeEnd: "cover 100%",
         }).finished;
 
         //

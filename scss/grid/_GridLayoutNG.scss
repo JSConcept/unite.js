@@ -52,7 +52,7 @@
 
         //
         & > :where(*) {
-            will-change: inset, --translate-x, --translate-y;
+            will-change: --translate-x, --translate-y, --grid-c, --grid-r;
 
             //
             --ox-c: calc(#{lg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);

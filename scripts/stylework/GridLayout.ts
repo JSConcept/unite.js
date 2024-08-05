@@ -62,15 +62,11 @@ export const animationSequence = () => {
     return [
         {
             "--grid-c": "calc(var(--fp-cell-x) + var(--c-shift-mod))",
-            "--grid-r": "calc(var(--fp-cell-y) + var(--r-shift-mod))",
-            easing: "linear",
-            offset: 0.0,
+            "--grid-r": "calc(var(--fp-cell-y) + var(--r-shift-mod))"
         },
         {
             "--grid-c": "var(--fc-cell-x)",//"round(nearest, calc(var(--fc-cell-x) + var(--c-shift-mod)), 1)",
-            "--grid-r": "var(--fc-cell-y)",//"round(nearest, calc(var(--fc-cell-y) + var(--r-shift-mod)), 1)",
-            easing: "linear",
-            offset: 1,
+            "--grid-r": "var(--fc-cell-y)"//"round(nearest, calc(var(--fc-cell-y) + var(--r-shift-mod)), 1)",
         }
     ];
 };
