@@ -105,6 +105,6 @@ export default class ReactiveSet {
     }
 }
 
-// 
+//
 export const makeReactiveSet: <V>(map: Set<V>) => Set<V> = <V>(set: Set<V>) => new Proxy(set, new ReactiveSet() as ProxyHandler<Set<V>>);
 export const createReactiveSet: <V>(map: V[]) => Set<V> = <V>(set: V[] = []) => new Proxy(new Set(set), new ReactiveSet() as ProxyHandler<Set<V>>);

@@ -1,3 +1,6 @@
+import States from "./StateManager.ts";
+
+//
 const boundCtx = new WeakMap();
 const bindFx = (target, fx)=>{
     if (!boundCtx.has(target)) {
@@ -263,46 +266,50 @@ export const makeReactiveSet: <V>(set: Set<V>) => Set<V> = <V>(set: Set<V>) => n
 export const createReactiveMap: <K, V>(map: [K, V][]) => Map<K, V> = <K, V>(map: [K, V][] = []) => new Proxy(new Map(map), register(map, new ReactiveMap()) as ProxyHandler<Map<K, V>>);
 export const createReactiveSet: <V>(set: V[]) => Set<V> = <V>(set: V[] = []) => new Proxy(new Set(set), register(set, new ReactiveSet()) as ProxyHandler<Set<V>>);
 
-//
-export const makeReactive: any = (target: any): any => {
-    const unwrap = target?.[extractSymbol] ?? target;
+//States
+export const makeReactive: any = (target: any, stateName = ""): any => {
+    const unwrap = target?.[extractSymbol] ?? target; let reactive = target;
 
+    //
     if (unwrap instanceof Map || unwrap instanceof WeakMap) {
-        return makeReactiveMap(target);
+        reactive = makeReactiveMap(target);
     } else
 
     //
     if (unwrap instanceof Set || unwrap instanceof WeakSet) {
-        return makeReactiveSet(target);
+        reactive = makeReactiveSet(target);
     } else
 
     //
     if (typeof unwrap == "function" || typeof unwrap == "object") {
-        return makeReactiveObject(target);
+        reactive = makeReactiveObject(target);
     }
 
     //
-    return target;
+    if (stateName) States.setState(stateName, reactive);
+
+    //
+    return reactive;
 }
 
 //
-export const createReactive: any = (target: any): any => {
-    const unwrap = target?.[extractSymbol] ?? target;
+export const createReactive: any = (target: any, stateName = ""): any => {
+    const unwrap = target?.[extractSymbol] ?? target; let reactive = target;
 
-    if (unwrap instanceof Map || unwrap instanceof WeakMap) {
-        return createReactiveMap(target);
-    } else
-
-    //
-    if (unwrap instanceof Set || unwrap instanceof WeakSet) {
-        return createReactiveSet(target);
+    // BROKEN!
+    if (Array.isArray(target)) {
+        //reactive = createReactiveMap(target);
+        //reactive = createReactiveSet(target);
     } else
 
     //
     if (typeof unwrap == "function" || typeof unwrap == "object") {
-        return makeReactiveObject(target);
+        reactive = makeReactiveObject(target);
     }
 
     //
-    return target;
+    if (stateName) States.setState(stateName, reactive);
+
+    //
+    return reactive;
 }
