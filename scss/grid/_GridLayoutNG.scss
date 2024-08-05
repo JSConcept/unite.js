@@ -12,86 +12,94 @@
 @property --block-offset    { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
 
 //
-@property --ox-columns { syntax: "<integer>"; initial-value: 0; inherits: true; }
-@property --ox-rows    { syntax: "<integer>"; initial-value: 0; inherits: true; }
+//@property --ox-layout-c { syntax: "<integer>"; initial-value: 1; inherits: true; }
+//@property --ox-layout-r { syntax: "<integer>"; initial-value: 1; inherits: true; }
+@property --ox-cs { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --ox-rs { syntax: "<integer>"; initial-value: 0; inherits: true; }
 
 //
-@property --ox-orient { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --ox-orient { syntax: "<number>"; initial-value: 0; inherits: true; }
 
 //
-@property --ox-column { syntax: "<number>"; initial-value: 0; inherits: true; }
-@property --ox-row    { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --ox-c { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --ox-r { syntax: "<number>"; initial-value: 0; inherits: true; }
 
 //
-@property --ox-col-size { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
-@property --ox-row-size { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --ox-c-span { syntax: "<number>"; initial-value: 1; inherits: true; }
+@property --ox-r-span { syntax: "<number>"; initial-value: 1; inherits: true; }
+
+//
+@property --ox-c-unit { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --ox-r-unit { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+
+//
+@property --ox-c-loc { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --ox-r-loc { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
 
 //
 @layer ux-grid-layout {
 
     //
-    @supports not (display: layout(grid-page)) {
-        .ux-grid-layout {
-            //
-            display: block;
-            position: relative;
+    .ux-grid-layout {
+        //
+        display: block;
+        position: relative;
+
+        //
+        --ox-orient: rem(var(--orient, 0), 2);
+        --ox-cs: #{lg.mix(var(--layout-r), var(--layout-c), var(--ox-orient, 0))};
+        --ox-rs: #{lg.mix(var(--layout-c), var(--layout-r), var(--ox-orient, 0))};
+
+        //
+        & > :where(*) {
+            will-change: inset, --translate-x, --translate-y;
 
             //
-            --ox-orient: rem(var(--orient), 2);
-            --ox-cs: #{lg.mix(var(--rows), var(--columns), var(--ox-orient))};
-            --ox-rs: #{lg.mix(var(--columns), var(--rows), var(--ox-orient))};
+            --ox-c: calc(#{lg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
+            --ox-r: calc(#{lg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
 
             //
-            & > :where(*) {
-                will-change: inset, --ox-column, --ox-row, --grid-column, --grid-row, --translate-x, --translate-y;
+            --ox-c-unit: calc(100cqi / var(--ox-cs));
+            --ox-r-unit: calc(100cqb / var(--ox-rs));
 
-                //
-                --ox-c: calc(#{lg.mix(var(--grid-r), var(--grid-c), var(--ox-orient))} - 1);
-                --ox-r: calc(#{lg.mix(var(--grid-c), var(--grid-r), var(--ox-orient))} - 1);
+            //
+            --ox-c-loc: calc(var(--ox-c) * var(--ox-c-unit));
+            --ox-r-loc: calc(var(--ox-r) * var(--ox-r-unit));
 
-                //
-                --ox-c-unit: calc(100cqi / var(--ox-cs));
-                --ox-r-unit: calc(100cqb / var(--ox-rs));
+            //
+            --inline-offset-ni: var(--ox-c-loc, 1px);
+            --inline-offset-iv: calc(100cqi - var(--ox-c-span, 1) * var(--ox-c-unit, 1px) - var(--ox-c-loc, 1px));
+            --inline-offset: #{lg.mix(
+                var(--inline-offset-ni),
+                var(--inline-offset-iv),
+                lg.lor(lg.eq(var(--orient, 0), 0), lg.eq(var(--orient, 0), 1))
+            )};
 
-                //
-                --ox-c-loc: calc(var(--ox-c) * var(--ox-c-unit));
-                --ox-r-loc: calc(var(--ox-r) * var(--ox-r-unit));
+            //
+            --block-offset-ni: var(--ox-r-loc, 1px);
+            --block-offset-iv: calc(100cqb - var(--ox-r-span, 1) * var(--ox-r-unit, 1px) - var(--ox-r-loc, 1px));
+            --block-offset: #{lg.mix(
+                var(--block-offset-ni, 0px),
+                var(--block-offset-iv, 0px),
+                lg.lor(lg.eq(var(--orient, 0), 0), lg.eq(var(--orient, 0), 3))
+            )};
 
-                //
-                --inline-offset-ni: var(--ox-c-loc);
-                --inline-offset-iv: calc(var(--ox-cs) - var(--ox-c-loc) - 1 * var(--ox-c-unit));
-                --inline-offset: #{lg.mix(
-                    var(--inline-offset-ni),
-                    var(--inline-offset-iv),
-                    lg.lor(lg.eq(var(--orient), 0), lg.eq(var(--orient), 1))
-                )};
+            //
+            position: absolute;
 
-                //
-                --block-offset-ni: var(--ox-r-loc);
-                --block-offset-iv: calc(var(--ox-rs) - var(--ox-r-loc) - 1 * var(--ox-r-unit));
-                --block-offset: #{lg.mix(
-                    var(--block-offset-ni),
-                    var(--block-offset-iv),
-                    lg.lor(lg.eq(var(--orient), 0), lg.eq(var(--orient), 3))
-                )};
+            //
+            inset-inline-start: 0px;//calc(var(--inline-offset, 0px) + var(--ox-col-size) / 2);
+            inset-block-start: 0px;//calc(var(--block-offset, 0px) + var(--ox-row-size) / 2);
+            inset-inline-end: auto;
+            inset-block-end: auto;
 
-                //
-                position: absolute;
-
-                //
-                inset-inline-start: 0px;//calc(var(--inline-offset, 0px) + var(--ox-col-size) / 2);
-                inset-block-start: 0px;//calc(var(--block-offset, 0px) + var(--ox-row-size) / 2);
-                inset-inline-end: auto;
-                inset-block-end: auto;
-
-                //
-                transform:
-                    translate(
-                        calc(var(--inline-offset) + 0.5 /* * var(--ox-c-span) */ * var(--ox-c-unit) - 50%),
-                        calc(var(--block-offset ) + 0.5 /* * var(--ox-r-span) */ * var(--ox-r-unit) - 50%)
-                    )
-                    scale(var(--scale, 1));
-            }
+            //
+            transform:
+                translate(
+                    calc(var(--translate-x) + var(--inline-offset) + 0.5 * var(--ox-c-span, 1) * var(--ox-c-unit) - 50%),
+                    calc(var(--translate-y) + var(--block-offset ) + 0.5 * var(--ox-r-span, 1) * var(--ox-r-unit) - 50%)
+                )
+                scale(var(--scale, 1));
         }
     }
 

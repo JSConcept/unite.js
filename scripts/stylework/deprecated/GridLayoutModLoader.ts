@@ -9,7 +9,7 @@ CSS?.registerProperty?.({
 
 //
 CSS?.registerProperty?.({
-    name: "--columns",
+    name: "--layout-c",
     syntax: "<integer>",
     inherits: true,
     initialValue: "1",
@@ -17,7 +17,7 @@ CSS?.registerProperty?.({
 
 //
 CSS?.registerProperty?.({
-    name: "--rows",
+    name: "--layout-r",
     syntax: "<integer>",
     inherits: true,
     initialValue: "1",
@@ -44,7 +44,7 @@ CSS?.registerProperty?.({
 
 //
 CSS?.registerProperty?.({
-    name: "--grid-column",
+    name: "--grid-c",
     syntax: "<number>",//CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
     inherits: true,
     initialValue: "0",
@@ -52,7 +52,7 @@ CSS?.registerProperty?.({
 
 //
 CSS?.registerProperty?.({
-    name: "--grid-row",
+    name: "--grid-r",
     syntax: "<number>",//CSS.supports("display", "layout(grid-page)") ? "<number>" : "<integer>",
     inherits: true,
     initialValue: "0",

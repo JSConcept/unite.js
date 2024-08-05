@@ -56,23 +56,19 @@ export const getOrientedPoint = () => {
             };
     }
 };
-//CSS.supports("display", "layout(grid-page)") ?
+
 //
 export const animationSequence = () => {
     return [
         {
-            "--translate-x": "calc(var(--drag-x) * var(--zpx, 1px))",
-            "--translate-y": "calc(var(--drag-y) * var(--zpx, 1px))",
-            "--grid-column": "var(--fp-cell-x)",
-            "--grid-row": "var(--fp-cell-y)",
+            "--grid-c": "calc(var(--fp-cell-x) + var(--c-shift-mod))",
+            "--grid-r": "calc(var(--fp-cell-y) + var(--r-shift-mod))",
             easing: "linear",
             offset: 0.0,
         },
         {
-            "--translate-x": "0px",
-            "--translate-y": "0px",
-            "--grid-column": "var(--fc-cell-x)",
-            "--grid-row": "var(--fc-cell-y)",
+            "--grid-c": "var(--fc-cell-x)",//"round(nearest, calc(var(--fc-cell-x) + var(--c-shift-mod)), 1)",
+            "--grid-r": "var(--fc-cell-y)",//"round(nearest, calc(var(--fc-cell-y) + var(--r-shift-mod)), 1)",
             easing: "linear",
             offset: 1,
         }
@@ -91,11 +87,11 @@ const realCellOriented = {
     },
     "landscape-primary": {
         "grid-column": "var(--grid-row)",
-        "grid-row": "calc(var(--columns) - var(--grid-column) + 1)",
+        "grid-row": "calc(var(--layout-c) - var(--grid-column) + 1)",
     },
     "portrait-secondary": {
-        "grid-column": "calc(var(--columns) - var(--grid-column) + 1)",
-        "grid-row": "calc(var(--rows) - var(--grid-row) + 1)",
+        "grid-column": "calc(var(--layout-c) - var(--grid-column) + 1)",
+        "grid-row": "calc(var(--layout-r) - var(--grid-row) + 1)",
     },
     "landscape-secondary": {
         "grid-column": "calc(var(--rows) - var(--grid-row) + 1)",

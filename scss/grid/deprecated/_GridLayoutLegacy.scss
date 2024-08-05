@@ -18,14 +18,14 @@
 
             // when houdini not supported...
             @media (orientation: portrait) {
-                grid-template-columns: repeat(var(--columns), minmax(0px, 1fr));
-                grid-template-rows: repeat(var(--rows), minmax(0px, 1fr));
+                grid-template-columns: repeat(var(--layout-c), minmax(0px, 1fr));
+                grid-template-rows: repeat(var(--layout-r), minmax(0px, 1fr));
             }
 
             // when houdini not supported...
             @media (orientation: landscape) {
-                grid-template-columns: repeat(var(--rows), minmax(0px, 1fr));
-                grid-template-rows: repeat(var(--columns), minmax(0px, 1fr));
+                grid-template-columns: repeat(var(--layout-r), minmax(0px, 1fr));
+                grid-template-rows: repeat(var(--layout-c), minmax(0px, 1fr));
             }
 
             //:where(*) {

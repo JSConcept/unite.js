@@ -2,7 +2,7 @@
 @layer ux-grid-layout {
 
     // HOUDINI: if supported...
-    @supports (display: layout(grid-page)) {
+    /*@supports (display: layout(grid-page)) {
         .ux-grid-layout {
             display: layout(grid-page);
 
@@ -12,6 +12,6 @@
                     var(--translate-y)) scale(var(--scale, 1));
             }
         }
-    }
+    }*/
 
 }

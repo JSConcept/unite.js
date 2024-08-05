@@ -1,9 +1,9 @@
 @use "../core/CMixins" as cm;
 
 //
+//@use "./GridLayoutMod";
 @use "./GridLayoutMetric";
-@use "./GridLayoutMod";
-@use "./GridLayoutHD";
+@use "./GridLayoutNG";
 
 //
 @layer ux-grid-layout {

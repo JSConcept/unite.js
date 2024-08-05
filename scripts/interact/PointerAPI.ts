@@ -244,6 +244,12 @@ document.documentElement.addEventListener(
                 em?.dispatchEvent?.(nev);
 
                 //
+                if (em) {
+                    em[`@data-${hm.propertyName || "drag"}-x`] = hm.modified[0];
+                    em[`@data-${hm.propertyName || "drag"}-y`] = hm.modified[1];
+                }
+
+                //
                 setProperty(em,
                     `--${hm.propertyName || "drag"}-x`,
                     hm.modified[0] as unknown as string

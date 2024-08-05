@@ -48,7 +48,7 @@ export const getParent = (e) => {
 };
 
 //
-export const redirectCell = (gridArgs: GridArgsType, $preCell: [number, number]) => {
+export const redirectCell = ($preCell: [number, number], gridArgs: GridArgsType) => {
     //const items = gridItems;
     const preCell: [number, number] = [...$preCell]; // make non-conflict copy
     const icons =
@@ -127,67 +127,6 @@ export const redirectCell = (gridArgs: GridArgsType, $preCell: [number, number])
     return gridArgs.item.cell;
 };
 
-//
-export const putToCell = (gridArgs: GridArgsType, $coord: [number, number]) => {
-    // should be relative from grid-box (not absolute or fixed position)
-    const last: [number, number] = [...$coord];
-
-    //
-    const orientation = getCorrectOrientation();
-    const oxBox = [...gridArgs.page.size];
-
-    //
-    //if (orientation.startsWith("landscape")) oxBox.toReversed();
-
-    //
-    const layout = [...gridArgs.page.layout];
-    if (orientation.startsWith("landscape")) {
-        //layout.reverse();
-        oxBox.reverse();
-    }
-
-    //
-    const inBox = [oxBox[0] / layout[0], oxBox[1] / layout[1]];
-    let preCell: [number, number] = [...gridArgs.item.cell];
-
-    //
-    switch (orientation) {
-        case "portrait-primary":
-            preCell = [
-                Math.floor(last[0] / inBox[0]) || 0,
-                Math.floor(last[1] / inBox[1]) || 0
-            ];
-            break;
-        case "landscape-primary":
-            preCell = [
-                Math.floor((oxBox[0] - last[1]) / inBox[0]) || 0,
-                Math.floor(last[0] / inBox[1]) || 0
-            ];
-            break;
-        case "portrait-secondary":
-            preCell = [
-                Math.floor((oxBox[0] - last[0]) / inBox[0]) || 0,
-                Math.floor((oxBox[1] - last[1]) / inBox[1]) || 0
-            ];
-            break;
-        case "landscape-secondary":
-            preCell = [
-                Math.floor(last[1] / inBox[0]) || 0,
-                Math.floor((oxBox[1] - last[0]) / inBox[1]) || 0
-            ];
-            break;
-    }
-
-    //
-    return redirectCell(
-        gridArgs,
-        preCell
-    );
-};
-
-
-
-
 
 
 
@@ -205,7 +144,7 @@ const orientationNumberMap = {
 }
 
 //
-const roundNearest = (number, N = 1)=>(Math.floor(number * N) / N)
+const roundNearest = (number, N = 1)=>(Math.round(number * N) / N)
 
 //
 export const convertPointerPxToOrientPx = ($pointerPx: [number, number], gridArgs: GridArgsType)=>{
@@ -220,6 +159,23 @@ export const convertPointerPxToOrientPx = ($pointerPx: [number, number], gridArg
         ((orientIndex==0 || orientIndex==3) ? pointerPx[0] : boxInPx[0] - pointerPx[0]) || 0,
         ((orientIndex==0 || orientIndex==1) ? pointerPx[1] : boxInPx[1] - pointerPx[1]) || 0
     ];
+}
+
+//
+export const convertOrientPxToPointerPx = ($orientPx: [number, number], gridArgs: GridArgsType)=>{
+    const orientation = getCorrectOrientation();
+    const boxInPx = [...gridArgs.page.size];
+    const orientPx: [number, number] = [...$orientPx];
+    const orientIndex = orientationNumberMap[orientation] || 0;
+
+    //
+    if (orientIndex%2) { boxInPx.reverse(); }
+    const pointerPx = [
+        ((orientIndex==0 || orientIndex==3) ? orientPx[0] : boxInPx[0] - orientPx[0]) || 0,
+        ((orientIndex==0 || orientIndex==1) ? orientPx[1] : boxInPx[1] - orientPx[1]) || 0
+    ];
+    if (orientIndex%2) { pointerPx.reverse(); }
+    return pointerPx;
 }
 
 
@@ -239,10 +195,33 @@ export const convertOrientPxToCX = ($orientPx: [number, number], gridArgs: GridA
 
 
 
-// TODO! support for conversion relative dragPx to absolutePx
-export const relativeToAbsoluteInPx = ($drag: [number, number], gridArgs: GridArgsType)=>{
-    
+//
+export const relativeToAbsoluteInPx = ($relativePx: [number, number], gridArgs: GridArgsType)=>{
+    const orientation = getCorrectOrientation();
+    const boxInPx = [...gridArgs.page.size];
+    const orientIndex = orientationNumberMap[orientation] || 0;
+    const layout = [...gridArgs.page.layout];
+    if (orientIndex%2) { boxInPx.reverse(); };
+
+    //
+    const gridCXToPx = [boxInPx[0] / layout[0], boxInPx[1] / layout[1]];
+    const $orientPxBasis: [number, number] = [
+        gridArgs.item.cell[0] * gridCXToPx[0],
+        gridArgs.item.cell[1] * gridCXToPx[1]
+    ];
+    const pointerPxBasis = convertOrientPxToPointerPx($orientPxBasis, gridArgs);
+    return [pointerPxBasis[0] + $relativePx[0], pointerPxBasis[1] + $relativePx[1]];
 }
+
+
+
+//
+export const absoluteCXToRelativeCX = ($CX: [number, number], gridArgs: GridArgsType)=>{
+    const $orientPxBasis = [gridArgs.item.cell[0], gridArgs.item.cell[1]];
+    return [$CX[0] - $orientPxBasis[0], $CX[1] - $orientPxBasis[1]];
+}
+
+
 
 //
 export const absolutePxToRelativeInOrientPx = ($absolutePx: [number, number], gridArgs: GridArgsType)=>{

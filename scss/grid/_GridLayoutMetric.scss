@@ -15,6 +15,8 @@
 //
 @property --grid-w { syntax: "<number>"; initial-value: 0; inherits: true; }
 @property --grid-h { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --grid-c { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --grid-r { syntax: "<number>"; initial-value: 0; inherits: true; }
 
 //
 @property --f-col { syntax: "<integer>"; initial-value: 0; inherits: true; }
@@ -25,6 +27,9 @@
 @property --fc-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
 @property --fp-cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
 @property --fp-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --orient { syntax: "<number>"; initial-value: 0; inherits: true; }
 
 //
 @property --r-gap {
@@ -41,24 +46,42 @@
 }
 
 //
-@property --rows {
-    syntax: "<number>";
+@property --layout-r {
+    syntax: "<integer>";
     initial-value: 1;
     inherits: true;
 }
 
 //
-@property --columns {
-    syntax: "<number>";
+@property --layout-c {
+    syntax: "<integer>";
     initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --c-shift-mod {
+    syntax: "<number>";
+    initial-value: 0;
+    inherits: true;
+}
+
+//
+@property --r-shift-mod {
+    syntax: "<number>";
+    initial-value: 0;
     inherits: true;
 }
 
 //
 @mixin calculateMetric() {
+    //
+    --p-cell-x: var(--cell-x);
+    --p-cell-y: var(--cell-y);
+
     // CLAMPED GRID
-    --f-col: clamp(4, var(--columns, 4), 6);
-    --f-row: clamp(8, var(--rows, 8), 12);
+    --f-col: clamp(4, var(--layout-c, 4), 6);
+    --f-row: clamp(8, var(--layout-r, 8), 12);
 
     //
     --fc-cell-x: calc(clamp(0, var(--cell-x), calc(var(--f-col) - 1)) + 1);
@@ -84,12 +107,18 @@
         //
         & > :where(*) {
             @include calculateMetric();
-            --icon-size: min(calc(100cqmin / min(var(--columns), var(--rows)) - max(var(--c-gap), var(--r-gap))), 4rem);
-            --grid-column: var(--fc-cell-x);
-            --grid-row: var(--fc-cell-y);
+            --icon-size: min(calc(100cqmin / min(var(--layout-c), var(--layout-r)) - max(var(--c-gap), var(--r-gap))), 4rem);
+            --grid-c: calc(var(--fc-cell-x) + var(--c-shift-mod, 0));
+            --grid-r: calc(var(--fc-cell-y) + var(--r-shift-mod, 0));
 
             //
             place-self: center;
+        }
+
+        //
+        & > :where(*[data-dragging]) {
+            --grid-c: calc(var(--fc-cell-x) + var(--c-shift-mod, 0));
+            --grid-r: calc(var(--fc-cell-y) + var(--r-shift-mod, 0));
         }
     }
 }

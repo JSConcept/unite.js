@@ -12,15 +12,15 @@
 @property --block-offset    { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
 
 //
-@property --ox-columns { syntax: "<integer>"; initial-value: 0; inherits: true; }
-@property --ox-rows    { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --ox-layout-c { syntax: "<integer>"; initial-value: 1; inherits: true; }
+@property --ox-layout-r { syntax: "<integer>"; initial-value: 1; inherits: true; }
 
 //
 @property --ox-orient { syntax: "<integer>"; initial-value: 0; inherits: true; }
 
 //
-@property --ox-column { syntax: "<number>"; initial-value: 0; inherits: true; }
-@property --ox-row    { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --ox-c { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --ox-r { syntax: "<number>"; initial-value: 0; inherits: true; }
 
 //
 @property --ox-col-size { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
@@ -37,17 +37,17 @@
             position: relative;
 
             //
-            --ox-orient: rem(var(--orient), 2);
-            --ox-columns: #{lg.mix(var(--rows), var(--columns), var(--ox-orient))};
-            --ox-rows: #{lg.mix(var(--columns), var(--rows), var(--ox-orient))};
+            --ox-orient: var(--orient, 0);//rem(var(--orient), 2);
+            --ox-layout-c: #{lg.mix(var(--layout-r), var(--layout-c), var(--ox-orient))};
+            --ox-layout-r: #{lg.mix(var(--layout-c), var(--layout-r), var(--ox-orient))};
 
             //
             & > :where(*) {
-                will-change: inset, --ox-column, --ox-row, --grid-column, --grid-row, --translate-x, --translate-y;
+                will-change: inset, --ox-column, --ox-row, --grid-c, --grid-r, --translate-x, --translate-y;
 
                 //
-                --ox-column: calc(#{lg.mix(var(--grid-row), var(--grid-column), var(--ox-orient))} - 1);
-                --ox-row: calc(#{lg.mix(var(--grid-column), var(--grid-row), var(--ox-orient))} - 1);
+                --ox-c: calc(#{lg.mix(var(--grid-r), var(--grid-c), var(--ox-orient))} - 1);
+                --ox-r: calc(#{lg.mix(var(--grid-c), var(--grid-r), var(--ox-orient))} - 1);
 
                 //
                 --ox-col-size: calc(100cqi / var(--ox-columns));

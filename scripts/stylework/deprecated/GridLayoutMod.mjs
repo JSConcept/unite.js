@@ -1,5 +1,5 @@
 registerLayout('grid-page', class {
-    static get inputProperties() { return ['--columns', '--rows', '--orient']; }
+    static get inputProperties() { return ['--layout-c', '--layout-r', '--orient']; }
     static get childInputProperties() { return ['--grid-column', '--grid-row', '--cell-x', '--cell-y']; }
     
     //
@@ -32,8 +32,8 @@ registerLayout('grid-page', class {
         
         //
         const orient = parseInt(styleMap.get("--orient").value);
-        const columns = styleMap.get(["--columns", "--rows"][orient%2]).value;
-        const rows = styleMap.get(["--rows", "--columns"][orient%2]).value;
+        const columns = styleMap.get(["--layout-c", "--layout-r"][orient%2]).value;
+        const rows = styleMap.get(["--layout-r", "--layout-c"][orient%2]).value;
         
         //
         const columnSize = availableInlineSize / columns;
