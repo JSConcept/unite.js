@@ -1,4 +1,4 @@
-import States from "./StateManager.ts";
+import stateMap from "./StateManager.ts";
 
 //
 const boundCtx = new WeakMap();
@@ -124,11 +124,13 @@ export class ReactiveMap {
         }
 
         //
+        const valueOrFx = bindCtx(target, Reflect.get(target, name, ctx));
+
+        //
         if (name == "delete") {
             return (prop, _ = null) => {
-                const self = subscriptRegistry.get(target);
-                const result = bindCtx(target, Reflect.get(target, name, ctx))(prop);
-                self?.trigger?.(prop, null);
+                const result = valueOrFx(prop);
+                subscriptRegistry.get(target)?.trigger?.(prop, null);
                 return result;
             };
         }
@@ -136,15 +138,14 @@ export class ReactiveMap {
         //
         if (name == "set") {
             return (prop, value) => {
-                const result = bindCtx(target, Reflect.get(target, name, ctx))(prop, value);
-                const self = subscriptRegistry.get(target);
-                self?.trigger?.(prop, value);
+                const result = valueOrFx(prop, value);
+                subscriptRegistry.get(target)?.trigger?.(prop, value);
                 return result;
             };
         }
 
         //
-        return bindCtx(target, Reflect.get(target, name, ctx));
+        return valueOrFx;
     }
 
     //
@@ -176,11 +177,13 @@ export class ReactiveSet {
         }
 
         //
+        const valueOrFx = bindCtx(target, Reflect.get(target, name, ctx));
+
+        //
         if (name == "delete") {
             return (value) => {
-                const result = bindCtx(target, Reflect.get(target, name, ctx))(value);
-                const self = subscriptRegistry.get(target);
-                self?.trigger?.(value, null);
+                const result = valueOrFx(value);
+                subscriptRegistry.get(target)?.trigger?.(value, null);
                 return result;
             };
         }
@@ -188,15 +191,14 @@ export class ReactiveSet {
         //
         if (name == "add") {
             return (value) => {
-                const result = bindCtx(target, Reflect.get(target, name, ctx))(value);
-                const self = subscriptRegistry.get(target);
-                self?.trigger?.(value, value);
+                const result = valueOrFx(value);
+                subscriptRegistry.get(target)?.trigger?.(value, value);
                 return result;
             };
         }
 
         //
-        return bindCtx(target, Reflect.get(target, name, ctx));
+        return valueOrFx;
     }
 
     //
@@ -266,7 +268,7 @@ export const makeReactiveSet: <V>(set: Set<V>) => Set<V> = <V>(set: Set<V>) => n
 export const createReactiveMap: <K, V>(map: [K, V][]) => Map<K, V> = <K, V>(map: [K, V][] = []) => new Proxy(new Map(map), register(map, new ReactiveMap()) as ProxyHandler<Map<K, V>>);
 export const createReactiveSet: <V>(set: V[]) => Set<V> = <V>(set: V[] = []) => new Proxy(new Set(set), register(set, new ReactiveSet()) as ProxyHandler<Set<V>>);
 
-//States
+//stateMap
 export const makeReactive: any = (target: any, stateName = ""): any => {
     const unwrap = target?.[extractSymbol] ?? target; let reactive = target;
 
@@ -286,7 +288,7 @@ export const makeReactive: any = (target: any, stateName = ""): any => {
     }
 
     //
-    if (stateName) States.setState(stateName, reactive);
+    if (stateName) stateMap.set(stateName, reactive);
 
     //
     return reactive;
@@ -308,7 +310,7 @@ export const createReactive: any = (target: any, stateName = ""): any => {
     }
 
     //
-    if (stateName) States.setState(stateName, reactive);
+    if (stateName) stateMap.set(stateName, reactive);
 
     //
     return reactive;

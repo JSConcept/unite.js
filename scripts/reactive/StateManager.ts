@@ -10,7 +10,7 @@ export class StateManager {
     }
 
     //
-    setState(name: string, state: any, whatToDo: Function | null = null) {
+    set(name: string, state: any, whatToDo: Function | null = null) {
         this.named.set(name, state);
         whatToDo?.(name, state);
         return this;
@@ -24,7 +24,7 @@ export class StateManager {
     }
 
     //
-    getState(element: HTMLElement) {
+    get(element: HTMLElement) {
         return element instanceof HTMLElement ? this.elements.get(element) : this.named.get(element);
     }
 

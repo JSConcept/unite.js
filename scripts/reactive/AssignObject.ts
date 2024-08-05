@@ -35,13 +35,35 @@ export class AssignObjectHandler {
     //
     set(target, name: keyType, value) {
         const exists = target[name];
-        const entries = (value instanceof Map || Array.isArray(value)) ? value.entries() : Object.entries(value);
+        let entries: any = null;//(value instanceof Map || value instanceof Set || Array.isArray(value)) ? value.entries() : Object.entries(value);
+
+        //
+        if (value instanceof Set) entries = value.values();
+        if (value instanceof Map) entries = value.entries();
+        if (Array.isArray(value)) entries = value.entries();
+
+        //
+        if (Array.isArray(exists)) {
+            for (const [k,v] of entries) {
+                exists[k] = v;
+            }
+            return true;
+        }
 
         //
         if (exists instanceof Map || exists instanceof WeakMap) {
             for (const E of entries) {
                 // @ts-ignore
                 exists.set(...E);
+            }
+            return true;
+        }
+
+        //
+        if (exists instanceof Set || exists instanceof WeakSet) {
+            for (const E of entries) {
+                // @ts-ignore
+                exists.add(...E);
             }
             return true;
         }
