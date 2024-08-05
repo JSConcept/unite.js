@@ -253,6 +253,10 @@ export const floorInOrientPx = ($orientPx: [number, number], gridArgs: GridArgsT
 };
 
 //
-export const floorInCX = ($CX: [number, number], gridArgs: GridArgsType | null = null) => {
-    return [roundNearest($CX[0]), roundNearest($CX[1])];
+export const floorInCX = ($CX: [number, number], gridArgs: GridArgsType) => {
+    const layout = gridArgs.page.layout;
+    return [
+        Math.min(Math.max(roundNearest($CX[0]), 0), layout[0]-1),
+        Math.min(Math.max(roundNearest($CX[1]), 0), layout[1]-1)
+    ];
 };
