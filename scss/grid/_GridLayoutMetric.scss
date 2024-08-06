@@ -1,8 +1,8 @@
 //
 @property --cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
 @property --cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
-@property --vect-x { syntax: "<number>"; initial-value: 0; inherits: true; }
-@property --vect-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --dir-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --dir-y { syntax: "<number>"; initial-value: 0; inherits: true; }
 @property --drag-x { syntax: "<number>"; initial-value: 0; inherits: true; }
 @property --drag-y { syntax: "<number>"; initial-value: 0; inherits: true; }
 
@@ -92,8 +92,8 @@
     --fp-cell-y: calc(clamp(0, var(--p-cell-y), calc(var(--f-row) - 1)) + 1);
 
     //
-    --vect-x: calc(var(--fc-cell-x) - var(--fp-cell-x));
-    --vect-y: calc(var(--fc-cell-y) - var(--fp-cell-y));
+    --dir-x: calc(var(--fc-cell-x) - var(--fp-cell-x));
+    --dir-y: calc(var(--fc-cell-y) - var(--fp-cell-y));
 }
 
 // when houdini not supported, also do gaps (include edges)...
