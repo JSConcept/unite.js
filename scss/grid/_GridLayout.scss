@@ -23,27 +23,11 @@
         background-color: transparent;
 
         //
-        .ux-grid-item-label {
-            @include cm.no-wrap;
-
-            //
-            --translate-x: 0px;
-            --translate-y: 2.75rem;
-
-            //
-            pointer-events: none;
-            display: inline-block;
-            overflow: visible;
-
-            //
+        .ux-grid-item {
             inline-size: max-content;
             block-size: max-content;
 
             //
-            font-size: 0.8rem;
-        }
-
-        .ux-grid-item {
             pointer-events: none;
             touch-action: none;
             user-select: none;
@@ -51,13 +35,7 @@
             -moz-user-drag: none;
 
             //
-            max-inline-size: var(--icon-size);
-            max-block-size: var(--icon-size);
-
-            //
-            aspect-ratio: 1 / 1;
-            inline-size: var(--icon-size);
-            block-size: var(--icon-size);
+            overflow: visible;
         }
 
     }
