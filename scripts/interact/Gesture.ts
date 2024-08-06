@@ -545,13 +545,15 @@ export default class AxGesture {
     //
     longPress(
         options: any = {},
-        fx = (ev) => {
-            ev.target.dispatchEvent(
+        fx: any = null
+    ) {
+        fx ||= (ev) => {
+            this.#holder.dispatchEvent(
                 new CustomEvent("long-press", {detail: ev, bubbles: true})
             );
             //requestAnimationFrame(()=>navigator?.vibrate?.([10]))
         }
-    ) {
+
         //
         const handler = options.handler || this.#holder;
         const action: any = {
