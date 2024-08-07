@@ -3,46 +3,25 @@
 type keyType = string | number | symbol;
 
 //
-const bindCtx = (target, fx) => {
-    return (typeof fx == "function" ? fx?.bind?.(target) : fx) ?? fx;
-};
+const isIterable = (obj) => {
+    return (typeof obj?.[Symbol.iterator] == "function");
+}
 
-export class AssignObjectHandler {
+//
+export const objectAssign = (target, name: keyType, value)=>{
+    const exists = target[name];
+    let entries: any = null;
+
     //
-    constructor() {
+    if (value instanceof Set || value instanceof Map || Array.isArray(value) || isIterable(value)) {
+        entries = ((exists instanceof Set || exists instanceof WeakSet) ? value?.values?.() : value?.entries?.()) || value;
+    } else
+    if (typeof value == "object" || typeof value == "function") {
+        entries = Object.entries(value);
     }
 
     //
-    get(target, name: keyType, ctx) {
-        return Reflect.get(target, name, ctx);
-    }
-
-    //
-    construct(target, args, newT) {
-        return Reflect.construct(target, args, newT);
-    }
-
-    //
-    has(target, prop: keyType) {
-        return Reflect.has(target, prop);
-    }
-
-    //
-    apply(target, ctx, args) {
-        return Reflect.apply(target, ctx, args);
-    }
-
-    //
-    set(target, name: keyType, value) {
-        const exists = target[name];
-        let entries: any = null;//(value instanceof Map || value instanceof Set || Array.isArray(value)) ? value.entries() : Object.entries(value);
-
-        //
-        if (value instanceof Set) entries = value.values();
-        if (value instanceof Map) entries = value.entries();
-        if (Array.isArray(value)) entries = value.entries();
-
-        //
+    if (exists && entries) {
         if (Array.isArray(exists)) {
             for (const [k,v] of entries) {
                 exists[k] = v;
@@ -72,10 +51,41 @@ export class AssignObjectHandler {
         if (typeof exists == "object" || typeof exists == "function") {
             return Object.assign(exists, Object.fromEntries(entries));
         }
+    }
 
-        //
-        const result = Reflect.set(target, name, value);
-        return result;
+    //
+    return Reflect.set(target, name, value);
+}
+
+//
+export class AssignObjectHandler {
+    //
+    constructor() {
+    }
+
+    //
+    get(target, name: keyType, ctx) {
+        return Reflect.get(target, name, ctx);
+    }
+
+    //
+    construct(target, args, newT) {
+        return Reflect.construct(target, args, newT);
+    }
+
+    //
+    has(target, prop: keyType) {
+        return Reflect.has(target, prop);
+    }
+
+    //
+    apply(target, ctx, args) {
+        return Reflect.apply(target, ctx, args);
+    }
+
+    //
+    set(target, name: keyType, value) {
+        return objectAssign(target, name, value);
     }
 
     //
