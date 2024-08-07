@@ -1,27 +1,43 @@
 $cps: 0.00001;
 
+
+@function abs($a) {
+    @return unquote("max(#{$a}, calc(-1 * #{$a}))");
+}
+
+@function sign($a) {
+    @return unquote("clamp(-1, calc(#{$a} / max(#{abs($a)}, 0.0001)), 1)");
+}
+
 @function gt($a, $b) {
-    @return unquote("max(sign(calc(#{$b} - #{$cps} - #{$a})), 0)");
+    $diff: "calc(#{$b} - #{$cps} - #{$a})";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
 
 @function lt($a, $b) {
-    @return unquote("max(sign(calc(#{$a} - #{$cps} - #{$b})), 0)");
+    $diff: "calc(#{$a} - #{$cps} - #{$b})";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
 
 @function ge($a, $b) {
-    @return unquote("max(sign(calc(#{$b} + #{$cps} - #{$a})), 0)");
+    $diff: "calc(#{$b} + #{$cps} - #{$a})";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
 
 @function le($a, $b) {
-    @return unquote("max(sign(calc(#{$a} + #{$cps} - #{$b})), 0)");
+    $diff: "calc(#{$a} + #{$cps} - #{$b})";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
 
 @function ne($a, $b) {
-    @return unquote("sign(max(abs(#{$a} - #{$b}) - #{$cps}, 0))");
+    $comp: "calc(#{$a} - #{$b})";
+    $diff: "max(#{abs($comp)} - #{$cps}, 0)";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
 
 @function eq($a, $b) {
-    @return unquote("calc(1 - #{ne($a, $b)})");
+    $diff: "calc(1 - #{ne($a, $b)})";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
 
 @function mix($a, $b, $i) {
@@ -29,9 +45,11 @@ $cps: 0.00001;
 }
 
 @function land($a, $b) {
-    @return unquote("calc(#{$a} * #{$b})");
+    $diff: "calc(#{$a} * #{$b})";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
 
 @function lor($a, $b) {
-    @return unquote("max(#{$a}, #{$b})");
+    $diff: "max(#{$a}, #{$b})";
+    @return unquote("max(#{sign($diff)}, 0)");
 }
