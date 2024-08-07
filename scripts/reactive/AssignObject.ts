@@ -17,7 +17,7 @@ export const objectAssign = (target, name: keyType, value)=>{
         entries = ((exists instanceof Set || exists instanceof WeakSet) ? value?.values?.() : value?.entries?.()) || value;
     } else
     if (typeof value == "object" || typeof value == "function") {
-        entries = Object.entries(value);
+        entries = (exists instanceof Set || exists instanceof WeakSet) ? Object.values(value) : Object.entries(value);
     }
 
     //
