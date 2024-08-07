@@ -1,5 +1,8 @@
 @use "../core/CMixins" as cm;
-@use "../core/Logic" as lg;
+
+//
+@use "../core/LogicFb" as flg;
+@use "../core/LogicSign" as slg;
 
 //
 @property --inline-offset-iv { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
@@ -10,6 +13,10 @@
 @property --block-offset-iv { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
 @property --block-offset-ni { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
 @property --block-offset    { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+
+//
+@property --inline-cond { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --block-cond  { syntax: "<integer>"; initial-value: 0; inherits: true; }
 
 //
 //@property --ox-layout-c { syntax: "<integer>"; initial-value: 1; inherits: true; }
@@ -47,59 +54,86 @@
 
         //
         --ox-orient: rem(var(--orient, 0), 2);
-        --ox-cs: #{lg.mix(var(--layout-r), var(--layout-c), var(--ox-orient, 0))};
-        --ox-rs: #{lg.mix(var(--layout-c), var(--layout-r), var(--ox-orient, 0))};
+
+        //
+        @supports (opacity: sign(0.5)) {
+            --ox-cs: #{slg.mix(var(--layout-r), var(--layout-c), var(--ox-orient, 0))};
+            --ox-rs: #{slg.mix(var(--layout-c), var(--layout-r), var(--ox-orient, 0))};
+        }
+
+        //
+        @supports not (opacity: sign(0.5)){
+            --ox-cs: #{flg.mix(var(--layout-r), var(--layout-c), var(--ox-orient, 0))};
+            --ox-rs: #{flg.mix(var(--layout-c), var(--layout-r), var(--ox-orient, 0))};
+        }
 
         //
         & > :where(*) {
             will-change: --translate-x, --translate-y, --grid-c, --grid-r;
 
             //
-            --ox-c: calc(#{lg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
-            --ox-r: calc(#{lg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
+            @supports (opacity: sign(0.5)) {
+                --ox-c: calc(#{slg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
+                --ox-r: calc(#{slg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
+                --inline-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 1))};
+                --block-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 3))};
+            }
 
             //
-            --ox-c-unit: calc(100cqi / var(--ox-cs));
-            --ox-r-unit: calc(100cqb / var(--ox-rs));
+            @supports not (opacity: sign(0.5)){
+                --ox-c: calc(#{flg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
+                --ox-r: calc(#{flg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
+                --inline-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 1))};
+                --block-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 3))};
+            }
 
             //
-            --ox-c-loc: calc(var(--ox-c) * var(--ox-c-unit));
-            --ox-r-loc: calc(var(--ox-r) * var(--ox-r-unit));
+            & {
+                --ox-c-unit: calc(100cqi / var(--ox-cs));
+                --ox-r-unit: calc(100cqb / var(--ox-rs));
 
-            //
-            --inline-offset-ni: var(--ox-c-loc, 1px);
-            --inline-offset-iv: calc(100cqi - var(--ox-c-span, 1) * var(--ox-c-unit, 1px) - var(--ox-c-loc, 1px));
-            --inline-offset: #{lg.mix(
-                var(--inline-offset-ni),
-                var(--inline-offset-iv),
-                lg.lor(lg.eq(var(--orient, 0), 0), lg.eq(var(--orient, 0), 1))
-            )};
+                //
+                --ox-c-loc: calc(var(--ox-c) * var(--ox-c-unit));
+                --ox-r-loc: calc(var(--ox-r) * var(--ox-r-unit));
 
-            //
-            --block-offset-ni: var(--ox-r-loc, 1px);
-            --block-offset-iv: calc(100cqb - var(--ox-r-span, 1) * var(--ox-r-unit, 1px) - var(--ox-r-loc, 1px));
-            --block-offset: #{lg.mix(
-                var(--block-offset-ni, 0px),
-                var(--block-offset-iv, 0px),
-                lg.lor(lg.eq(var(--orient, 0), 0), lg.eq(var(--orient, 0), 3))
-            )};
+                //
+                --inline-offset-ni: var(--ox-c-loc, 1px);
+                --inline-offset-iv: calc(100cqi - var(--ox-c-span, 1) * var(--ox-c-unit, 1px) - var(--ox-c-loc, 1px));
 
-            //
-            position: absolute;
+                --block-offset-ni: var(--ox-r-loc, 1px);
+                --block-offset-iv: calc(100cqb - var(--ox-r-span, 1) * var(--ox-r-unit, 1px) - var(--ox-r-loc, 1px));
 
-            //
-            inset-inline-start: 0px;//calc(var(--inline-offset, 0px) + var(--ox-col-size) / 2);
-            inset-block-start: 0px;//calc(var(--block-offset, 0px) + var(--ox-row-size) / 2);
-            inset-inline-end: auto;
-            inset-block-end: auto;
+                //
+                --inline-offset: #{slg.mix(
+                    var(--inline-offset-ni),
+                    var(--inline-offset-iv),
+                    var(--inline-cond, 0)
+                )};
 
-            //
-            transform:
-                translate(
-                    calc(var(--translate-x) + var(--inline-offset) + 0.5 * var(--ox-c-span, 1) * var(--ox-c-unit) - 50%),
-                    calc(var(--translate-y) + var(--block-offset ) + 0.5 * var(--ox-r-span, 1) * var(--ox-r-unit) - 50%)
-                )
-                scale(var(--scale, 1));
+                //
+                --block-offset: #{slg.mix(
+                    var(--block-offset-ni, 0px),
+                    var(--block-offset-iv, 0px),
+                    var(--block-cond, 0)
+                )};
+
+                //
+                position: absolute;
+
+                //
+                inset-inline-start: 0px;//calc(var(--inline-offset, 0px) + var(--ox-col-size) / 2);
+                inset-block-start: 0px;//calc(var(--block-offset, 0px) + var(--ox-row-size) / 2);
+                inset-inline-end: auto;
+                inset-block-end: auto;
+
+                //
+                transform:
+                    translate(
+                        calc(var(--translate-x) + var(--inline-offset) + 0.5 * var(--ox-c-span, 1) * var(--ox-c-unit) - 50%),
+                        calc(var(--translate-y) + var(--block-offset ) + 0.5 * var(--ox-r-span, 1) * var(--ox-r-unit) - 50%)
+                    )
+                    scale(var(--scale, 1));
+            }
         }
     }
 

@@ -1,5 +1,8 @@
 @use "../core/CMixins" as cm;
-@use "../core/Logic" as lg;
+
+//
+@use "../core/LogicFb" as flg;
+@use "../core/LogicSign" as slg;
 
 //
 @property --inline-offset-iv { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }

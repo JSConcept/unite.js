@@ -4,12 +4,24 @@
 
 @use "./ColorUtils" as cu;
 @use "./ColorVars" as cl;
-@use "../core/Logic" as lg;
 
+//
+@use "../core/LogicFb" as flg;
+@use "../core/LogicSign" as slg;
 
+//
 @mixin ux-accent {
-    --theme-surface-color: #{cl.$baseColor};
-    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{lg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    & { --theme-surface-color: #{cl.$baseColor}; };
+
+    //
+    @supports (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{slg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
+
+    //
+    @supports not (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{flg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
 }
 
 @mixin ux-solid {
@@ -28,13 +40,30 @@
 }
 
 @mixin ux-accent-inverse {
-    --theme-surface-color: oklch(from #{cl.$baseColor} calc(#{lg.sign(calc(0.5 - l))} * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
-    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{lg.sign(calc(l - 0.5))} * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+    @supports (opacity: sign(0.5)) {
+        --theme-surface-color: oklch(from #{cl.$baseColor} calc(#{slg.sign(calc(0.5 - l))} * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{slg.sign(calc(l - 0.5))} * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+    }
+
+    //
+    @supports not (opacity: sign(0.5)) {
+        --theme-surface-color: oklch(from #{cl.$baseColor} calc(#{flg.sign(calc(0.5 - l))} * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{flg.sign(calc(l - 0.5))} * 0.8 * 0.5 + 0.5) calc(c * 0.2) h);
+    }
 }
 
 @mixin ux-transparent {
-    --theme-surface-color: oklch(from #{cl.$baseColor} l c h / 0.0);
-    --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{lg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    & { --theme-surface-color: oklch(from #{cl.$baseColor} l c h / 0.0); }
+
+    //
+    @supports (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{slg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
+
+    //
+    @supports not (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from #{cl.$baseColor} calc(#{flg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
 }
 
 @mixin ux-solid-transparent {
@@ -44,14 +73,30 @@
 
 //
 @mixin ux-dynamic {
-    --theme-surface-color: var(--theme-dynamic-color, transparent);
-    --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(#{lg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    & { --theme-surface-color: var(--theme-dynamic-color, transparent); }
+
+    @supports (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(#{slg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
+
+    @supports not (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(#{flg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
 }
 
 //
 @mixin ux-dynamic-transparent {
-    --theme-surface-color: oklch(from var(--theme-dynamic-color, transparent) l c h / 0.0);
-    --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(#{lg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    & { --theme-surface-color: oklch(from var(--theme-dynamic-color, transparent) l c h / 0.0); };
+
+    //
+    @supports (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(#{slg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
+
+    //
+    @supports not (opacity: sign(0.5)) {
+        --theme-glyph-color: oklch(from var(--theme-dynamic-color, transparent) calc(#{flg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h);
+    }
 }
 
 
