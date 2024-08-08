@@ -10,6 +10,16 @@
 @use "../core/LogicSign" as slg;
 
 //
+$bgDepSlg: "oklch(from var(--theme-surface-color, transparent) calc(#{slg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h / 1.0)";
+$bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(calc(0.5 - l))} * 0.5 + 0.5) calc(c * 0.01) h / 1.0)";
+
+//
+@mixin ux-highlight-color {
+    @supports (opacity: sign(0.5)) {--theme-highlight-color: #{$bgDepSlg}; }
+    @supports not (opacity: sign(0.5)) { --theme-highlight-color: #{$bgDepFlg}; }
+}
+
+//
 @mixin ux-accent {
     & { --theme-surface-color: #{cl.$baseColor}; };
 
@@ -27,11 +37,6 @@
 @mixin ux-solid {
     --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
     --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
-}
-
-@mixin ux-inverse {
-    --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
-    --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
 }
 
 @mixin ux-inverse {
@@ -67,7 +72,7 @@
 }
 
 @mixin ux-solid-transparent {
-    --theme-surface-color: oklch(from #{cu.theme-mod-down(cl.$baseColor, 90%)} l c h / 0.0);
+    --theme-surface-color: oklch(from #{cu.theme-mod-up(cl.$baseColor, 90%)} l c h / 0.0);
     --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
 }
 
@@ -99,71 +104,24 @@
     }
 }
 
-
 //
 @mixin ux-transparent-mode {
-    --current-surface-color: #{cu.theme-mod-down(oklch(from var(--theme-surface-color) l c h / 0.0), calc(var(--highlight-coefficient) * 1%))};
+    @include ux-highlight-color;
+    $color: "oklch(from var(--theme-surface-color) l c h / 0.0)";
+    --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), #{$color});
 }
+
+//
+@mixin ux-bg-dep {
+    @supports (opacity: sign(0.5)) {--theme-glyph-color: #{$bgDepSlg}; }
+    @supports not (opacity: sign(0.5)) { --theme-glyph-color: #{$bgDepFlg}; }
+}
+
+
 
 
 //
 @layer ux-colors {
-
-    :root, :where(html) {
-        --theme-dynamic-color: var(--theme-base-color, transparent);
-        --theme-is-dark: 0; color-scheme: light;
-        @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; }
-        @media (prefers-color-scheme: dark)  { --theme-is-dark: 1; color-scheme: dark; }
-    }
-
-    //
-    :root, :host, :scope, :where(html, body) {
-        --theme-glyph-color: #{cl.$glyphColor};
-        --theme-surface-color: #{cl.$surfaceColor};
-        --theme-accent-color: #{cl.$accentColor};
-        --theme-chroma-color: #{cl.$chromaColor};
-        --highlight-coefficient: 0.0;
-    }
-
-    //
-    :root, :host, :scope, :where(*, *::before, *::after) {
-        --theme-chroma-mod: oklch(from #{cl.$baseColor} l 0.99 h);
-        --theme-black-mod: oklch(from #{cl.$baseColor} 0.01 0.01 h);
-        --theme-white-mod: oklch(from #{cl.$baseColor} 0.99 0.01 h);
-
-        //
-        --theme-dark-down-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{cl.$baseColor});
-        --theme-dark-up-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{cl.$baseColor});
-
-        //
-        --theme-light-down-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{cl.$baseColor});
-        --theme-light-up-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{cl.$baseColor});
-    }
-
-    //
-    :root, :host, :scope, :where(html, body, *, *::before, *::after) {
-        --current-glyph-color: var(--theme-glyph-color);
-        --current-surface-color: #{cu.theme-mod-down(var(--theme-surface-color), calc(var(--highlight-coefficient) * 1%))};
-        --current-accent-color: var(--theme-accent-color);
-        --current-chroma-color: var(--theme-chroma-color);
-        --highlight-coefficient: 0.0;
-
-        //
-        @include cu.var-dependent();
-
-        //
-        //:where(*) {
-            --highlight-transition-duration: 0.2s;
-            --highlight-transition-mode: linear;
-            --highlight-transition-property: --highlight-coefficient;
-            transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
-        //}
-
-        //
-        @supports(color: light-dark(white, black)) {
-            @include cu.scheme-dependent;
-        }
-    }
 
     :root {
 		--range-slider:          #{cu.theme-mod-up(cl.$baseColor, 90%)};; /* slider main background color */
@@ -179,32 +137,58 @@
 	}
 
     //
-	:root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*, *::before, *::after) {
-        accent-color: var(--current-glyph-color);
-        color: var(--current-glyph-color);
-        background-color: var(--current-surface-color);
-        stroke: var(--current-glyph-color);
-
-        //
-        ::selection {
-            background: var(--current-glyph-color);
-            color: var(--current-surface-color);
-        }
-
-        //
-        & :where(svg) {
-            stroke: var(--current-glyph-color);
-        }
-	}
+    :root, :where(html) {
+        --theme-dynamic-color: var(--theme-base-color, transparent);
+        --theme-is-dark: 0; color-scheme: light;
+        @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; }
+        @media (prefers-color-scheme: dark)  { --theme-is-dark: 1; color-scheme: dark; }
+    }
 
     //
-    :where([data-highlight-hover], [data-highlight]) *:not([data-highlight], [data-highlight-hover]) {
-        --highlight-coefficient: 0;
+    :root, :host, :scope, :where(html, body) {
+        --theme-glyph-color: #{cl.$glyphColor};
+        --theme-surface-color: #{cl.$surfaceColor};
+        --theme-accent-color: #{cl.$accentColor};
+        --theme-chroma-color: #{cl.$chromaColor};
+        --highlight-coefficient: 0.0;
+        @include ux-highlight-color;
+    }
+
+    //
+    :root, :host, :scope, :where(*) {
+        &, &::before, &::after, &::selection {
+            --theme-chroma-mod: oklch(from #{cl.$baseColor} l 0.99 h);
+            --theme-black-mod: oklch(from #{cl.$baseColor} 0.01 0.01 h);
+            --theme-white-mod: oklch(from #{cl.$baseColor} 0.99 0.01 h);
+
+            //
+            --theme-dark-down-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{cl.$baseColor});
+            --theme-dark-up-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{cl.$baseColor});
+
+            //
+            --theme-light-down-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{cl.$baseColor});
+            --theme-light-up-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{cl.$baseColor});
+        }
+    }
+
+    //
+    *[data-transparent]:not([data-transparent="false"]) {
+        @include ux-transparent-mode;
+    }
+
+    //
+    *[data-bg-dep]:not([data-bg-dep="false"]) {
+        @include ux-bg-dep;
     }
 
     //
     :where([data-scheme]) *:not([data-scheme]) {
         @include ux-transparent-mode;
+    }
+
+    //
+    :where([data-highlight-hover], [data-highlight]) *:not([data-highlight], [data-highlight-hover]) {
+        --highlight-coefficient: 0;
     }
 
 	//
@@ -235,7 +219,6 @@
     *[data-theme="light"] { --theme-is-dark: 0; color-scheme: light; }
 
     //
-    *[data-scheme="dynamic-transparent"] { @include ux-dynamic-transparent; }
     *[data-scheme="dynamic"] { @include ux-dynamic; }
     *[data-scheme="accent"] { @include ux-accent; }
     *[data-scheme="solid"] { @include ux-solid; }
@@ -243,20 +226,65 @@
     *[data-scheme="accent-inverse"] { @include ux-accent-inverse; }
     *[data-scheme="transparent"] { @include ux-transparent; }
     *[data-scheme="solid-transparent"] { @include ux-solid-transparent(); }
+    *[data-scheme="dynamic-transparent"] { @include ux-dynamic-transparent; }
 
     //
-    *[data-transparent]:not([data-transparent="false"]) { @include ux-transparent-mode; }
+    :root, :host, :scope, :where(html, body, *) {
+        &, &::before, &::after, &::selection {
+            --current-glyph-color: var(--theme-glyph-color);
+            --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), var(--theme-surface-color));
+            --current-accent-color: var(--theme-accent-color);
+            --current-chroma-color: var(--theme-chroma-color);
+            --highlight-coefficient: 0.0;
 
-    //
-    :where(span) {
-        background-color: transparent;
+            //
+            @include cu.var-dependent();
+            @include ux-highlight-color;
+
+            //
+            //:where(*) {
+                --highlight-transition-duration: 0.2s;
+                --highlight-transition-mode: linear;
+                --highlight-transition-property: --highlight-coefficient;
+                transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
+            //}
+
+            //
+            @supports(color: light-dark(white, black)) {
+                @include cu.scheme-dependent;
+            }
+        }
     }
 
-	//
-	:where(svg) {
-        background-color: transparent;
-        stroke: var(--current-glyph-color);
+    //
+	:root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*) {
+        //
+        &::selection, ::selection {
+            //@include ux-inverse;
+
+            color: var(--current-surface-color);
+            background-color: var(--current-glyph-color);
+        }
+
+        //
+        &, &::before, &::after, &::selection {
+            accent-color: var(--current-glyph-color);
+            color: var(--current-glyph-color);
+            background-color: var(--current-surface-color);
+            stroke: var(--current-glyph-color);
+
+            //
+            & :where(svg), &:where(svg) {
+                background-color: transparent;
+                stroke: var(--current-glyph-color);
+            }
+        }
 	}
+
+    //
+    :where(span, svg) {
+        background-color: transparent;
+    }
 
 	//
 	:where(x-scrollbox) {

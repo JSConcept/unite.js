@@ -16,6 +16,7 @@
 @property --theme-down-mod { syntax: "<color>"; inherits: true; initial-value: black; }
 
 //
+@property --theme-highlight-color { syntax: "<color>"; inherits: true; initial-value: transparent; }
 @property --theme-accent-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-base-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-dynamic-color { syntax: "<color>"; initial-value: black; inherits: true; };
@@ -26,6 +27,8 @@
 @property --current-chroma-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --current-accent-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --highlight-coefficient { syntax: "<number>"; initial-value: 0; inherits: true; };
+
+
 
 //
 @property --icon-size {

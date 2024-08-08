@@ -61,6 +61,11 @@ export const pickFromCenter = (holder)=>{
 //
 export const switchTheme = (isDark = false) => {
     pickBgColor(document.documentElement, window.innerWidth - 64, 30);
+    document.querySelectorAll("[data-scheme=\"dynamic-transparent\"]").forEach((target)=>{
+        if (target) {
+            pickFromCenter(target);
+        }
+    });
 };
 
 //
