@@ -124,17 +124,17 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
 @layer ux-colors {
 
     :root {
-		--range-slider:          #{cu.theme-mod-up(cl.$baseColor, 90%)};; /* slider main background color */
-		--range-handle-inactive: #{cu.theme-mod-up(cl.$baseColor, 80%)};; /* inactive handle color */
-		--range-handle:          #{cu.theme-mod-up(cl.$baseColor, 20%)};; /* non-focussed handle color */
-		--range-handle-focus:    #{cu.theme-mod-up(cl.$baseColor, 10%)}; /* focussed handle color */
-		--range-handle-border:   var(--range-handle); /* handle border color */
-		--range-range-inactive:  var(--range-handle-inactive); /* inactive range bar background color */
-		--range-range:           var(--range-handle-focus); /* active range background color */
-		--range-float-inactive:  var(--range-handle-inactive); /* inactive floating label background color */
-		--range-float:           var(--range-handle-focus); /* floating label background color */
-		--range-float-text:      #{cu.theme-mod-up(cl.$baseColor, 100%)};; /* text color on floating label */
-	}
+        --range-slider:          #{cu.theme-mod-up(cl.$baseColor, 90%)};; /* slider main background color */
+        --range-handle-inactive: #{cu.theme-mod-up(cl.$baseColor, 80%)};; /* inactive handle color */
+        --range-handle:          #{cu.theme-mod-up(cl.$baseColor, 20%)};; /* non-focussed handle color */
+        --range-handle-focus:    #{cu.theme-mod-up(cl.$baseColor, 10%)}; /* focussed handle color */
+        --range-handle-border:   var(--range-handle); /* handle border color */
+        --range-range-inactive:  var(--range-handle-inactive); /* inactive range bar background color */
+        --range-range:           var(--range-handle-focus); /* active range background color */
+        --range-float-inactive:  var(--range-handle-inactive); /* inactive floating label background color */
+        --range-float:           var(--range-handle-focus); /* floating label background color */
+        --range-float-text:      #{cu.theme-mod-up(cl.$baseColor, 100%)};; /* text color on floating label */
+    }
 
     //
     :root, :where(html) {
@@ -191,7 +191,7 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
         --highlight-coefficient: 0;
     }
 
-	//
+    //
     @media screen and ((hover: hover) or (pointer: fine)) {
         *[data-highlight-hover="1"]:hover { --highlight-coefficient: 3; }
         *[data-highlight-hover="2"]:hover { --highlight-coefficient: 6; }
@@ -259,7 +259,7 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
     }
 
     //
-	:root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*) {
+    :root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*) {
         //
         &::selection, ::selection {
             //@include ux-inverse;
@@ -281,15 +281,15 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
                 stroke: var(--current-glyph-color);
             }
         }
-	}
+    }
 
     //
     :where(span, svg) {
         background-color: transparent;
     }
 
-	//
-	:where(x-scrollbox) {
+    //
+    :where(x-scrollbox) {
         --sb-color: #{cu.theme-mod-down(cu.theme-mod-up(cl.$baseColor, 80%), 20%)};
-	}
+    }
 }

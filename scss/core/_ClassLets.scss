@@ -94,22 +94,22 @@
         }
     }
 
-}
+};
 
 //
 @mixin vp-vars {
     @extend .vp-vars;
-}
+};
 
 //
 @mixin vp-vars-keyboard-dependent {
     @extend .vp-vars-keyboard-dependent;
-}
+};
 
 //
 @mixin grid-based-box {
     @extend .grid-based-box;
-}
+};
 
 // depends from virtual keyboards
 @mixin fit-viewport {
@@ -122,5 +122,5 @@
     //
     max-inline-size: var(--vp-i-size);
     max-block-size: var(--vp-b-size);
-}
+};
 
