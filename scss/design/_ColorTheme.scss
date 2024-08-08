@@ -108,7 +108,7 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
 @mixin ux-transparent-mode {
     @include ux-highlight-color;
     $color: "oklch(from var(--theme-surface-color) l c h / 0.0)";
-    --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), #{$color});
+    & { --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), #{$color}); }
 }
 
 //
@@ -239,7 +239,6 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
 
             //
             @include cu.var-dependent();
-            @include ux-highlight-color;
 
             //
             //:where(*) {
@@ -253,6 +252,9 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
             @supports(color: light-dark(white, black)) {
                 @include cu.scheme-dependent;
             }
+
+            //
+            @include ux-highlight-color;
         }
     }
 
