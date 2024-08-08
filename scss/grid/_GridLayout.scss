@@ -1,29 +1,204 @@
 @use "../core/CMixins" as cm;
+@use "../core/LogicFb" as flg;
+@use "../core/LogicSign" as slg;
 
 //
-//@use "./GridLayoutMod";
-@use "./GridLayoutMetric";
-@use "./GridLayoutNG";
+@property --inline-offset-iv { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --inline-offset-ni { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --inline-offset    { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+
+//
+@property --block-offset-iv { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --block-offset-ni { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --block-offset    { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+
+//
+@property --inline-cond { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --block-cond  { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --ox-cs { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --ox-rs { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --ox-orient { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --ox-c { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --ox-r { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --ox-c-span { syntax: "<number>"; initial-value: 1; inherits: true; }
+@property --ox-r-span { syntax: "<number>"; initial-value: 1; inherits: true; }
+
+//
+@property --ox-c-unit { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --ox-r-unit { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+
+//
+@property --ox-c-loc { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+@property --ox-r-loc { syntax: "<length-percentage>"; initial-value: 0px; inherits: true; }
+
+//
+@property --cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --dir-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --dir-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --drag-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --drag-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --p-drag-x { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --p-drag-y { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --p-cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --p-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --grid-w { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --grid-h { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --grid-c { syntax: "<number>"; initial-value: 0; inherits: true; }
+@property --grid-r { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --f-col { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --f-row { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --fc-cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --fc-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --fp-cell-x { syntax: "<integer>"; initial-value: 0; inherits: true; }
+@property --fp-cell-y { syntax: "<integer>"; initial-value: 0; inherits: true; }
+
+//
+@property --orient { syntax: "<number>"; initial-value: 0; inherits: true; }
+
+//
+@property --r-gap {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --c-gap {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --layout-r {
+    syntax: "<integer>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --layout-c {
+    syntax: "<integer>";
+    initial-value: 1;
+    inherits: true;
+}
+
+//
+@property --c-shift-mod {
+    syntax: "<number>";
+    initial-value: 0;
+    inherits: true;
+}
+
+//
+@property --r-shift-mod {
+    syntax: "<number>";
+    initial-value: 0;
+    inherits: true;
+}
+
+//
+@mixin calculateMetric() {
+    //
+    --p-cell-x: var(--cell-x);
+    --p-cell-y: var(--cell-y);
+
+    // CLAMPED GRID
+    --f-col: clamp(4, var(--layout-c, 4), 6);
+    --f-row: clamp(8, var(--layout-r, 8), 12);
+
+    //
+    --fc-cell-x: calc(clamp(0, var(--cell-x), calc(var(--f-col) - 1)) + 1);
+    --fc-cell-y: calc(clamp(0, var(--cell-y), calc(var(--f-row) - 1)) + 1);
+
+    //
+    --fp-cell-x: calc(clamp(0, var(--p-cell-x), calc(var(--f-col) - 1)) + 1);
+    --fp-cell-y: calc(clamp(0, var(--p-cell-y), calc(var(--f-row) - 1)) + 1);
+
+    //
+    --dir-x: calc(var(--fc-cell-x) - var(--fp-cell-x));
+    --dir-y: calc(var(--fc-cell-y) - var(--fp-cell-y));
+}
 
 //
 @layer ux-grid-layout {
-    .ux-grid-layout {//
-        direction: ltr;
 
+    //
+    .ux-grid-layout {
         //
-        inline-size: 100%;
-        block-size: 100%;
+        --ox-orient: rem(var(--orient, 0), 2);
 
         // in rems!
         --c-gap: 0px;
         --r-gap: 0px;
 
         //
+        display: block;
+        position: relative;
+        container-name: ux-grid;
+        container-type: size;
+        contain: size layout;
+
+        //
+        direction: ltr;
+
+        //
+        inline-size: 100%;
+        block-size: 100%;
+
+        //
         pointer-events: none;
         background-color: transparent;
 
         //
-        .ux-grid-item {
+        @supports (opacity: sign(0.5)) {
+            --ox-cs: #{slg.mix(var(--layout-r), var(--layout-c), var(--ox-orient, 0))};
+            --ox-rs: #{slg.mix(var(--layout-c), var(--layout-r), var(--ox-orient, 0))};
+        }
+
+        //
+        @supports not (opacity: sign(0.5)){
+            --ox-cs: #{flg.mix(var(--layout-r), var(--layout-c), var(--ox-orient, 0))};
+            --ox-rs: #{flg.mix(var(--layout-c), var(--layout-r), var(--ox-orient, 0))};
+        }
+
+        //
+        & > :where(*[data-dragging]) {
+            --grid-c: calc(var(--fp-cell-x) + var(--c-shift-mod, 0));
+            --grid-r: calc(var(--fp-cell-y) + var(--r-shift-mod, 0));
+        }
+
+        //
+        & > :where(*) {
+            @include calculateMetric();
+
+            //
+            --icon-size: min(calc(100cqmin / min(var(--layout-c), var(--layout-r)) - max(var(--c-gap), var(--r-gap))), 4rem);
+            --grid-c: calc(var(--fc-cell-x) + var(--c-shift-mod, 0));
+            --grid-r: calc(var(--fc-cell-y) + var(--r-shift-mod, 0));
+
+            //
+            place-self: center;
+            will-change: --translate-x, --translate-y, --grid-c, --grid-r;
+
+            //
             inline-size: max-content;
             block-size: max-content;
 
@@ -36,7 +211,71 @@
 
             //
             overflow: visible;
-        }
 
+            //
+            @supports (opacity: sign(0.5)) {
+                --ox-c: calc(#{slg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
+                --ox-r: calc(#{slg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
+                --inline-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 1))};
+                --block-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 3))};
+            }
+
+            //
+            @supports not (opacity: sign(0.5)){
+                --ox-c: calc(#{flg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
+                --ox-r: calc(#{flg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
+                --inline-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 1))};
+                --block-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 3))};
+            }
+
+            //
+            & {
+                --ox-c-unit: calc(100cqi / var(--ox-cs));
+                --ox-r-unit: calc(100cqb / var(--ox-rs));
+
+                //
+                --ox-c-loc: calc(var(--ox-c) * var(--ox-c-unit));
+                --ox-r-loc: calc(var(--ox-r) * var(--ox-r-unit));
+
+                //
+                --inline-offset-ni: var(--ox-c-loc, 1px);
+                --inline-offset-iv: calc(100cqi - var(--ox-c-span, 1) * var(--ox-c-unit, 1px) - var(--ox-c-loc, 1px));
+
+                --block-offset-ni: var(--ox-r-loc, 1px);
+                --block-offset-iv: calc(100cqb - var(--ox-r-span, 1) * var(--ox-r-unit, 1px) - var(--ox-r-loc, 1px));
+
+                //
+                --inline-offset: #{slg.mix(
+                    var(--inline-offset-ni),
+                    var(--inline-offset-iv),
+                    var(--inline-cond, 0)
+                )};
+
+                //
+                --block-offset: #{slg.mix(
+                    var(--block-offset-ni, 0px),
+                    var(--block-offset-iv, 0px),
+                    var(--block-cond, 0)
+                )};
+
+                //
+                position: absolute;
+
+                //
+                inset-inline-start: 0px;//calc(var(--inline-offset, 0px) + var(--ox-col-size) / 2);
+                inset-block-start: 0px;//calc(var(--block-offset, 0px) + var(--ox-row-size) / 2);
+                inset-inline-end: auto;
+                inset-block-end: auto;
+
+                //
+                transform:
+                    translate(
+                        calc(var(--translate-x) + var(--inline-offset) + 0.5 * var(--ox-c-span, 1) * var(--ox-c-unit) - 50%),
+                        calc(var(--translate-y) + var(--block-offset ) + 0.5 * var(--ox-r-span, 1) * var(--ox-r-unit) - 50%)
+                    )
+                    scale(var(--scale, 1));
+            }
+        }
     }
+
 }
