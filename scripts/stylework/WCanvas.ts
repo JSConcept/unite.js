@@ -50,7 +50,7 @@ const cover = (ctx, img, scale = 1, port) => {
 //
 const blobImageMap = new WeakMap();
 const createImageBitmapCache = (blob)=>{
-    if (!blobImageMap.has(blob)) {
+    if (!blobImageMap.has(blob) && (blob instanceof Blob || blob instanceof File || blob instanceof OffscreenCanvas || blob instanceof ImageBitmap || blob instanceof Image)) {
         blobImageMap.set(blob, createImageBitmap(blob));
     }
     return blobImageMap.get(blob);

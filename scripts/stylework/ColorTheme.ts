@@ -14,6 +14,9 @@ let baseColor: string = localStorage.getItem("--theme-base-color") || "oklch(50%
 let cssIsDark = parseInt(localStorage.getItem("--theme-wallpaper-is-dark") || "0") || 0;
 
 //
+const electronAPI = "electronBridge";
+
+//
 const updateStyleRule = ()=>{
     localStorage.setItem("--theme-base-color", baseColor);
     localStorage.setItem("--theme-wallpaper-is-dark", cssIsDark as unknown as string);
@@ -28,7 +31,7 @@ const updateStyleRule = ()=>{
 
 
 //
-export const pickBgColor = (holder, x, y)=>{
+export const pickBgColor = (x, y, holder)=>{
     const source = Array.from(document.elementsFromPoint(x, y));
     const opaque = source.filter((node)=>{
         if (!(node instanceof HTMLElement)) return false;
@@ -41,12 +44,20 @@ export const pickBgColor = (holder, x, y)=>{
     //
     if (opaque[0] && opaque[0] instanceof HTMLElement) {
         const color = getComputedStyle(opaque[0] as HTMLElement, "")?.backgroundColor || baseColor;
-        if (holder.style.getPropertyValue("--theme-dynamic-color") != color) {
+        if (holder && holder.style.getPropertyValue("--theme-dynamic-color") != color) {
             holder.style.setProperty("--theme-dynamic-color", color, "");
-            const media = document?.head?.querySelector?.('meta[data-theme-color]');
-            if (media) { media.setAttribute("content", color); }
         }
+        return color;
     }
+    return "transparent";
+};
+
+//
+const makeContrast = (color)=>{
+    const cl = oklch(color);
+    cl.l = Math.sign(0.5 - cl.l);
+    cl.c *= 0.1;
+    return formatCss(cl);
 }
 
 //
@@ -54,13 +65,24 @@ export const pickFromCenter = (holder)=>{
     const box = holder?.getBoundingClientRect?.();
     if (box) {
         const xy: [number, number] = [(box.left + box.right) / 2, (box.top + box.bottom) / 2];
-        pickBgColor(holder, ...xy);
+        pickBgColor(...xy, holder);
     }
 }
 
 //
 export const switchTheme = (isDark = false) => {
-    pickBgColor(document.documentElement, window.innerWidth - 64, 30);
+    const media = document?.head?.querySelector?.('meta[data-theme-color]');
+    const color = pickBgColor(window.innerWidth - 64, 30, document.documentElement);
+
+    //
+    if (media) { media.setAttribute("content", color); }
+
+    //
+    if (window?.[electronAPI]) {
+        window?.[electronAPI]?.setThemeColor?.(formatHex(color), formatHex(makeContrast(color)));
+    }
+
+    //
     document.querySelectorAll("[data-scheme=\"dynamic-transparent\"]").forEach((target)=>{
         if (target) {
             pickFromCenter(target);
