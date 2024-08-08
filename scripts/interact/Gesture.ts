@@ -168,15 +168,21 @@ export default class AxGesture {
 
         //
         document.documentElement.addEventListener("scaling", ()=>{
-            this.#holder[borderBoxWidth] = this.#holder.offsetWidth * zoomOf();
-            this.#holder[borderBoxHeight] = this.#holder.offsetHeight * zoomOf();
-
-            //
-            if (this.#holder.parentNode) {
-                this.#holder.parentNode[contentBoxWidth] = (this.#holder.clientWidth - (getPxValue(this.#holder, "padding-left") + getPxValue(this.#holder, "padding-right"))) * zoomOf();
-                this.#holder.parentNode[contentBoxHeight] = (this.#holder.clientHeight - (getPxValue(this.#holder, "padding-top") + getPxValue(this.#holder, "padding-bottom"))) * zoomOf();
-            }
+            this.#updateSize();
         });
+    }
+
+    //
+    #updateSize() {
+        this.#holder[borderBoxWidth] = this.#holder.offsetWidth * zoomOf();
+        this.#holder[borderBoxHeight] = this.#holder.offsetHeight * zoomOf();
+
+        //
+        if (this.#holder.parentNode) {
+            const parentNode = this.#holder.parentNode as HTMLElement;
+            parentNode[contentBoxWidth] = (parentNode.clientWidth - (getPxValue(parentNode, "padding-left") + getPxValue(parentNode, "padding-right"))) * zoomOf();
+            parentNode[contentBoxHeight] = (parentNode.clientHeight - (getPxValue(parentNode, "padding-top") + getPxValue(parentNode, "padding-bottom"))) * zoomOf();
+        }
     }
 
     //
@@ -324,6 +330,9 @@ export default class AxGesture {
         // discount of dragging offset!
         real[0] = clamp(0, virtual[0], widthDiff);
         real[1] = clamp(0, virtual[1], heightDiff);
+
+        //
+        return real;
     }
 
     //
@@ -338,6 +347,9 @@ export default class AxGesture {
         // if origin in top-left
         real[0] = clamp(0, virtual[0], widthDiff);
         real[1] = clamp(0, virtual[1], heightDiff);
+
+        //
+        return real;
     }
 
     //
@@ -348,18 +360,13 @@ export default class AxGesture {
         };
 
         //
-        //this.#resizeStatus = status;
-
-        //
         document.documentElement.addEventListener("pointerdown", (ev) => {
             if (ev.target == handler) {
-                status.pointerId = ev.pointerId;
+                status.pointerId = ev.pointerId; this.#updateSize();
+                const starting = [this.propGet("--resize-x") || 0, this.propGet("--resize-y") || 0];
                 grabForDrag(this.#holder, ev, {
                     propertyName: "resize",
-                    shifting: [
-                        this.propGet("--resize-x") || 0,
-                        this.propGet("--resize-y") || 0,
-                    ],
+                    shifting: this.limitResize(starting, starting, this.#holder, this.#holder.parentNode),
                 });
             }
         });
@@ -429,13 +436,11 @@ export default class AxGesture {
                 //
                 const shiftEv = (evp) => {
                     if (evp.pointerId == ev.pointerId) {
-                        unListenShift(evp);
+                        unListenShift(evp); this.#updateSize();
+                        const starting = [this.propGet("--drag-x") || 0, this.propGet("--drag-y") || 0];
                         grabForDrag(this.#holder, ev, {
                             propertyName: "drag",
-                            shifting: [
-                                this.propGet("--drag-x") || 0,
-                                this.propGet("--drag-y") || 0,
-                            ],
+                            shifting: this.limitDrag(starting, starting, this.#holder, this.#holder.parentNode),
                         });
                     }
                 };
