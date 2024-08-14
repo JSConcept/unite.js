@@ -221,3 +221,14 @@ private/
 ./package-lock.json
 /package-lock.json
 package-lock.json
+
+#
+.git
+.git/*
+.git/
+./.git
+./.git/*
+./.git/
+/.git
+/.git/*
+/.git/
