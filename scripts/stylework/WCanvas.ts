@@ -202,7 +202,7 @@ export class WCanvas extends HTMLCanvasElement {
         return provide(src).then(async (blob: any) => {
             return (await this.$useImageAsSource(blob, dnw ?? true).catch((_) => null));
         }).catch(async ()=>{
-            return (await this.$useImageAsSource(await fetch(FALLBACK_WALLPAPER).then((r)=>r.blob()), dnw ?? true).catch((_) => null));
+            return (await this.$useImageAsSource(provide(FALLBACK_WALLPAPER), dnw ?? true).catch((_) => null));
         }).catch(console.warn.bind(console));
     }
 
