@@ -46,6 +46,8 @@ const cover = (ctx, img, scale = 1, port) => {
 
 };
 
+//
+const FALLBACK_WALLPAPER = "./assets/wallpaper/0.jpg";
 
 //
 const blobImageMap = new WeakMap();
@@ -136,7 +138,7 @@ export class WCanvas extends HTMLCanvasElement {
         requestAnimationFrame(fixSize);
 
         //
-        this.#preload(this.dataset.src).then(() => this.#render());
+        this.#preload(this.dataset.src, false).then(() => this.#render());
     }
 
     //
@@ -196,16 +198,18 @@ export class WCanvas extends HTMLCanvasElement {
     }
 
     //
-    #preload(src) {
+    #preload(src, dnw = true) {
         return provide(src).then(async (blob: any) => {
-            return (await this.$useImageAsSource(blob, true).catch((_) => null));
+            return (await this.$useImageAsSource(blob, dnw ?? true).catch((_) => null));
+        }).catch(async ()=>{
+            return (await this.$useImageAsSource(await fetch(FALLBACK_WALLPAPER).then((r)=>r.blob()), dnw ?? true).catch((_) => null));
         }).catch(console.warn.bind(console));
     }
 
     //
     attributeChangedCallback(name, _, newValue) {
         if (name == "data-src") {
-            this.#preload(newValue).then(() => this.#render());
+            this.#preload(newValue, false).then(() => this.#render());
         };
     }
 }

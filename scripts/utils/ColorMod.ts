@@ -1,6 +1,6 @@
 
 // @ts-ignore
-import {argbFromRgb, Hct, hexFromArgb, QuantizerCelebi} from "@material/material-color-utilities";
+import {argbFromRgb, Hct, hexFromArgb, QuantizerCelebi} from "@material/material-color-utilities/index.js";
 
 //
 const qualityMode = {

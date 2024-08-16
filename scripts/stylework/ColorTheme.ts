@@ -1,8 +1,8 @@
 // @ts-ignore
-import {hexFromArgb} from "@material/material-color-utilities";
+import {hexFromArgb} from "@material/material-color-utilities/index.js";
 
 // @ts-ignore
-import {formatCss, formatHex, interpolate, oklch, parse} from "culori";
+import {formatCss, formatHex, interpolate, oklch, parse} from "@culori/bundled/culori.mjs";
 
 //
 import {setStyleRule} from "./StyleRules.ts";

@@ -280,8 +280,8 @@
         border-image-source: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 
         //
-        position: fixed;
-        inset: 0px;
+        position: fixed !important;
+        inset: 0px !important;
     }
 
     //
