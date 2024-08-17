@@ -71,31 +71,51 @@ export const detectMobile = () => {
 };
 
 //
+export const useFS = async() => {
+    const opfs = await import('happy-opfs/dist/main.mjs').catch(console.warn.bind(console));
+    const deno = typeof Deno != "undefined" ? Deno : null;
+
+    /* @vite-ignore */
+    const ignore = "" + "";
+    /* @vite-ignore */
+    let node = null;
+    try {
+        node = await import(/*@vite-ignore */ ignore + "node:fs/promises").catch(console.warn.bind(console));
+    } catch(e) {
+        console.warn(e);
+    }
+
+    //
+    const fs = opfs?.isOPFSSupported() ? opfs : (deno ?? node);
+    return fs;
+}
+
+//
 export const provide = async (req: string | Request = "", rw = false) => {
+    const fs = await useFS();
+
+    //
     const path: string = (req as Request)?.url ?? req;
     const relPath = path.replace(location.origin, "");
     if (relPath.startsWith("/opfs")) {
         const params = relPath.split(/\?/i)?.[1] || relPath;
         const $path = new URLSearchParams(params).get("path");
-        const parts = $path?.split?.("/") || $path || "";
+        const parts = $path?.split?.("/") || [$path] || [""];
 
         //
-        let dir = await navigator?.storage
-            ?.getDirectory?.()
-            ?.catch?.(console.warn.bind(console));
-        for (let I = 0; I < parts.length - 1; I++) {
-            if (!parts[I]) continue;
-            dir = await dir
-                ?.getDirectoryHandle?.(parts[I], {create: rw})
-                ?.catch?.(console.warn.bind(console));
-            if (!dir) break;
+        await fs.mkdir("/" + parts.slice(0, parts.length-1)?.join("/"));
+        if (rw) {
+            return {
+                write(data) {
+                    return fs.writeFile("/" + $path, data);
+                }
+            }
         }
 
         //
-        const fileHandle = await dir?.getFileHandle?.(parts[parts.length - 1], {
-            create: rw,
-        });
-        return await fileHandle?.[rw ? "createWritable" : "getFile"]?.({ keepExistingData: true });
+        const handle = await fs.readFile("/" + $path, {encoding: "blob"});
+        const file = handle?.unwrap?.() ?? handle;
+        return file;
     } else {
         return fetch(path).then(async (r) => {
             const blob = await r.blob();

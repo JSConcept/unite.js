@@ -1,6 +1,6 @@
 
 import {colorScheme} from "./ColorTheme.ts";
-import { provide } from "../utils/Utils.ts";
+import { provide, useFS } from "../utils/Utils.ts";
 
 //
 window.addEventListener("wallpaper", (ev) => {
@@ -14,15 +14,11 @@ window.addEventListener("wallpaper", (ev) => {
 
                 //
                 if (!dnw) {
-                    provide(filename, true)
-                        .then(async (fw: any) => {
-                            localStorage.setItem("@wallpaper", filename);
-                            await fw?.write?.(blob);
-                            await fw?.flush?.();
-                            await fw?.close?.();
-                            window.dispatchEvent(new CustomEvent("file-upload", {detail: {blob}}));
-                        })
-                        .catch(console.warn.bind(console));
+                    useFS().then(async (fs)=>{
+                        await fs.writeFile("/images/" + (blob.name ?? "wallpaper"), blob);
+                        localStorage.setItem("@wallpaper", filename);
+                        window.dispatchEvent(new CustomEvent("file-upload", {detail: {blob}}));
+                    });
                 } else {
                     localStorage.setItem("@wallpaper", filename);
                 }
