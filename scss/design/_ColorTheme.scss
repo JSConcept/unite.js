@@ -36,11 +36,11 @@ $bgDepFlg: "oklch(from var(--theme-surface-color, transparent) calc(#{flg.sign(c
 
 @mixin ux-solid {
     --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
-    --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+    --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 96%)};
 }
 
 @mixin ux-inverse {
-    --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 90%)};
+    --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 96%)};
     --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
 }
 

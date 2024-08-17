@@ -17,9 +17,9 @@ let cssIsDark = parseInt(localStorage.getItem("--theme-wallpaper-is-dark") || "0
 const electronAPI = "electronBridge";
 
 //
-const updateStyleRule = ()=>{
-    localStorage.setItem("--theme-base-color", baseColor);
-    localStorage.setItem("--theme-wallpaper-is-dark", cssIsDark as unknown as string);
+export const updateStyleRule = ($baseColor: string|null = null, $cssIsDark: boolean|null = null)=>{
+    localStorage.setItem("--theme-base-color", baseColor = $baseColor ?? baseColor);
+    localStorage.setItem("--theme-wallpaper-is-dark", ($cssIsDark ?? cssIsDark) as unknown as string);
 
     //
     setStyleRule(":host, :root, :scope, :where(*)", {
