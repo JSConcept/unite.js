@@ -4,6 +4,20 @@
 @property --resize-y { syntax: "<number>"; initial-value: 0; inherits: true; }
 
 //
+@property --vp-i-size {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
+@property --vp-b-size {
+    syntax: "<length-percentage>";
+    initial-value: 0px;
+    inherits: true;
+}
+
+//
 @property --zpx {
     syntax: "<length-percentage>";
     initial-value: 1px;

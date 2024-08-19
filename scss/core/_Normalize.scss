@@ -118,8 +118,8 @@
         will-change: --keyboard-inset-bottom, --keyboard-inset-height, inset;
 
         //
-        inline-size: calc(100dvi / var(--zoom, 1));
-        block-size: calc(100dvb / var(--zoom, 1));
+        inline-size: calc(100dvi / max(var(--zoom, 1), 0.125));
+        block-size: calc(100dvb / max(var(--zoom, 1), 0.125));
     }
 
     //
@@ -207,8 +207,8 @@
 
         //
         display: inline-block;
-        contain-intrinsic-width: calc(24px / var(--scaling));
-        contain-intrinsic-height: calc(24px  / var(--scaling));
+        contain-intrinsic-width: calc(24px / max(var(--scaling, 1), 0.125));
+        contain-intrinsic-height: calc(24px / max(var(--scaling, 1), 0.125));
         contain: size;
         aspect-ratio: 1 / 1;
         position: relative;

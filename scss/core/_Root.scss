@@ -10,6 +10,6 @@
     pointer-events: auto;
 
     //
-    --keyboard-inset-bottom: calc(env(keyboard-inset-bottom, 0px) / var(--zoom, 1));
-    --keyboard-inset-height: calc(env(keyboard-inset-height, 0px) / var(--zoom, 1));
+    --keyboard-inset-bottom: calc(max(env(keyboard-inset-bottom, 0px), 0px) / max(var(--zoom, 1), 0.125));
+    --keyboard-inset-height: calc(max(env(keyboard-inset-height, 0px), 0px) / max(var(--zoom, 1), 0.125));
 }

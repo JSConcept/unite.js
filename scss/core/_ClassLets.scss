@@ -5,8 +5,8 @@
 
     //
     .vp-vars {
-        --vp-i-size: calc(100dvi / var(--zoom, 1));
-        --vp-b-size: calc(100dvb / var(--zoom, 1));
+        --vp-i-size: calc(100dvi / max(var(--zoom, 1), 0.125));
+        --vp-b-size: calc(100dvb / max(var(--zoom, 1), 0.125));
 
         //
         /*@media screen and ((hover: none) and (pointer: coarse)) {
@@ -16,33 +16,33 @@
 
         //
         @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
-            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
-            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+            --vp-i-size: calc(min(var(--avail-width), 100dvi) / max(var(--zoom, 1), 0.125));
+            --vp-b-size: calc(min(var(--avail-height), 100dvb) / max(var(--zoom, 1), 0.125));
         }
 
         //
         @at-root :fullscreen & {
-            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
-            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+            --vp-i-size: calc(min(var(--avail-width), 100dvi) / max(var(--zoom, 1), 0.125));
+            --vp-b-size: calc(min(var(--avail-height), 100dvb) / max(var(--zoom, 1), 0.125));
         }
     }
 
 
     //
     .vp-vars-keyboard-dependent {
-        --vp-i-size: calc(100dvi / var(--zoom, 1));
-        --vp-b-size: calc(100dvb / var(--zoom, 1));
+        --vp-i-size: calc(100dvi / max(var(--zoom, 1), 0.125));
+        --vp-b-size: calc(100dvb / max(var(--zoom, 1), 0.125));
 
         //
         @media screen and ((display-mode: fullscreen) or (display-mode: standalone)) {
-            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
-            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+            --vp-i-size: calc(min(var(--avail-width), 100dvi) / max(var(--zoom, 1), 0.125));
+            --vp-b-size: calc(min(var(--avail-height), 100dvb) / max(var(--zoom, 1), 0.125));
         }
 
         //
         @at-root :fullscreen & {
-            --vp-i-size: calc(var(--avail-width, 100lvi) / var(--zoom, 1));
-            --vp-b-size: calc(var(--avail-height, 100lvb) / var(--zoom, 1));
+            --vp-i-size: calc(min(var(--avail-width), 100dvi) / max(var(--zoom, 1), 0.125));
+            --vp-b-size: calc(min(var(--avail-height), 100dvb) / max(var(--zoom, 1), 0.125));
         }
     }
 
@@ -116,11 +116,10 @@
     @include vp-vars;
 
     //
-    inline-size: var(--vp-i-size);
-    block-size: var(--vp-b-size);
+    inline-size: min(var(--vp-i-size, 100dvi), 100dvi);
+    block-size: min(var(--vp-b-size, 100dvb), 100dvb);
 
     //
-    max-inline-size: var(--vp-i-size);
-    max-block-size: var(--vp-b-size);
+    max-inline-size: min(var(--vp-i-size, 100dvi), 100dvi);
+    max-block-size: min(var(--vp-b-size, 100dvb), 100dvb);
 };
-
