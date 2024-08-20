@@ -185,6 +185,7 @@ export const whenAnyScreenChanges = (cb)=>{
         passive: true,
     });
     screen.orientation.addEventListener("change", cb, {passive: true});
+    matchMedia("(orientation: portrait)").addEventListener("change", cb, {passive: true});
     self.addEventListener("resize", cb, {passive: true});
 
     //

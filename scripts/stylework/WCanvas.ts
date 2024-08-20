@@ -134,6 +134,7 @@ export class WCanvas extends HTMLCanvasElement {
 
         //
         screen.orientation.addEventListener("change", fixSize);
+        matchMedia("(orientation: portrait)").addEventListener("change", fixSize);
         window.addEventListener("resize", fixSize);
         requestAnimationFrame(fixSize);
 

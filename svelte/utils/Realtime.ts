@@ -31,6 +31,9 @@ export const orientationType = (): Readable<string> => {
         screen.orientation.addEventListener("change", ({}) => {
             set(screen.orientation.type);
         });
+        matchMedia("(orientation: portrait)").addEventListener("change", ({}) => {
+            set(screen.orientation.type);
+        });
     });
 };
 
@@ -38,6 +41,9 @@ export const orientationType = (): Readable<string> => {
 export const orientationAngle = (): Readable<number> => {
     return readable(screen.orientation.angle, (set) => {
         screen.orientation.addEventListener("change", ({}) => {
+            set(screen.orientation.angle);
+        });
+        matchMedia("(orientation: portrait)").addEventListener("change", ({}) => {
             set(screen.orientation.angle);
         });
     });
