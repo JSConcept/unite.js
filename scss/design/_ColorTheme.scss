@@ -244,7 +244,7 @@
         }
 
         //
-        &:is(a), a {
+        &:where(a, span), :where(a, span) {
             background-color: transparent;
         }
     }

@@ -326,7 +326,7 @@
 	}
 
     //
-    :where(a) {
+    :where(a, span) {
         text-decoration: none;
         background-color: transparent;
     }
