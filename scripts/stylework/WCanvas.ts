@@ -47,7 +47,7 @@ const cover = (ctx, img, scale = 1, port) => {
 };
 
 //
-const FALLBACK_WALLPAPER = "./assets/wallpaper/0.jpg";
+const FALLBACK_WALLPAPER = "./assets/wallpaper/v.webp";
 
 //
 const blobImageMap = new WeakMap();
