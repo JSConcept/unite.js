@@ -325,4 +325,10 @@
         line-height: 0px;
 	}
 
+    //
+    :where(a) {
+        text-decoration: none;
+        background-color: transparent;
+    }
+
 };

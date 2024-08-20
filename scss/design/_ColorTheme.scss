@@ -242,6 +242,11 @@
                 stroke: var(--current-glyph-color);
             }
         }
+
+        //
+        &:is(a), a {
+            background-color: transparent;
+        }
     }
 
     //
