@@ -52,6 +52,13 @@ const animateHide = async (target)=>{
         //
         target.classList.remove("ux-while-animation");
     }
+
+    //
+    target.dispatchEvent(new CustomEvent("ux-hidden", {
+        detail: {},
+        bubbles: true,
+        cancelable: true
+    }));
 }
 
 //
@@ -104,6 +111,13 @@ const animateShow = async (target)=>{
         //
         target.classList.remove("ux-while-animation");
     }
+
+    //
+    target.dispatchEvent(new CustomEvent("ux-appear", {
+        detail: {},
+        bubbles: true,
+        cancelable: true
+    }));
 }
 
 //

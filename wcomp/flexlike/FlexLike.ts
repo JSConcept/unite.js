@@ -25,6 +25,10 @@ export class FlexLike extends HTMLDivElement {
             }
         });
 
+        // when some-one change 'data-hidden' state
+        this.addEventListener("ux-hidden", ()=>{ this.#recalculate(); });
+        this.addEventListener("ux-appear", ()=>{ this.#recalculate(); });
+
         //
         observeBySelector(this, "*", (_)=>{
             this.#recalculate();
