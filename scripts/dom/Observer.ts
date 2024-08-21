@@ -143,8 +143,24 @@ export const observeBySelector = (element, selector, cb) => {
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type == "childList") {
-                const addedNodes = Array.from(mutation.addedNodes || []);
-                const removedNodes = Array.from(mutation.removedNodes || []);
+                const addedNodes = Array.from(mutation.addedNodes) || [];
+                const removedNodes = Array.from(mutation.removedNodes) || [];
+
+                //
+                Array.from(mutation.addedNodes || []).map((el)=>{
+                    const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT);
+                    while(walker.nextNode()) {
+                        addedNodes.push(walker.currentNode);
+                    }
+                });
+
+                //
+                Array.from(mutation.removedNodes || []).map((el)=>{
+                    const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT);
+                    while(walker.nextNode()) {
+                        removedNodes.push(walker.currentNode);
+                    }
+                });
 
                 //
                 cb?.({
@@ -155,8 +171,8 @@ export const observeBySelector = (element, selector, cb) => {
                     nextSibling: mutation.nextSibling,
                     oldValue: mutation.oldValue,
                     previousSibling: mutation.previousSibling,
-                    addedNodes: addedNodes.filter((el) => (<HTMLElement>el)?.matches?.(selector)),
-                    removedNodes: removedNodes.filter((el) => (<HTMLElement>el)?.matches?.(selector)),
+                    addedNodes: [...Array.from((new Set(addedNodes)).values())].filter((el) => (<HTMLElement>el)?.matches?.(selector)),
+                    removedNodes: [...Array.from((new Set(removedNodes)).values())].filter((el) => (<HTMLElement>el)?.matches?.(selector)),
                 }, observer);
             }
         }
@@ -165,7 +181,7 @@ export const observeBySelector = (element, selector, cb) => {
     //
     observer.observe(element, {
         childList: true,
-        subtree: true
+        subtree : true
     });
 
     //
