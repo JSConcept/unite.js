@@ -41,6 +41,10 @@
 
 //
 @mixin ux-solid {
+    & { --accent-surface-color: #{cl.$baseColor}; };
+    @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+
+    //
     --theme-accent-chroma: 0.0;
     --theme-glyph-color: color-mix(in oklch, var(--accent-glyph-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 90%)});
     --theme-surface-color: color-mix(in oklch,var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)});
@@ -48,6 +52,10 @@
 
 //
 @mixin ux-inverse {
+    & { --accent-surface-color: #{cl.$baseColor}; };
+    @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+
+    //
     --theme-accent-chroma: 0.0;
     --theme-glyph-color: color-mix(in oklch, var(--accent-glyph-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)});
     --theme-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 90%)});
@@ -96,7 +104,8 @@
 
 //
 @mixin ux-bg-dep {
-    @include contrast-inverse("--theme-glyph-color", "var(--theme-surface-color, transparent)");
+    @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
+    --theme-glyph-color: color-mix(in oklch, var(--accent-glyph-color) calc(100% * var(--theme-accent-chroma)), var(--contrast-glyph-color));
 }
 
 //
@@ -122,6 +131,8 @@
 
         & { --accent-surface-color: #{cl.$baseColor}; };
         @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+        @include contrast-inverse("--contrast-surface-color", "var(--theme-glyph-color, transparent)");
+        @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
 
         @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; }
         @media (prefers-color-scheme: dark)  { --theme-is-dark: 1; color-scheme: dark; }
@@ -139,6 +150,8 @@
         //
         & { --accent-surface-color: #{cl.$baseColor}; };
         @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+        @include contrast-inverse("--contrast-surface-color", "var(--theme-glyph-color, transparent)");
+        @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
     }
 
     //
