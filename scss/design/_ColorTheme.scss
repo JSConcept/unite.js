@@ -28,23 +28,41 @@
 
 //
 @mixin ux-accent {
-    & { --theme-surface-color: #{cl.$baseColor}; };
-    @include contrast-inverse("--theme-glyph-color", cl.$baseColor);
+    & { --accent-surface-color: #{cl.$baseColor}; };
+    @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+
+    //
+    & {
+        --theme-accent-chroma: 1.0;
+        --theme-glyph-color: color-mix(in oklch, var(--accent-glyph-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 90%)});
+        --theme-surface-color: color-mix(in oklch,var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)});
+    }
 }
 
+//
 @mixin ux-solid {
-    --theme-glyph-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
-    --theme-surface-color: #{cu.theme-mod-up(cl.$baseColor, 96%)};
+    --theme-accent-chroma: 0.0;
+    --theme-glyph-color: color-mix(in oklch, var(--accent-glyph-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 90%)});
+    --theme-surface-color: color-mix(in oklch,var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)});
 }
 
+//
 @mixin ux-inverse {
-    --theme-glyph-color: #{cu.theme-mod-up(cl.$baseColor, 96%)};
-    --theme-surface-color: #{cu.theme-mod-down(cl.$baseColor, 90%)};
+    --theme-accent-chroma: 0.0;
+    --theme-glyph-color: color-mix(in oklch, var(--accent-glyph-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)});
+    --theme-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 90%)});
 }
 
+//--theme-accent-chroma
 @mixin ux-accent-inverse {
-    @include contrast-inverse("--theme-surface-color", cl.$baseColor);
-    @include contrast("--theme-glyph-color", cl.$baseColor);
+    @include contrast-inverse("--accent-surface-color", cl.$baseColor);
+    @include contrast("--accent-glyph-color", cl.$baseColor);
+
+    //
+    & {
+        --theme-glyph-color: color-mix(in oklch, var(--accent-glyph-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)});
+        --theme-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 90%)});
+    }
 }
 
 @mixin ux-transparent {
@@ -101,6 +119,10 @@
     :root, :where(html) {
         --theme-dynamic-color: var(--theme-base-color, transparent);
         --theme-is-dark: 0; color-scheme: light;
+
+        & { --accent-surface-color: #{cl.$baseColor}; };
+        @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+
         @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; }
         @media (prefers-color-scheme: dark)  { --theme-is-dark: 1; color-scheme: dark; }
     }
@@ -113,6 +135,10 @@
         --theme-chroma-color: #{cl.$chromaColor};
         --highlight-coefficient: 0.0;
         @include ux-highlight-color;
+
+        //
+        & { --accent-surface-color: #{cl.$baseColor}; };
+        @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
     }
 
     //

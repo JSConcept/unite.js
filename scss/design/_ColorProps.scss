@@ -27,8 +27,10 @@
 @property --current-chroma-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --current-accent-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --highlight-coefficient { syntax: "<number>"; initial-value: 0; inherits: true; };
+@property --accent-glyph-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --accent-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
 
-
+@property --theme-accent-chroma { syntax: "<number>"; initial-value: 1; inherits: true; };
 
 //
 @property --icon-size {
