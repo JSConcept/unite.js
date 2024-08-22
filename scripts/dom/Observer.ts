@@ -139,7 +139,7 @@ export const observeAttributeBySelector = (element, selector, attribute, cb) => 
 };
 
 //
-export const observeBySelector = (element, selector, cb) => {
+export const observeBySelector = (element, selector = "*", cb = (mut, obs)=>{}) => {
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type == "childList") {
@@ -147,20 +147,14 @@ export const observeBySelector = (element, selector, cb) => {
                 const removedNodes = Array.from(mutation.removedNodes) || [];
 
                 //
-                Array.from(mutation.addedNodes || []).map((el)=>{
-                    const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT);
-                    while(walker.nextNode()) {
-                        addedNodes.push(walker.currentNode);
-                    }
-                });
+                addedNodes.push(...Array.from(mutation.addedNodes || []).flatMap((el)=>{
+                    return Array.from((el as HTMLElement)?.querySelectorAll?.(selector)) as Element[] || [];
+                }));
 
                 //
-                Array.from(mutation.removedNodes || []).map((el)=>{
-                    const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT);
-                    while(walker.nextNode()) {
-                        removedNodes.push(walker.currentNode);
-                    }
-                });
+                removedNodes.push(...Array.from(mutation.removedNodes || []).flatMap((el)=>{
+                    return Array.from((el as HTMLElement)?.querySelectorAll?.(selector)) as Element[] || [];
+                }));
 
                 //
                 cb?.({
