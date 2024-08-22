@@ -31,9 +31,10 @@
 @property --accent-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --contrast-glyph-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --contrast-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --adaptive-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
 
 
-@property --theme-accent-chroma { syntax: "<number>"; initial-value: 1; inherits: true; };
+@property --theme-accent-chroma { syntax: "<number>"; initial-value: 0; inherits: true; };
 
 //
 @property --icon-size {

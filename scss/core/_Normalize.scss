@@ -112,7 +112,7 @@
 
         // if needs viewport
         container-type: size;
-        contain: content;
+        contain: layout;
 
         //
         will-change: --keyboard-inset-bottom, --keyboard-inset-height, inset;
@@ -178,22 +178,24 @@
         //
         @include disableTransform();
 
-
-        // default effects
-        --translate-x: 0px;
-        --translate-y: 0px;
-        --scale: 1;
-        --opacity: 1;
-
         //
-        will-change: --translate-x, --translate-y, --scale, --opacity;
-        transform: translate(var(--translate-x), var(--translate-y)) scale(var(--scale, 1));
+        &:not(x-scrollbox) {
+            // default effects
+            --translate-x: 0px;
+            --translate-y: 0px;
+            --scale: 1;
+            --opacity: 1;
 
-        // mobile too slow
-        //filter: opacity(var(--opacity, 1));
-        //opacity: 1;
+            //
+            will-change: --translate-x, --translate-y, --scale, --opacity;
+            transform: translate(var(--translate-x), var(--translate-y)) scale(var(--scale, 1));
 
-        opacity: var(--opacity, 1);
+            // mobile too slow
+            //filter: opacity(var(--opacity, 1));
+            //opacity: 1;
+
+            opacity: var(--opacity, 1);
+        }
     }
 
     //

@@ -1,6 +1,6 @@
 //
 import {zoomOf} from "../../scripts/utils/Zoom.ts";
-import {observeBorderBox} from "../../scripts/dom/Observer.ts";
+import {observeContentBox} from "../../scripts/dom/Observer.ts";
 
 // @ts-ignore
 import styles from "./ScrollBox.scss?inline";
@@ -11,6 +11,17 @@ interface ScrollBarStatus {
     pointerId: number;
     virtualScroll: number;
     pointerLocation: number;
+}
+
+//
+const getPxValue = (element, name)=>{
+    if ("computedStyleMap" in element) {
+        const cm = element?.computedStyleMap();
+        return cm.get(name)?.value || 0;
+    } else {
+        const cs = getComputedStyle(element, "");
+        return (parseFloat(cs.getPropertyValue(name)?.replace?.("px", "")) || 0);
+    }
 }
 
 //
@@ -58,18 +69,9 @@ class ScrollBar {
                     this.holder[["scrollWidth", "scrollHeight"][axis]],
                     1
                 );
-                const thumbSize = this.holder[[contentBoxWidth, contentBoxHeight][axis]] * sizePercent;
 
                 //
-                const scrollAvailable =
-                    this.holder[[contentBoxWidth, contentBoxHeight][axis]] -
-                    thumbSize;
-
-                //
-                setProperty(this.scrollbar, "--thumbSize", (thumbSize || "0") as string);
-                setProperty(this.scrollbar, "--scrollAvail", (scrollAvailable || "0") as string);
-
-                //
+                setProperty(this.scrollbar, "--sizeCoef", sizePercent);
                 if (sizePercent >= 0.999) {
                     setProperty(this.scrollbar, "visibility", "collapse", "important");
                 } else {
@@ -172,9 +174,9 @@ class ScrollBar {
         });
 
         //
-        observeBorderBox(this.holder, (box) => {
-            this.holder[contentBoxWidth] = box.inlineSize;
-            this.holder[contentBoxHeight] = box.blockSize;
+        observeContentBox(this.holder, (box) => {
+            this.holder[contentBoxWidth] = box.inlineSize + getPxValue(this.holder, "padding-inline-start") + getPxValue(this.holder, "padding-inline-end");
+            this.holder[contentBoxHeight] = box.blockSize + getPxValue(this.holder, "padding-block-start") + getPxValue(this.holder, "padding-block-end");
             onChanges();
         });
 

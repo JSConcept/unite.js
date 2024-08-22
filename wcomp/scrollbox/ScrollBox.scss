@@ -1,42 +1,58 @@
-@property --percent {
+@property --percent-x {
     syntax: "<number>";
     inherits: true;
     initial-value: 0;
-}
+};
+
+@property --percent-y {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+};
 
 @property --thumbSize {
     syntax: "<number>";
     inherits: true;
     initial-value: 0;
-}
+};
 
-@property --scrollAvail {
+@property --sizeCoef {
     syntax: "<number>";
     inherits: true;
-    initial-value: 0;
-}
+    initial-value: 1;
+};
 
 @property --scroll-left {
     syntax: "<number>";
     inherits: true;
     initial-value: 0;
-}
+};
 
 @property --scroll-top {
     syntax: "<number>";
     inherits: true;
     initial-value: 0;
-}
+};
 
-@keyframes scroll-percent {
+@keyframes scroll-percent-x {
     0% {
-        --percent: 0.0;
+        --percent-x: 0.0;
     }
 
     100% {
-        --percent: 1.0;
+        --percent-x: 1.0;
     }
-}
+};
+
+@keyframes scroll-percent-y {
+    0% {
+        --percent-y: 0.0;
+    }
+
+    100% {
+        --percent-y: 1.0;
+    }
+};
 
 @layer ux-scrollbox {
 
@@ -44,7 +60,6 @@
         display: block;
         position: relative;
         overflow: scroll;
-        isolation: isolate;
         inset: 0px;
         padding: 0px;
 
@@ -53,13 +68,17 @@
         block-size: 100%;
 
         //
-        contain: content;
+        contain: layout !important;
         container-type: size !important;
         background-color: transparent;
 
         //
-        scroll-timeline: --scroll-y vertical, --scroll-x horizontal;
-        scroll-timeline: --scroll-y block, --scroll-x inline;
+        --percent-x: 0.0;
+        --percent-y: 0.0;
+
+        //
+        scroll-timeline: --scroll-y vertical, --scroll-x horizontal !important;
+        scroll-timeline: --scroll-y block, --scroll-x inline !important;
 
         //
         scrollbar-gutter: stable both-edges;
@@ -67,6 +86,23 @@
 
         //
         --sb-color: #101010;
+
+        //
+        rotate: none;
+        scale: none;
+        translate: none;
+        transform: none;
+
+        //
+        transform-origin: 50% 50%;
+        backface-visibility: visible;
+
+        //
+        filter: none;
+        backdrop-filter: none;
+        will-change: auto;
+        perspective: none;
+        isolation: auto;
 
         //
         &, & > :where(*) {
@@ -82,20 +118,20 @@
             user-select: none;
             pointer-events: none;
 
-            position: fixed;
+            contain: none !important;
+            container-type: normal !important;
+            position: fixed !important;
             display: block;
             inset: 0px;
 
-            --percent: 0.0;
-
+            //
             line-height: 0px;
             background-color: transparent !important;
-            animation-name: scroll-percent;
             animation-timing-function: linear;
             animation-duration: 1ms;
             animation-fill-mode: both;
 
-            will-change: --percent;
+            will-change: --percent-x, --percent-y;
 
             touch-action: none;
             z-index: 9999;
@@ -130,17 +166,18 @@
             inset-block-start: calc(0px + var(--scroll-top) * 1px);
             inset-inline-end: calc(0px - var(--scroll-left) * 1px);
 
-            animation-timeline: --scroll-y;
+            animation-name: scroll-percent-y !important;
+            animation-timeline: --scroll-y !important;
 
             block-size: calc(100cqb - 1rem);
             inline-size: 1rem;
 
             & :where(.thumb) {
                 inline-size: 100%;
-                block-size: calc(var(--thumbSize) * 1px);
+                block-size: calc(100cqb * var(--sizeCoef, 1));
                 max-block-size: 100%;
 
-                translate: 0px calc(var(--percent) * var(--scrollAvail) * 1px) 0px;
+                translate: 0px calc(var(--percent-y) * (1 - var(--sizeCoef, 1)) * 100cqb);
             }
         }
 
@@ -153,17 +190,18 @@
             inset-block-end: calc(0px - var(--scroll-top) * 1px);
             inset-inline-start: calc(0px + var(--scroll-left) * 1px);
 
-            animation-timeline: --scroll-x;
+            animation-name: scroll-percent-x !important;
+            animation-timeline: --scroll-x !important;
 
             inline-size: calc(100cqi - 1rem);
             block-size: 1rem;
 
             & :where(.thumb) {
                 block-size: 100%;
-                inline-size: calc(var(--thumbSize) * 1px);
+                inline-size: calc(100cqi * var(--sizeCoef, 1));
                 max-inline-size: 100%;
 
-                translate: calc(var(--percent) * var(--scrollAvail) * 1px) 0px 0px;
+                translate: calc(var(--percent-x) * (1 - var(--sizeCoef, 1)) * 100cqi) 0px;
             }
         }
 
