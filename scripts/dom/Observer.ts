@@ -148,12 +148,12 @@ export const observeBySelector = (element, selector = "*", cb = (mut, obs)=>{}) 
 
                 //
                 addedNodes.push(...Array.from(mutation.addedNodes || []).flatMap((el)=>{
-                    return Array.from((el as HTMLElement)?.querySelectorAll?.(selector)) as Element[] || [];
+                    return Array.from((el as HTMLElement)?.querySelectorAll?.(selector) || []) as Element[];
                 }));
 
                 //
                 removedNodes.push(...Array.from(mutation.removedNodes || []).flatMap((el)=>{
-                    return Array.from((el as HTMLElement)?.querySelectorAll?.(selector)) as Element[] || [];
+                    return Array.from((el as HTMLElement)?.querySelectorAll?.(selector) || []) as Element[];
                 }));
 
                 //
