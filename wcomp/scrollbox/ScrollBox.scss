@@ -54,21 +54,35 @@
     }
 };
 
+//
 @layer ux-scrollbox {
 
+    //
     :host(x-scrollbox) {
-        display: block;
+        //
+        place-content: start;
+        place-items: start;
+
+        //
+        display: grid;
+
+        //
         position: relative;
-        overflow: scroll;
+        overflow: hidden;
         inset: 0px;
         padding: 0px;
+        box-sizing: border-box;
+
+        //
+        grid-template-columns: minmax(0px, 1fr) 1rem !important;
+        grid-template-rows: minmax(0px, 1fr) 1rem !important;
 
         //
         inline-size: 100%;
         block-size: 100%;
 
         //
-        contain: layout !important;
+        contain: strict !important;
         container-type: size !important;
         background-color: transparent;
 
@@ -79,10 +93,6 @@
         //
         scroll-timeline: --scroll-y vertical, --scroll-x horizontal !important;
         scroll-timeline: --scroll-y block, --scroll-x inline !important;
-
-        //
-        scrollbar-gutter: stable both-edges;
-        scrollbar-width: none;
 
         //
         --sb-color: #101010;
@@ -105,7 +115,13 @@
         isolation: auto;
 
         //
+        &:not([data-hidden]) {
+            display: grid !important;
+        }
+
+        //
         &, & > :where(*) {
+            box-sizing: border-box;
             will-change: scroll-position, contents;
             touch-action: pan-x pan-y manipulation;
 
@@ -114,27 +130,40 @@
         }
 
         //
+        & :where(.content-box) {
+            overflow: scroll;
+            display: block;
+            scrollbar-gutter: stable both-edges !important;
+            scrollbar-width: none !important;
+            grid-row: 1 / 2 span !important;
+            grid-column: 1 / 2 span !important;
+            inline-size: 100% !important;
+            block-size: 100% !important;
+        }
+
+        //
         & :where(.scrollbar-x, .scrollbar-y) {
             user-select: none;
             pointer-events: none;
 
-            contain: none !important;
-            container-type: normal !important;
-            position: fixed !important;
+            //
+            contain: none;
+            container-type: normal;
+            position: sticky;
             display: block;
             inset: 0px;
 
             //
             line-height: 0px;
-            background-color: transparent !important;
-            animation-timing-function: linear;
-            animation-duration: 1ms;
-            animation-fill-mode: both;
+            background-color: transparent;
 
-            will-change: --percent-x, --percent-y;
-
+            //
             touch-action: none;
             z-index: 9999;
+
+            ///
+            inline-size: 100%;
+            block-size: 100%;
 
             & :where(.thumb) {
                 pointer-events: auto;
@@ -157,51 +186,27 @@
             }
         }
 
+        //
         & :is(.scrollbar-y) {
-            inset-inline-start: auto;
-            //inset-inline-end: 0px;
-            //inset-block-start: 0px;
-            inset-block-end: auto;
-
-            inset-block-start: calc(0px + var(--scroll-top) * 1px);
-            inset-inline-end: calc(0px - var(--scroll-left) * 1px);
-
-            animation-name: scroll-percent-y !important;
-            animation-timeline: --scroll-y !important;
-
-            block-size: calc(100cqb - 1rem);
-            inline-size: 1rem;
+            grid-row: 1 / 1 span;
+            grid-column: 2 / 2 span;
 
             & :where(.thumb) {
                 inline-size: 100%;
-                block-size: calc(100cqb * var(--sizeCoef, 1));
-                max-block-size: 100%;
-
-                translate: 0px calc(var(--percent-y) * (1 - var(--sizeCoef, 1)) * 100cqb);
+                block-size: min(calc(100% * var(--sizeCoef, 1)), 100%);
+                translate: 0px calc(var(--scroll-top) * var(--sizeCoef, 1) * 1px);
             }
         }
 
+        //
         & :is(.scrollbar-x) {
-            inset-block-start: auto;
-            //inset-block-end: 0px;
-            //inset-inline-start: 0px;
-            inset-inline-end: auto;
-
-            inset-block-end: calc(0px - var(--scroll-top) * 1px);
-            inset-inline-start: calc(0px + var(--scroll-left) * 1px);
-
-            animation-name: scroll-percent-x !important;
-            animation-timeline: --scroll-x !important;
-
-            inline-size: calc(100cqi - 1rem);
-            block-size: 1rem;
+            grid-column: 1 / 1 span;
+            grid-row: 2 / 2 span;
 
             & :where(.thumb) {
                 block-size: 100%;
-                inline-size: calc(100cqi * var(--sizeCoef, 1));
-                max-inline-size: 100%;
-
-                translate: calc(var(--percent-x) * (1 - var(--sizeCoef, 1)) * 100cqi) 0px;
+                inline-size: min(calc(100% * var(--sizeCoef, 1)), 100%);
+                translate: calc(var(--scroll-left) * var(--sizeCoef, 1) * 1px) 0px;
             }
         }
 

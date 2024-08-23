@@ -133,15 +133,15 @@
     //
     :root, :host, :scope, :where(html, body) {
         @include ux-solid;
-
-        //
-        --theme-accent-chroma: 0;
-        --theme-accent-color: var(--theme-glyph-color);
-        --theme-chroma-color: var(--theme-base-color);
-
-        //
-        --highlight-coefficient: 0.0;
         @include ux-highlight-color;
+
+        //
+        & {
+            --theme-accent-chroma: 0;
+            --theme-accent-color: var(--theme-glyph-color);
+            --theme-chroma-color: var(--theme-base-color);
+            --highlight-coefficient: 0.0;
+        }
 
         //
         & { --accent-surface-color: #{cl.$baseColor}; };
