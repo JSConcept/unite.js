@@ -7,6 +7,7 @@ import {formatCss, formatHex, interpolate, oklch, parse} from "@culori/bundled/c
 //
 import {setStyleRule} from "./StyleRules.ts";
 import {sourceColorFromImage} from "../utils/ColorMod.ts";
+import { observeAttributeBySelector } from "../dom/Observer.ts";
 
 //
 let baseColorI: any = {};
@@ -131,3 +132,27 @@ setInterval(()=>{
 document.addEventListener("ux-theme-change", ()=>{
     switchTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
 });
+
+
+// PART II by 26.08.2024, but bit horrible solution
+
+//
+if (!CSS.supports("opacity", "attr(data-highlight-hover number, 1)")) {
+    observeAttributeBySelector(document.documentElement, "*[data-highlight-hover]", "data-highlight-hover", (mutation)=>{
+        mutation?.target?.style?.setProperty?.("--data-highlight-hover-attr", mutation.target.getAttribute("data-highlight-hover"), "");
+    });
+}
+
+//
+if (!CSS.supports("opacity", "attr(data-highlight number, 1)")) {
+    observeAttributeBySelector(document.documentElement, "*[data-highlight]", "data-highlight", (mutation)=>{
+        mutation?.target?.style?.setProperty?.("--data-highlight-attr", mutation.target.getAttribute("data-highlight"), "");
+    });
+}
+
+//
+if (!CSS.supports("opacity", "attr(data-chroma number, 1)")) {
+    observeAttributeBySelector(document.documentElement, "*[data-chroma]", "data-chroma", (mutation)=>{
+        mutation?.target?.style?.setProperty?.("--data-chroma-attr", mutation.target.getAttribute("data-chroma"), "");
+    });
+}
