@@ -262,7 +262,8 @@
 
         // fallback support
         @supports not (opacity: attr(data-highlight-hover number, 1)) {
-            *[data-highlight-hover]:hover { --highlight-coefficient: calc(var(--data-highlight-attr, 1) * 3); }
+            @property --data-highlight-hover-attr { initial-value: 1; inherits: true; syntax: "<number>"; };
+            *[data-highlight-hover]:hover { --highlight-coefficient: calc(var(--data-highlight-hover-attr, 1) * 3); }
         }
     }
 
