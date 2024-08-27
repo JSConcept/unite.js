@@ -33,7 +33,8 @@
 @property --contrast-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --adaptive-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
 
-
+//
+@property --theme-solid-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-accent-chroma { syntax: "<number>"; initial-value: 0; inherits: true; };
 
 //

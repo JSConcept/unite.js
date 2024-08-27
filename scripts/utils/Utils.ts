@@ -79,10 +79,12 @@ export const useFS = async() => {
     const ignore = "" + "";
     /* @vite-ignore */
     let node = null;
-    try {
-        node = await import(/*@vite-ignore */ ignore + "node:fs/promises").catch(console.warn.bind(console));
-    } catch(e) {
-        console.warn(e);
+    if (!opfs?.isOPFSSupported()) {
+        try {
+            node = await import(/*@vite-ignore */ ignore + "node:fs/promises").catch(console.warn.bind(console));
+        } catch(e) {
+            console.warn(e);
+        }
     }
 
     //

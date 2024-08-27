@@ -34,10 +34,11 @@
 
 //
 @mixin ux-solid {
+    & { --theme-solid-color     : #{cu.theme-mod-up(cl.$baseColor, 96%)}; }
     & { --theme-accent-chroma   : 0; };
     & { --accent-surface-color  : #{cl.$baseColor}; };
-    & { --theme-surface-color   : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)}); }
-    & { --adaptive-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-up(cl.$baseColor, 96%)}); }
+    & { --theme-surface-color   : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)); }
+    & { --adaptive-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)); }
 
     //
     @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
@@ -46,10 +47,11 @@
 
 //
 @mixin ux-inverse {
+    & { --theme-solid-color     : #{cu.theme-mod-down(cl.$baseColor, 80%)}; }
     & { --theme-accent-chroma   : 0; };
     & { --accent-surface-color  : #{cl.$baseColor}; };
-    & { --theme-surface-color   : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 80%)}); }
-    & { --adaptive-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), #{cu.theme-mod-down(cl.$baseColor, 80%)}); }
+    & { --theme-surface-color   : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)); }
+    & { --adaptive-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)); }
 
     //
     @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
@@ -58,8 +60,10 @@
 
 //
 @mixin ux-accent-inverse {
-    //
+    & { --theme-solid-color     : #{cu.theme-mod-up(cl.$baseColor, 96%)}; }
+    & { --theme-accent-chroma   : 0; };
     & { --accent-surface-color  : #{cl.$baseColor}; };
+    & { --theme-surface-color   : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--adaptive-surface-color)); }
     & { --adaptive-surface-color: color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--adaptive-surface-color)); }
 
     //
