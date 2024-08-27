@@ -208,9 +208,9 @@
         pointer-events: none;
 
         //
-        display: inline-block;
-        contain-intrinsic-width: calc(24px / max(var(--scaling, 1), 0.125));
-        contain-intrinsic-height: calc(24px / max(var(--scaling, 1), 0.125));
+        display: flex;
+        contain-intrinsic-width: 24px;
+        contain-intrinsic-height: 24px;
         contain: size;
         aspect-ratio: 1 / 1;
         position: relative;
@@ -227,7 +227,7 @@
         opacity: 1;
 
         //
-        stroke: var(--current-glyph-color);
+        //stroke: var(--current-glyph-color);
 
         //
         image-rendering: auto;
@@ -245,6 +245,13 @@
         transform: none;
         filter: none;
         backdrop-filter: none;
+
+        //
+        place-items: center;
+        place-content: center;
+
+        //
+        stroke: var(--current-glyph-color);
     }
 
     //

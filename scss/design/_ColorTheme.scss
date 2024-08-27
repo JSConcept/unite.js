@@ -73,7 +73,14 @@
 
 //
 @mixin ux-transparent {
-    & { --theme-surface-color: oklch(from #{cl.$baseColor} l c h / 0.0); };
+    & { --theme-solid-color     : #{cu.theme-mod-up(cl.$baseColor, 96%)}; }
+    & { --theme-accent-chroma   : 0; };
+    & { --accent-surface-color  : #{cl.$baseColor}; };
+    & { --theme-surface-color   : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / 0.0); }
+    & { --adaptive-surface-color: oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / 0.0); }
+
+    //
+    @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
     @include ux-bg-dep;
 }
 
@@ -86,13 +93,13 @@
 //
 @mixin ux-dynamic {
     & { --theme-surface-color: var(--theme-dynamic-color, transparent); }
-    @include contrast-inverse("--theme-glyph-color", "var(--theme-dynamic-color, transparent)");
+    @include ux-bg-dep;
 }
 
 //
 @mixin ux-dynamic-transparent {
     & { --theme-surface-color: oklch(from var(--theme-dynamic-color, transparent) l c h / 0.0); };
-    @include contrast-inverse("--theme-glyph-color", "var(--theme-dynamic-color, transparent)");
+    @include ux-bg-dep;
 }
 
 //
@@ -100,6 +107,7 @@
     @include ux-highlight-color;
     $color: "oklch(from var(--theme-surface-color) l c h / 0.0)";
     & { --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), #{$color}); }
+    @include ux-bg-dep;
 }
 
 //
@@ -301,7 +309,7 @@
     *[data-scheme="solid"] { @include ux-solid; }
     *[data-scheme="inverse"] { @include ux-inverse; }
     *[data-scheme="accent-inverse"] { @include ux-accent-inverse; }
-    *[data-scheme="transparent"] { @include ux-transparent; }
+    *[data-scheme="transparent"] { @include ux-transparent; & { --theme-accent-chroma: 1; }; }
     *[data-scheme="solid-transparent"] { @include ux-solid-transparent(); }
     *[data-scheme="dynamic-transparent"] { @include ux-dynamic-transparent; }
 

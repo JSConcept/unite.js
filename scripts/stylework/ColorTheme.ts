@@ -32,19 +32,23 @@ export const updateStyleRule = ($baseColor: string|null = null, $cssIsDark: bool
 
 
 //
-export const pickBgColor = (x, y, holder)=>{
+export const pickBgColor = (x, y, holder: HTMLElement | null = null)=>{
     const source = Array.from(document.elementsFromPoint(x, y));
-    const opaque = source.filter((node)=>{
+    const opaque = source.sort((na, nb)=>{
+        const zIndexA = parseInt(getComputedStyle(na as HTMLElement, "").zIndex || "0") || 0;
+        const zIndexB = parseInt(getComputedStyle(nb as HTMLElement, "").zIndex || "0") || 0;
+        return Math.sign(zIndexA - zIndexB);
+    }).filter((node)=>{
         if (!(node instanceof HTMLElement)) return false;
         const computed = getComputedStyle(node as HTMLElement, "");
-        const value  = computed.backgroundColor;
+        const value  = computed.backgroundColor || "transparent";
         const parsed = parse(value);
-        return ((parsed.alpha == null || parsed.alpha > 0.1) && value != "transparent");
+        return ((parsed.alpha == null || parsed.alpha > 0.1) && value != "transparent") && node != holder;
     });
 
     //
     if (opaque[0] && opaque[0] instanceof HTMLElement) {
-        const color = getComputedStyle(opaque[0] as HTMLElement, "")?.backgroundColor || baseColor;
+        const color = getComputedStyle(opaque[0] as HTMLElement, "")?.backgroundColor || "transparent"; //|| baseColor;
         if (holder && holder.style.getPropertyValue("--theme-dynamic-color") != color) {
             holder.style.setProperty("--theme-dynamic-color", color, "");
         }
@@ -73,7 +77,7 @@ export const pickFromCenter = (holder)=>{
 //
 export const switchTheme = (isDark = false) => {
     const media = document?.head?.querySelector?.('meta[data-theme-color]');
-    const color = pickBgColor(window.innerWidth - 64, 30, document.documentElement);
+    const color = pickBgColor(window.innerWidth - 64, 30);
 
     //
     if (media) { media.setAttribute("content", color); }
@@ -84,7 +88,7 @@ export const switchTheme = (isDark = false) => {
     }
 
     //
-    document.querySelectorAll("[data-scheme=\"dynamic-transparent\"]").forEach((target)=>{
+    document.querySelectorAll("[data-scheme=\"dynamic-transparent\"], [data-scheme=\"dynamic\"]").forEach((target)=>{
         if (target) {
             pickFromCenter(target);
         }
