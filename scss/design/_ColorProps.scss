@@ -36,6 +36,7 @@
 //
 @property --theme-solid-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-accent-chroma { syntax: "<number>"; initial-value: 0; inherits: true; };
+@property --theme-surface-alpha { syntax: "<number>"; initial-value: 0; inherits: true; };
 
 //
 @property --icon-size {

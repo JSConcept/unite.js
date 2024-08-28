@@ -37,7 +37,7 @@ export const pickBgColor = (x, y, holder: HTMLElement | null = null)=>{
     const opaque = source.sort((na, nb)=>{
         const zIndexA = parseInt(getComputedStyle(na as HTMLElement, "").zIndex || "0") || 0;
         const zIndexB = parseInt(getComputedStyle(nb as HTMLElement, "").zIndex || "0") || 0;
-        return Math.sign(zIndexA - zIndexB);
+        return Math.sign(zIndexB - zIndexA);
     }).filter((node)=>{
         if (!(node instanceof HTMLElement)) return false;
         const computed = getComputedStyle(node as HTMLElement, "");
@@ -158,5 +158,12 @@ if (!CSS.supports("opacity", "attr(data-highlight number, 1)")) {
 if (!CSS.supports("opacity", "attr(data-chroma number, 1)")) {
     observeAttributeBySelector(document.documentElement, "*[data-chroma]", "data-chroma", (mutation)=>{
         mutation?.target?.style?.setProperty?.("--data-chroma-attr", mutation.target.getAttribute("data-chroma"), "");
+    });
+}
+
+//
+if (!CSS.supports("opacity", "attr(data-alpha number, 1)")) {
+    observeAttributeBySelector(document.documentElement, "*[data-alpha]", "data-alpha", (mutation)=>{
+        mutation?.target?.style?.setProperty?.("--data-alpha-attr", mutation.target.getAttribute("data-alpha"), "");
     });
 }
