@@ -107,7 +107,7 @@
         position: relative;
 
         //
-        background-color: var(--theme-base-color, transparent);
+        background-color: var(--theme-accent-color, transparent);
         //zoom: var(--scaling, 1);
 
         // if needs viewport
@@ -285,7 +285,7 @@
         object-position: center;
 
         //
-        background-color: var(--theme-base-color, transparent);
+        background-color: var(--theme-accent-color, transparent);
         border-image-source: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 
         //

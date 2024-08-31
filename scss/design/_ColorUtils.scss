@@ -1,4 +1,4 @@
-/* 
+/*
  * Here is color manipulation functions...
  * Uses an entry values, and runtime variables...
  */
@@ -25,18 +25,26 @@ $chromaMod: var(--theme-chroma-mod);
 
 //
 @mixin accent-mod($effect: 1) {
-    --effect: $effect;
-    --current-surface-color: #{cu.theme-mod-down(var(--theme-surface-color), calc(1% * var(--effect, 1)))};
+    & {
+        --effect: $effect;
+        --current-surface-color: #{cu.theme-mod-down(var(--theme-surface-color), calc(1% * var(--effect, 1)))};
+    }
 }
 
 //
 @mixin var-dependent($var: var(--theme-is-dark), $importance: null) {
-    --theme-up-mod: color-mix(in oklch, var(--theme-dark-up-mod) calc(100% * #{$var}), var(--theme-light-up-mod)) #{$importance};
-    --theme-down-mod: color-mix(in oklch, var(--theme-dark-down-mod) calc(100% * #{$var}), var(--theme-light-down-mod)) #{$importance}; 
+    & {
+        --theme-up-mod: color-mix(in oklch, var(--theme-dark-up-mod) calc(100% * #{$var}), var(--theme-light-up-mod)) #{$importance};
+        --theme-down-mod: color-mix(in oklch, var(--theme-dark-down-mod) calc(100% * #{$var}), var(--theme-light-down-mod)) #{$importance};
+        //--theme-accent-base-color: color-mix(in oklch, var(--theme-accent-light) calc(100% * #{$var}), var(--theme-accent-dark)) #{$importance};
+    }
 }
 
 //
 @mixin scheme-dependent {
-    --theme-up-mod: light-dark(var(--theme-dark-up-mod), var(--theme-light-up-mod));
-    --theme-down-mod: light-dark(var(--theme-dark-down-mod), var(--theme-light-down-mod));
+    & {
+        --theme-up-mod: light-dark(var(--theme-dark-up-mod), var(--theme-light-up-mod));
+        --theme-down-mod: light-dark(var(--theme-dark-down-mod), var(--theme-light-down-mod));
+        //--theme-accent-base-color: light-dark(var(--theme-accent-light), var(--theme-accent-dark));
+    }
 }

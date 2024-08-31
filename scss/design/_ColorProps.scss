@@ -32,6 +32,8 @@
 @property --contrast-glyph-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --contrast-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --adaptive-surface-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-base-accent-color { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-accent-base-color { syntax: "<color>"; initial-value: black; inherits: true; };
 
 //
 @property --theme-solid-color { syntax: "<color>"; initial-value: black; inherits: true; };
