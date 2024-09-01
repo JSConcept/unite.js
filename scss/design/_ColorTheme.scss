@@ -110,7 +110,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     & { --theme-accent-base-color: var(--theme-base-color); };
 }
 
-
 //
 @mixin ux-inverse {
     & { --theme-solid-color      : #{theme-mod-down($baseColor, 80%)}; }
@@ -155,6 +154,68 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     & { --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), #{$color}); }
     @include ux-bg-dep;
 }
+
+
+
+
+
+
+
+
+//
+@mixin attr-based(
+    $selector: "&",
+    $property,
+    $attr,
+    $type: "number",
+    $logic: null,
+    $default: 1,
+    $test: "opacity"
+) {
+    //
+    @supports (#{$test}: attr(#{$attr} #{$type}, #{$default})) {
+        $value    : attr(#{$attr} #{$type}, #{$default});
+        $withLogic: if($logic != null, call($logic, $value), $value);
+
+        //
+        #{$selector} { #{$property}: #{$withLogic}; };
+    }
+
+    // fallback support
+    @supports not (#{$test}: attr(#{$attr} #{$type}, #{$default})) {
+        @property --#{$attr}-attr { initial-value: #{$default}; inherits: true; syntax: "<#{$type}>"; };
+
+        //
+        $value    : var(--#{$attr}-attr, #{$default});
+        $withLogic: if($logic != null, call($logic, $value), $value);
+
+        //
+        #{$selector} { #{$property}: #{$withLogic}; };
+    }
+}
+
+//
+@mixin hover ($selector: "&") {
+    //
+    @media screen and ((hover: hover) or (pointer: fine)) {
+        #{$selector}:hover {
+            @content;
+        }
+    }
+
+    //
+    @media screen and ((hover: none) and (pointer: coarse)) {
+        #{$selector}:action {
+            @content;
+        }
+    }
+}
+
+
+
+
+
+
 
 //
 @layer ux-colors {
@@ -325,55 +386,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     *[data-scheme="transparent"]         { @include ux-accent;         & { --theme-accent-chroma: 1; --theme-surface-alpha: 0; }; }
     *[data-scheme="solid-transparent"]   { @include ux-solid;          & { --theme-accent-chroma: 0; --theme-surface-alpha: 0; }; }
     *[data-scheme="dynamic-transparent"] { @include ux-dynamic;        & { --theme-accent-chroma: 1; --theme-surface-alpha: 0; }; }
-
-    //
-    @mixin attr-based(
-        $selector: "&",
-        $property,
-        $attr,
-        $type: "number",
-        $logic: null,
-        $default: 1,
-        $test: "opacity"
-    ) {
-        //
-        @supports (#{$test}: attr(#{$attr} #{$type}, #{$default})) {
-            $value    : attr(#{$attr} #{$type}, #{$default});
-            $withLogic: if($logic != null, call($logic, $value), $value);
-
-            //
-            #{$selector} { #{$property}: #{$withLogic}; };
-        }
-
-        // fallback support
-        @supports not (#{$test}: attr(#{$attr} #{$type}, #{$default})) {
-            @property --#{$attr}-attr { initial-value: #{$default}; inherits: true; syntax: "<#{$type}>"; };
-
-            //
-            $value    : var(--#{$attr}-attr, #{$default});
-            $withLogic: if($logic != null, call($logic, $value), $value);
-
-            //
-            #{$selector} { #{$property}: #{$withLogic}; };
-        }
-    }
-
-    //
-    @mixin hover ($selector: "&") {
-        //
-        @media screen and ((hover: hover) or (pointer: fine)) {
-            #{$selector}:hover {
-                @content;
-            }
-        }
-
-        //
-        @media screen and ((hover: none) and (pointer: coarse)) {
-            #{$selector}:action {
-                @content;
-            }
-        }
-    }
 
     //
     @function hl-logic($value) { @return "calc(#{$value} * 3)"; };
