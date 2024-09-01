@@ -13,6 +13,10 @@ $downMod: var(--theme-down-mod);
 $chromaMod: var(--theme-chroma-mod);
 $baseColor: var(--theme-accent-color);
 
+//
+@function inv-mul($a, $b) {
+    @return "calc(1.0 - calc(1.0 - #{$a}) * #{$b})";
+}
 
 //
 @function theme-mod-up($base, $percent) {
@@ -261,8 +265,8 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
                 --theme-light-up-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{$baseColor});
 
                 //
-                --theme-accent-dark : oklch(from var(--theme-base-color) min(l, 0.4) min(c, 0.8) h);
-                --theme-accent-light: oklch(from var(--theme-base-color) max(l, 0.6) min(c, 0.8) h);
+                --theme-accent-dark : oklch(from var(--theme-base-color) min(calc(1.0 - l), 0.4) min(c, 0.8) h);
+                --theme-accent-light: oklch(from var(--theme-base-color) max(calc(0.0 + l), 0.6) min(c, 0.8) h);
             }
 
             //
