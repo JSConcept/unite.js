@@ -36,30 +36,22 @@ $accentColor: theme-mod-down(#{$baseColor}, 92%);
 $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 
 
+//
+@mixin theme-dependent($property, $light, $dark, $fb: var(--theme-is-dark)) {
+    & { #{$property}: color-mix(in oklch, #{$light} calc(100% * #{var(--theme-is-dark)}), #{$dark}); }
+
+    //
+    @supports(color: light-dark(white, black)) {
+        #{$property}: light-dark(#{$light}, #{$dark});
+    }
+}
+
 
 //
 @mixin accent-mod($effect: 1) {
     & {
         --effect: $effect;
         --current-surface-color: #{theme-mod-down(var(--theme-surface-color), calc(1% * var(--effect, 1)))};
-    }
-}
-
-//
-@mixin var-dependent($var: var(--theme-is-dark), $importance: null) {
-    & {
-        --theme-up-mod: color-mix(in oklch, var(--theme-dark-up-mod) calc(100% * #{$var}), var(--theme-light-up-mod)) #{$importance};
-        --theme-down-mod: color-mix(in oklch, var(--theme-dark-down-mod) calc(100% * #{$var}), var(--theme-light-down-mod)) #{$importance};
-        //--theme-accent-base-color: color-mix(in oklch, var(--theme-accent-light) calc(100% * #{$var}), var(--theme-accent-dark)) #{$importance};
-    }
-}
-
-//
-@mixin scheme-dependent {
-    & {
-        --theme-up-mod: light-dark(var(--theme-dark-up-mod), var(--theme-light-up-mod));
-        --theme-down-mod: light-dark(var(--theme-dark-down-mod), var(--theme-light-down-mod));
-        //--theme-accent-base-color: light-dark(var(--theme-accent-light), var(--theme-accent-dark));
     }
 }
 
@@ -92,12 +84,9 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     & { --accent-surface-color   : #{$baseColor}; };
     & { --theme-surface-color    : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
     & { --adaptive-surface-color : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
-    & { --theme-accent-base-color: color-mix(in oklch, var(--theme-accent-light) calc(100% * var(--theme-is-dark)), var(--theme-accent-dark)); }
 
     //
-    @supports(color: light-dark(white, black)) {
-        --theme-accent-base-color: light-dark(var(--theme-accent-light), var(--theme-accent-dark));
-    }
+    @include theme-dependent("--theme-accent-base-color", "var(--theme-accent-light)", "var(--theme-accent-dark)");
 
     //
     @include contrast-inverse("--accent-glyph-color", $baseColor);
@@ -116,12 +105,9 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     & { --accent-surface-color   : #{$baseColor}; };
     & { --theme-surface-color    : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
     & { --adaptive-surface-color : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
-    & { --theme-accent-base-color: color-mix(in oklch, var(--theme-accent-dark) calc(100% * var(--theme-is-dark)), var(--theme-accent-light)); }
 
     //
-    @supports(color: light-dark(white, black)) {
-        --theme-accent-base-color: light-dark(var(--theme-accent-dark), var(--theme-accent-light));
-    }
+    @include theme-dependent("--theme-accent-base-color", "var(--theme-accent-dark)", "var(--theme-accent-light)");
 
     //
     @include contrast-inverse("--accent-glyph-color", $baseColor);
@@ -154,11 +140,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     & { --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), #{$color}); }
     @include ux-bg-dep;
 }
-
-
-
-
-
 
 
 
@@ -213,10 +194,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 
 
 
-
-
-
-
 //
 @layer ux-colors {
 
@@ -235,14 +212,22 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     }
 
     //
-    :root, :where(html) {
+    :root, :host, :scope, :where(html) {
+        //
         & {
-            --accent-surface-color: #{$baseColor};
+            --theme-is-dark: 0; color-scheme: light;
             --theme-surface-alpha: 0;
             --theme-accent-chroma: 0;
+            --theme-accent-color: var(--theme-accent-base-color);
+            --theme-chroma-color: var(--theme-accent-color);
+            --highlight-coefficient: 0.0;
+            --accent-surface-color: var(--theme-accent-color);
             --theme-dynamic-color: var(--theme-accent-color, transparent);
-            --theme-is-dark: 0; color-scheme: light;
         };
+
+        //
+        @include ux-solid;
+        @include ux-highlight-color;
 
         //
         @include contrast-inverse("--accent-glyph-color", $baseColor);
@@ -255,51 +240,68 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     }
 
     //
-    :root, :host, :scope, :where(html, body) {
-        @include ux-solid;
-        @include ux-highlight-color;
+    :root, :host, :scope, :where(html, body, *) {
 
         //
-        & { --theme-accent-base-color: color-mix(in oklch, var(--theme-accent-light) calc(100% * var(--theme-is-dark)), var(--theme-accent-dark)); }
-
-        //
-        @supports(color: light-dark(white, black)) {
-            --theme-accent-base-color: light-dark(var(--theme-accent-light), var(--theme-accent-dark));
-        }
-
-        //
-        & {
-            --theme-surface-alpha: 0;
-            --theme-accent-chroma: 0;
-            --theme-accent-color: var(--theme-accent-base-color);
-            --theme-chroma-color: var(--theme-accent-color);
-            --highlight-coefficient: 0.0;
-            --accent-surface-color: var(--theme-accent-color);
-        };
-        @include contrast-inverse("--accent-glyph-color", $baseColor);
-        @include contrast-inverse("--contrast-surface-color", "var(--theme-glyph-color, transparent)");
-        @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
-    }
-
-    //
-    :root, :host, :scope, :where(*) {
         &, &::before, &::after, &::selection {
-            --theme-chroma-mod: oklch(from #{$baseColor} l 0.99 h);
-            --theme-black-mod: oklch(from #{$baseColor} 0.01 0.01 h);
-            --theme-white-mod: oklch(from #{$baseColor} 0.99 0.01 h);
-            --theme-accent-color: var(--theme-accent-base-color);
 
             //
-            --theme-dark-down-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{$baseColor});
-            --theme-dark-up-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{$baseColor});
+            & {
+                --theme-chroma-mod: oklch(from #{$baseColor} l 0.99 h);
+                --theme-black-mod: oklch(from #{$baseColor} 0.01 0.01 h);
+                --theme-white-mod: oklch(from #{$baseColor} 0.99 0.01 h);
+                --theme-accent-color: var(--theme-accent-base-color);
+
+                //
+                --theme-dark-down-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{$baseColor});
+                --theme-dark-up-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{$baseColor});
+
+                //
+                --theme-light-down-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{$baseColor});
+                --theme-light-up-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{$baseColor});
+
+                //
+                --theme-accent-dark : oklch(from var(--theme-base-color) min(l, 0.4) min(c, 0.8) h);
+                --theme-accent-light: oklch(from var(--theme-base-color) max(l, 0.6) min(c, 0.8) h);
+            }
 
             //
-            --theme-light-down-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{$baseColor});
-            --theme-light-up-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{$baseColor});
+            & {
+                --current-glyph-color: var(--theme-glyph-color);
+                --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), var(--theme-surface-color));
+                --current-accent-color: var(--theme-accent-color);
+                --current-chroma-color: var(--theme-chroma-color);
+                --highlight-coefficient: 0.0;
+                --highlight-transition-duration: 0.2s;
+                --highlight-transition-mode: linear;
+                --highlight-transition-property: --highlight-coefficient;
+            }
 
             //
-            --theme-accent-dark : oklch(from var(--theme-base-color) min(l, 0.4) min(c, 0.8) h);
-            --theme-accent-light: oklch(from var(--theme-base-color) max(l, 0.6) min(c, 0.8) h);
+            & {
+                transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
+                accent-color: var(--current-glyph-color);
+                color: var(--current-glyph-color);
+                background-color: var(--current-surface-color);
+                stroke: var(--current-glyph-color);
+            }
+
+            //
+            @include ux-highlight-color;
+            @include theme-dependent("--theme-up-mod", "var(--theme-light-up-mod)", "var(--theme-dark-up-mod)");
+            @include theme-dependent("--theme-down-mod", "var(--theme-light-down-mod)", "var(--theme-dark-down-mod)");
+
+            //
+            &::selection, ::selection {
+                color: var(--current-surface-color);
+                background-color: var(--current-glyph-color);
+            }
+
+            //
+            &:where(a, span, svg), :where(a, span, svg) {
+                background-color: transparent;
+                stroke: var(--current-glyph-color);
+            }
         }
     }
 
@@ -316,61 +318,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     //
     :where([data-scheme]) *:not([data-scheme]) {
         @include ux-transparent-mode;
-    }
-
-    //
-    :root, :host, :scope, :where(html, body, *) {
-        &, &::before, &::after, &::selection {
-            //
-            & {
-                --current-glyph-color: var(--theme-glyph-color);
-                --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), var(--theme-surface-color));
-                --current-accent-color: var(--theme-accent-color);
-                --current-chroma-color: var(--theme-chroma-color);
-                --highlight-coefficient: 0.0;
-                --highlight-transition-duration: 0.2s;
-                --highlight-transition-mode: linear;
-                --highlight-transition-property: --highlight-coefficient;
-                transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
-            }
-
-            //
-            @include ux-highlight-color;
-            @include var-dependent();
-
-            //
-            @supports(color: light-dark(white, black)) {
-                @include scheme-dependent;
-            }
-        }
-    }
-
-    //
-    :root, :host, :scope, :where(body), :where(.ux-default-theme), :where(*) {
-        //
-        &::selection, ::selection {
-            color: var(--current-surface-color);
-            background-color: var(--current-glyph-color);
-        }
-
-        //
-        &, &::before, &::after, &::selection {
-            accent-color: var(--current-glyph-color);
-            color: var(--current-glyph-color);
-            background-color: var(--current-surface-color);
-            stroke: var(--current-glyph-color);
-
-            //
-            & :where(svg), &:where(svg) {
-                background-color: transparent;
-                stroke: var(--current-glyph-color);
-            }
-        }
-
-        //
-        &:where(a, span), :where(a, span) {
-            background-color: transparent;
-        }
     }
 
     //
@@ -398,12 +345,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     //
     @include hover("*[data-highlight-hover]") {
         @include attr-based("&", "--highlight-coefficient", "data-highlight-hover", "number", get-function("hl-logic"), 1);
-    }
-
-
-    //
-    :where(span, svg) {
-        background-color: transparent;
     }
 
     //
