@@ -2,12 +2,66 @@
  * There is color constants (of dynamic colors)
  */
 
-@use "./ColorUtils" as cu;
-@use "./ColorVars" as cl;
-
 //
 @use "../core/LogicFb" as flg;
 @use "../core/LogicSign" as slg;
+
+
+//
+$upMod: var(--theme-up-mod);
+$downMod: var(--theme-down-mod);
+$chromaMod: var(--theme-chroma-mod);
+$baseColor: var(--theme-accent-color);
+
+
+//
+@function theme-mod-up($base, $percent) {
+    @return color-mix(in oklch, $base calc(100% - $percent), $upMod);
+}
+
+//
+@function theme-mod-down($base, $percent) {
+    @return color-mix(in oklch, $base calc(100% - $percent), $downMod);
+}
+
+//
+@function theme-mod-chroma($base, $percent) {
+    @return color-mix(in oklch, $base calc(100% - $percent), $chromaMod);
+}
+
+//
+$surfaceColor: theme-mod-up(#{$baseColor}, 96%);
+$glyphColor: theme-mod-down(#{$baseColor}, 98%);
+$accentColor: theme-mod-down(#{$baseColor}, 92%);
+$chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
+
+
+
+//
+@mixin accent-mod($effect: 1) {
+    & {
+        --effect: $effect;
+        --current-surface-color: #{theme-mod-down(var(--theme-surface-color), calc(1% * var(--effect, 1)))};
+    }
+}
+
+//
+@mixin var-dependent($var: var(--theme-is-dark), $importance: null) {
+    & {
+        --theme-up-mod: color-mix(in oklch, var(--theme-dark-up-mod) calc(100% * #{$var}), var(--theme-light-up-mod)) #{$importance};
+        --theme-down-mod: color-mix(in oklch, var(--theme-dark-down-mod) calc(100% * #{$var}), var(--theme-light-down-mod)) #{$importance};
+        //--theme-accent-base-color: color-mix(in oklch, var(--theme-accent-light) calc(100% * #{$var}), var(--theme-accent-dark)) #{$importance};
+    }
+}
+
+//
+@mixin scheme-dependent {
+    & {
+        --theme-up-mod: light-dark(var(--theme-dark-up-mod), var(--theme-light-up-mod));
+        --theme-down-mod: light-dark(var(--theme-dark-down-mod), var(--theme-light-down-mod));
+        //--theme-accent-base-color: light-dark(var(--theme-accent-light), var(--theme-accent-dark));
+    }
+}
 
 //
 @mixin contrast($name, $from, $alpha: 1) {
@@ -34,10 +88,10 @@
 
 //
 @mixin ux-solid {
-    & { --theme-solid-color     : #{cu.theme-mod-up(cl.$baseColor, 96%)}; }
-    & { --accent-surface-color  : #{cl.$baseColor}; };
-    & { --theme-surface-color   : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
-    & { --adaptive-surface-color: oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
+    & { --theme-solid-color      : #{theme-mod-up($baseColor, 96%)}; }
+    & { --accent-surface-color   : #{$baseColor}; };
+    & { --theme-surface-color    : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
+    & { --adaptive-surface-color : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
     & { --theme-accent-base-color: color-mix(in oklch, var(--theme-accent-light) calc(100% * var(--theme-is-dark)), var(--theme-accent-dark)); }
 
     //
@@ -46,7 +100,7 @@
     }
 
     //
-    @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+    @include contrast-inverse("--accent-glyph-color", $baseColor);
     @include ux-bg-dep;
 }
 
@@ -59,8 +113,8 @@
 
 //
 @mixin ux-inverse {
-    & { --theme-solid-color      : #{cu.theme-mod-down(cl.$baseColor, 80%)}; }
-    & { --accent-surface-color   : #{cl.$baseColor}; };
+    & { --theme-solid-color      : #{theme-mod-down($baseColor, 80%)}; }
+    & { --accent-surface-color   : #{$baseColor}; };
     & { --theme-surface-color    : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
     & { --adaptive-surface-color : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
     & { --theme-accent-base-color: color-mix(in oklch, var(--theme-accent-dark) calc(100% * var(--theme-is-dark)), var(--theme-accent-light)); }
@@ -71,15 +125,15 @@
     }
 
     //
-    @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+    @include contrast-inverse("--accent-glyph-color", $baseColor);
     @include ux-bg-dep;
 }
 
 //
 @mixin ux-accent-inverse {
     & { --theme-accent-base-color: var(--theme-base-color); };
-    & { --theme-solid-color      : #{cu.theme-mod-up(cl.$baseColor, 96%)}; }
-    & { --accent-surface-color   : #{cl.$baseColor}; };
+    & { --theme-solid-color      : #{theme-mod-up($baseColor, 96%)}; }
+    & { --accent-surface-color   : #{$baseColor}; };
     & { --adaptive-surface-color : var(--accent-surface-color); }
 
     //
@@ -107,22 +161,22 @@
 
     //
     :root {
-        --range-slider:          #{cu.theme-mod-up(cl.$baseColor, 90%)};; /* slider main background color */
-        --range-handle-inactive: #{cu.theme-mod-up(cl.$baseColor, 80%)};; /* inactive handle color */
-        --range-handle:          #{cu.theme-mod-up(cl.$baseColor, 20%)};; /* non-focussed handle color */
-        --range-handle-focus:    #{cu.theme-mod-up(cl.$baseColor, 10%)}; /* focussed handle color */
+        --range-slider:          #{theme-mod-up($baseColor, 90%)};; /* slider main background color */
+        --range-handle-inactive: #{theme-mod-up($baseColor, 80%)};; /* inactive handle color */
+        --range-handle:          #{theme-mod-up($baseColor, 20%)};; /* non-focussed handle color */
+        --range-handle-focus:    #{theme-mod-up($baseColor, 10%)}; /* focussed handle color */
         --range-handle-border:   var(--range-handle); /* handle border color */
         --range-range-inactive:  var(--range-handle-inactive); /* inactive range bar background color */
         --range-range:           var(--range-handle-focus); /* active range background color */
         --range-float-inactive:  var(--range-handle-inactive); /* inactive floating label background color */
         --range-float:           var(--range-handle-focus); /* floating label background color */
-        --range-float-text:      #{cu.theme-mod-up(cl.$baseColor, 100%)};; /* text color on floating label */
+        --range-float-text:      #{theme-mod-up($baseColor, 100%)};; /* text color on floating label */
     }
 
     //
     :root, :where(html) {
         & {
-            --accent-surface-color: #{cl.$baseColor};
+            --accent-surface-color: #{$baseColor};
             --theme-surface-alpha: 0;
             --theme-accent-chroma: 0;
             --theme-dynamic-color: var(--theme-accent-color, transparent);
@@ -130,7 +184,7 @@
         };
 
         //
-        @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+        @include contrast-inverse("--accent-glyph-color", $baseColor);
         @include contrast-inverse("--contrast-surface-color", "var(--theme-glyph-color, transparent)");
         @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
 
@@ -161,7 +215,7 @@
             --highlight-coefficient: 0.0;
             --accent-surface-color: var(--theme-accent-color);
         };
-        @include contrast-inverse("--accent-glyph-color", cl.$baseColor);
+        @include contrast-inverse("--accent-glyph-color", $baseColor);
         @include contrast-inverse("--contrast-surface-color", "var(--theme-glyph-color, transparent)");
         @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
     }
@@ -169,18 +223,18 @@
     //
     :root, :host, :scope, :where(*) {
         &, &::before, &::after, &::selection {
-            --theme-chroma-mod: oklch(from #{cl.$baseColor} l 0.99 h);
-            --theme-black-mod: oklch(from #{cl.$baseColor} 0.01 0.01 h);
-            --theme-white-mod: oklch(from #{cl.$baseColor} 0.99 0.01 h);
+            --theme-chroma-mod: oklch(from #{$baseColor} l 0.99 h);
+            --theme-black-mod: oklch(from #{$baseColor} 0.01 0.01 h);
+            --theme-white-mod: oklch(from #{$baseColor} 0.99 0.01 h);
             --theme-accent-color: var(--theme-accent-base-color);
 
             //
-            --theme-dark-down-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{cl.$baseColor});
-            --theme-dark-up-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{cl.$baseColor});
+            --theme-dark-down-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{$baseColor});
+            --theme-dark-up-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{$baseColor});
 
             //
-            --theme-light-down-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{cl.$baseColor});
-            --theme-light-up-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{cl.$baseColor});
+            --theme-light-down-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{$baseColor});
+            --theme-light-up-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{$baseColor});
 
             //
             --theme-accent-dark : oklch(from var(--theme-base-color) min(l, 0.4) min(c, 0.8) h);
@@ -221,11 +275,11 @@
 
             //
             @include ux-highlight-color;
-            @include cu.var-dependent();
+            @include var-dependent();
 
             //
             @supports(color: light-dark(white, black)) {
-                @include cu.scheme-dependent;
+                @include scheme-dependent;
             }
         }
     }
@@ -259,34 +313,6 @@
     }
 
     //
-    @media screen and ((hover: hover) or (pointer: fine)) {
-        //
-        @supports (opacity: attr(data-highlight-hover number, 1)) {
-            *[data-highlight-hover]:hover { --highlight-coefficient: calc(attr(data-highlight-hover number, 1) * 3); }
-        }
-
-        // fallback support
-        @supports not (opacity: attr(data-highlight-hover number, 1)) {
-            @property --data-highlight-hover-attr { initial-value: 1; inherits: true; syntax: "<number>"; };
-            *[data-highlight-hover]:hover { --highlight-coefficient: calc(var(--data-highlight-hover-attr, 1) * 3); }
-        }
-    }
-
-    //
-    @media screen and (hover: none) and (pointer: coarse) {
-        //
-        @supports (opacity: attr(data-highlight-hover number, 1)) {
-            *[data-highlight-hover]:active { --highlight-coefficient: calc(attr(data-highlight-hover number, 1) * 3); }
-        }
-
-        // fallback support
-        @supports not (opacity: attr(data-highlight-hover number, 1)) {
-            @property --data-highlight-hover-attr { initial-value: 1; inherits: true; syntax: "<number>"; };
-            *[data-highlight-hover]:hover { --highlight-coefficient: calc(var(--data-highlight-hover-attr, 1) * 3); }
-        }
-    }
-
-    //
     *[data-theme="dark"]  { --theme-is-dark: 1; color-scheme: dark; }
     *[data-theme="light"] { --theme-is-dark: 0; color-scheme: light; }
 
@@ -300,42 +326,67 @@
     *[data-scheme="solid-transparent"]   { @include ux-solid;          & { --theme-accent-chroma: 0; --theme-surface-alpha: 0; }; }
     *[data-scheme="dynamic-transparent"] { @include ux-dynamic;        & { --theme-accent-chroma: 1; --theme-surface-alpha: 0; }; }
 
+    //
+    @mixin attr-based(
+        $selector: "&",
+        $property,
+        $attr,
+        $type: "number",
+        $logic: null,
+        $default: 1,
+        $test: "opacity"
+    ) {
+        //
+        @supports (#{$test}: attr(#{$attr} #{$type}, #{$default})) {
+            $value    : attr(#{$attr} #{$type}, #{$default});
+            $withLogic: if($logic != null, call($logic, $value), $value);
+
+            //
+            #{$selector} { #{$property}: #{$withLogic}; };
+        }
+
+        // fallback support
+        @supports not (#{$test}: attr(#{$attr} #{$type}, #{$default})) {
+            @property --#{$attr}-attr { initial-value: #{$default}; inherits: true; syntax: "<#{$type}>"; };
+
+            //
+            $value    : var(--#{$attr}-attr, #{$default});
+            $withLogic: if($logic != null, call($logic, $value), $value);
+
+            //
+            #{$selector} { #{$property}: #{$withLogic}; };
+        }
+    }
 
     //
-    @supports (opacity: attr(data-highlight number, 1)) {
-        *[data-highlight] { --highlight-coefficient: calc(attr(data-highlight number, 1) * 3); }
-    }
+    @mixin hover ($selector: "&") {
+        //
+        @media screen and ((hover: hover) or (pointer: fine)) {
+            #{$selector}:hover {
+                @content;
+            }
+        }
 
-    // fallback support
-    @supports not (opacity: attr(data-highlight number, 1)) {
-        @property --data-highlight-attr { initial-value: 1; inherits: true; syntax: "<number>"; };
-        *[data-highlight] { --highlight-coefficient: calc(var(--data-highlight-attr, 1) * 3); }
+        //
+        @media screen and ((hover: none) and (pointer: coarse)) {
+            #{$selector}:action {
+                @content;
+            }
+        }
     }
-
 
     //
-    @supports (opacity: attr(data-chroma number, 0)) {
-        *[data-chroma] { --theme-accent-chroma: attr(data-chroma number, 0); }
-    }
-
-    // fallback support
-    @supports not (opacity: attr(data-chroma number, 0)) {
-        @property --data-chroma-attr { initial-value: 0; inherits: true; syntax: "<number>"; };
-        *[data-chroma] { --theme-accent-chroma: calc(var(--data-chroma-attr, 0) * 3); }
-    }
-
+    @function hl-logic($value) { @return "calc(#{$value} * 3)"; };
 
     //
-    @supports (opacity: attr(data-alpha number, 1)) {
-        *[data-chroma] { --theme-surface-alpha: attr(data-alpha number, 1); }
-    }
+    @include attr-based("*[data-highlight]", "--highlight-coefficient", "data-highlight", "number", get-function("hl-logic"), 1);
+    @include attr-based("*[data-chroma]", "--theme-accent-chroma", "data-chroma", "number", null, 0);
+    @include attr-based("*[data-alpha]", "--theme-surface-alpha", "data-alpha", "number", null, 1);
 
-    // fallback support
-    @supports not (opacity: attr(data-alpha number, 1)) {
-        @property --data-alpha-attr { initial-value: 1; inherits: true; syntax: "<number>"; };
-        *[data-chroma] { --theme-surface-alpha: var(--data-alpha-attr, 1); }
+    //
+    @include hover("*[data-highlight-hover]") {
+        @include attr-based("&", "--highlight-coefficient", "data-highlight-hover", "number", get-function("hl-logic"), 1);
     }
-
 
 
     //
@@ -345,6 +396,6 @@
 
     //
     :where(x-scrollbox) {
-        --sb-color: #{cu.theme-mod-down(cu.theme-mod-up(cl.$baseColor, 80%), 20%)};
+        --sb-color: #{theme-mod-down(theme-mod-up($baseColor, 80%), 20%)};
     }
 }
