@@ -138,32 +138,19 @@ document.addEventListener("ux-theme-change", ()=>{
 });
 
 
+//
 // PART II by 26.08.2024, but bit horrible solution
-
-//
-if (!CSS.supports("opacity", "attr(data-highlight-hover number, 1)")) {
-    observeAttributeBySelector(document.documentElement, "*[data-highlight-hover]", "data-highlight-hover", (mutation)=>{
-        mutation?.target?.style?.setProperty?.("--data-highlight-hover-attr", mutation.target.getAttribute("data-highlight-hover"), "");
-    });
+const makeAttrSupport = (selector, attr, type = "number", def = "1")=>{
+    //
+    if (!CSS.supports("opacity", `attr(${attr} ${type}, 1)`)) {
+        observeAttributeBySelector(document.documentElement, selector, attr, (mutation)=>{
+            mutation?.target?.style?.setProperty?.(`--${attr}-attr`, mutation.target.getAttribute(attr) ?? def, "");
+        });
+    }
 }
 
 //
-if (!CSS.supports("opacity", "attr(data-highlight number, 1)")) {
-    observeAttributeBySelector(document.documentElement, "*[data-highlight]", "data-highlight", (mutation)=>{
-        mutation?.target?.style?.setProperty?.("--data-highlight-attr", mutation.target.getAttribute("data-highlight"), "");
-    });
-}
-
-//
-if (!CSS.supports("opacity", "attr(data-chroma number, 1)")) {
-    observeAttributeBySelector(document.documentElement, "*[data-chroma]", "data-chroma", (mutation)=>{
-        mutation?.target?.style?.setProperty?.("--data-chroma-attr", mutation.target.getAttribute("data-chroma"), "");
-    });
-}
-
-//
-if (!CSS.supports("opacity", "attr(data-alpha number, 1)")) {
-    observeAttributeBySelector(document.documentElement, "*[data-alpha]", "data-alpha", (mutation)=>{
-        mutation?.target?.style?.setProperty?.("--data-alpha-attr", mutation.target.getAttribute("data-alpha"), "");
-    });
-}
+makeAttrSupport("*[data-highlight-hover]", "data-highlight-hover");
+makeAttrSupport("*[data-highlight]", "data-highlight");
+makeAttrSupport("*[data-chroma]", "data-chroma");
+makeAttrSupport("*[data-alpha]", "data-alpha");
