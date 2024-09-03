@@ -105,9 +105,10 @@
     body {
         overflow: hidden;
         position: relative;
+        pointer-events: auto !important;
 
         //
-        background-color: var(--theme-accent-color, transparent);
+        background-color: var(--theme-base-color, transparent);
         //zoom: var(--scaling, 1);
 
         // if needs viewport
@@ -265,7 +266,7 @@
         block-size: 100cqb;
 
         //
-        pointer-events: none;
+        pointer-events: none !important;
         place-content: center;
         place-items: center;
         place-self: center;
@@ -285,7 +286,7 @@
         object-position: center;
 
         //
-        background-color: var(--theme-accent-color, transparent);
+        background-color: var(--theme-base-color, transparent);
         border-image-source: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 
         //
