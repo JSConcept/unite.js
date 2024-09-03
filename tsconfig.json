@@ -1,13 +1,13 @@
 {
-    "include": ["./**/*", "../src/UI", "../src/UI2/ItemEdit/ItemEdit.ts"],
+    "include": ["**/*.ts", "**/*.mjs", "**/*.js", "**/*.d.ts", "**/*.tsx"],
     "exclude": ["./node_modules", "../node_modules"],
     "compilerOptions": {
         "types": ["./global.d.ts"],
         "paths": {
-            "@": ["./"],
-            "@src": ["./"],
-            "@unite": ["./"],
-            "@assets": ["../assets/"]
+            "@/*": ["*"],
+            "@src/*": ["*"],
+            "@unite/*": ["*"],
+            "@assets/*": ["assets/*"]
         },
         "composite": true,
         "lib": ["dom", "esnext", "webworker"],
