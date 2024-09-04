@@ -69,8 +69,8 @@ export class WCanvas extends HTMLCanvasElement {
     //
     connectedCallback() {
         const parent: HTMLElement = this.parentNode as HTMLElement;
-        this.width  = Math.min(Math.max((this.clientWidth  || parent?.clientWidth  || 0) * devicePixelRatio, 1), Math.min(parent?.clientWidth  || 0, screen?.width  || 0));
-        this.height = Math.min(Math.max((this.clientHeight || parent?.clientHeight || 0) * devicePixelRatio, 1), Math.min(parent?.clientHeight || 0, screen?.height || 0));
+        this.width  = Math.min(Math.max(this.clientWidth  || parent?.clientWidth  || 0, 1), Math.min(parent?.clientWidth  || 0, screen?.width  || 0)) * (devicePixelRatio || 1);
+        this.height = Math.min(Math.max(this.clientHeight || parent?.clientHeight || 0, 1), Math.min(parent?.clientHeight || 0, screen?.height || 0)) * (devicePixelRatio || 1);
 
         //
         this.style.aspectRatio = `${this.clientWidth} / ${this.clientHeight}`;
