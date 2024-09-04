@@ -29,16 +29,16 @@ registerLayout('grid-page', class {
     async layout(children, edges, constraints, styleMap) {
         const availableInlineSize = constraints.fixedInlineSize; //- edges.all.inline;
         const availableBlockSize = constraints.fixedBlockSize; //- edges.all.block;
-        
+
         //
         const orient = parseInt(styleMap.get("--orient").value);
         const columns = styleMap.get(["--layout-c", "--layout-r"][orient%2]).value;
         const rows = styleMap.get(["--layout-r", "--layout-c"][orient%2]).value;
-        
+
         //
         const columnSize = availableInlineSize / columns;
         const rowSize = availableBlockSize / rows;
-        
+
         //
         const cellMin = Math.min(columnSize, rowSize);
         const childConstraints = {availableInlineSize: cellMin, availableBlockSize: cellMin};

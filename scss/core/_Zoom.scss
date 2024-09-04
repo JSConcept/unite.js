@@ -10,18 +10,28 @@
 
 //
 .__exp-use-zoom {
-    zoom: max(var(--zoom, 1), 0.125);
-    font-size: 16px !important;
     --zoom: max(var(--scaling, 1), 0.125);
     --zpx: calc(1px / max(var(--zoom, 1), 0.125));
     --ppx: calc(1px / max(var(--pixel-ratio, 1), 0.125));
+    font-size: 16px !important;
+    zoom: max(var(--zoom, 1), 0.125);
+
+    //
+    & body { zoom: calc(1 / max(var(--zoom, 1), 0.125)); };
+    & .app-container { zoom: max(var(--zoom, 1), 0.125); }
 }
 
 //
 .__use_font-size {
-    zoom: max(var(--zoom, 1), 0.125);
     font-size: calc(16px * max(var(--scaling, 1), 0.125));
+    zoom: max(var(--zoom, 1), 0.125);
+
+    //
     --zoom: 1;
     --zpx: calc(1px / max(var(--zoom, 1), 0.125));
     --ppx: calc(1px / max(var(--pixel-ratio, 1), 0.125));
+
+    //
+    & body { zoom: 1; };
+    & .app-container { zoom: max(var(--zoom, 1), 0.125); }
 }

@@ -157,6 +157,9 @@
         contain: size layout;
 
         //
+        zoom: 1;
+
+        //
         direction: ltr;
 
         //
@@ -193,6 +196,9 @@
             --icon-size: min(calc(100cqmin / min(var(--layout-c), var(--layout-r)) - max(var(--c-gap), var(--r-gap))), 4rem);
             --grid-c: calc(var(--fc-cell-x) + var(--c-shift-mod, 0));
             --grid-r: calc(var(--fc-cell-y) + var(--r-shift-mod, 0));
+
+            //
+            zoom: 1;
 
             //
             place-self: center;
