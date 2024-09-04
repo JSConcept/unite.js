@@ -14,11 +14,7 @@ document.documentElement.classList.add("__exp-use-zoom");
 addEventListener("resize", ()=>{ zoomValue = getZoom() || 1; });
 
 //
-export const zoomOf = () => {
-    return zoomValue;
-};
-
-//
+export const zoomOf = () => { return zoomValue || 1; };
 export const changeZoom = (scale = 1) => {
     document.documentElement.style.setProperty("--scaling", scale as unknown as string);
     document.documentElement.dispatchEvent(new CustomEvent("scaling", {
@@ -27,4 +23,9 @@ export const changeZoom = (scale = 1) => {
         cancelable: true
     }));
     return scale;
+}
+
+//
+export const fixedClientZoom = ()=>{
+    return (document.documentElement?.currentCSSZoom != null ? 1 : zoomOf());
 }

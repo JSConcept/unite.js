@@ -8,7 +8,7 @@ import {formatCss, formatHex, interpolate, oklch, parse} from "@culori/bundled/c
 import {setStyleRule} from "./StyleRules.ts";
 import {sourceColorFromImage} from "../utils/ColorMod.ts";
 import { observeAttributeBySelector } from "../dom/Observer.ts";
-import { zoomOf } from "../utils/Zoom.ts";
+import { fixedClientZoom, zoomOf } from "../utils/Zoom.ts";
 
 //
 let baseColorI: any = {};
@@ -68,9 +68,9 @@ const makeContrast = (color)=>{
 
 //
 export const pickFromCenter = (holder)=>{
-    const box = holder?.getBoundingClientRect?.();
+    const box = holder?.getBoundingClientRect?.(); //* zoomOf()
     if (box) {
-        const xy: [number, number] = [(box.left + box.right) / 2 * zoomOf(), (box.top + box.bottom) / 2 * zoomOf()];
+        const xy: [number, number] = [(box.left + box.right) / 2 * fixedClientZoom(), (box.top + box.bottom) / 2 * fixedClientZoom()];
         pickBgColor(...xy, holder);
     }
 }
