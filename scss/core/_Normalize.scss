@@ -156,7 +156,7 @@
 
         // if needs viewport
         container-type: size;
-        contain: strict;
+        contain: content;
 
         //
         will-change: --keyboard-inset-bottom, --keyboard-inset-height, inset;

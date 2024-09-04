@@ -1,4 +1,8 @@
+import type { ScrollBarStatus } from "@/wcomp/scrollbox/ScrollBox.ts";
 import {zoomOf} from "../utils/Zoom.ts";
+
+//
+import Timer from "../../scripts/performance/Time.ts";
 
 //
 class PointerEdge {
@@ -161,20 +165,36 @@ CSS?.registerProperty?.({
 
 
 //
-const setProperty = (target, name, value)=>{
+const setProperty = (target, name, value, importance = "")=>{
     if ("attributeStyleMap" in target) {
-        const prop = target.attributeStyleMap.get(name)?.[0];
+        const raw = target.attributeStyleMap.get(name);
+        const prop = raw?.[0] ?? raw?.value;
         if (parseFloat(prop) != value && prop != value || prop == null) {
             target.attributeStyleMap.set(name, value);
         }
     } else {
         const prop = target?.style?.getPropertyValue?.(name);
         if (parseFloat(prop) != value && prop != value || prop == null) {
-            target?.style?.setProperty?.(name, value, "");
+            target?.style?.setProperty?.(name, value, importance);
         }
     }
 }
 
+
+
+//
+const delayed = new Map<number, Function | null>([]);
+Timer.rafLoop(()=>{
+    for (const dl of delayed.entries()) {
+        dl[1]?.();
+        delayed.delete(dl[0]);
+    }
+});
+
+//
+const callByFrame = (pointerId, cb)=>{
+    delayed.set(pointerId, cb);
+}
 
 //
 document.documentElement.addEventListener(
@@ -227,38 +247,42 @@ document.documentElement.addEventListener(
                 hm.shifting[1] += np.movement[1];
                 hm.modified = [...hm.shifting];
             }
+        });
 
-            //
-            if (hm.modified && Math.hypot(...np.movement) >= 0.001) {
-                //
-                const nev = new CustomEvent("m-dragging", {
-                    bubbles: true,
-                    detail: {
-                        pointer: exists,
-                        holding: hm,
-                    },
-                });
+        //
+        callByFrame(ev.pointerId, ()=>{
+            exists?.holding?.forEach((hm) => {
+                if (hm.modified && Math.hypot(...np.movement) >= 0.001) {
+                    //
+                    const nev = new CustomEvent("m-dragging", {
+                        bubbles: true,
+                        detail: {
+                            pointer: exists,
+                            holding: hm,
+                        },
+                    });
 
-                //
-                const em = hm.element?.deref();
-                em?.dispatchEvent?.(nev);
+                    //
+                    const em = hm.element?.deref();
+                    em?.dispatchEvent?.(nev);
 
-                //
-                if (em) {
-                    em[`@data-${hm.propertyName || "drag"}-x`] = hm.modified[0];
-                    em[`@data-${hm.propertyName || "drag"}-y`] = hm.modified[1];
+                    //
+                    if (em) {
+                        em[`@data-${hm.propertyName || "drag"}-x`] = hm.modified[0];
+                        em[`@data-${hm.propertyName || "drag"}-y`] = hm.modified[1];
+                    }
+
+                    //
+                    setProperty(em,
+                        `--${hm.propertyName || "drag"}-x`,
+                        hm.modified[0] as unknown as string
+                    );
+                    setProperty(em,
+                        `--${hm.propertyName || "drag"}-y`,
+                        hm.modified[1] as unknown as string
+                    );
                 }
-
-                //
-                setProperty(em,
-                    `--${hm.propertyName || "drag"}-x`,
-                    hm.modified[0] as unknown as string
-                );
-                setProperty(em,
-                    `--${hm.propertyName || "drag"}-y`,
-                    hm.modified[1] as unknown as string
-                );
-            }
+            });
         });
 
         //

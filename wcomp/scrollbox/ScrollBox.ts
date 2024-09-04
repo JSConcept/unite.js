@@ -5,9 +5,28 @@ import {observeBorderBox} from "../../scripts/dom/Observer.ts";
 // @ts-ignore
 import styles from "./ScrollBox.scss?inline";
 import html from "./ScrollBox.html?raw";
+import Timer from "../../scripts/performance/Time.ts";
+import { UUIDv4 } from "../../scripts/crypto/aes-gcm.ts";
+
+
 
 //
-interface ScrollBarStatus {
+const delayed = new Map<string, Function | null>([]);
+Timer.rafLoop(()=>{
+    for (const dl of delayed.entries()) {
+        dl[1]?.();
+        delayed.delete(dl[0]);
+    }
+});
+
+//
+const callByFrame = (pointerId, cb)=>{
+    delayed.set(pointerId, cb);
+}
+
+
+//
+export interface ScrollBarStatus {
     pointerId: number;
     virtualScroll: number;
     pointerLocation: number;
@@ -16,7 +35,8 @@ interface ScrollBarStatus {
 //
 const setProperty = (target, name, value, importance = "")=>{
     if ("attributeStyleMap" in target) {
-        const prop = target.attributeStyleMap.get(name)?.[0];
+        const raw = target.attributeStyleMap.get(name);
+        const prop = raw?.[0] ?? raw?.value;
         if (parseFloat(prop) != value && prop != value || prop == null) {
             target.attributeStyleMap.set(name, value);
         }
@@ -29,7 +49,7 @@ const setProperty = (target, name, value, importance = "")=>{
 }
 
 //
-const borderBoxWidth = Symbol("@content-box-width");
+const borderBoxWidth  = Symbol("@content-box-width");
 const borderBoxHeight = Symbol("@content-box-height");
 
 //
@@ -38,12 +58,18 @@ class ScrollBar {
     holder: HTMLElement;
     status: ScrollBarStatus;
     content: HTMLDivElement;
+    uuid: string = "";
+    uuid2: string = "";
+    uuid3: string = "";
 
     //
     constructor({holder, scrollbar, content}, axis = 0) {
         this.scrollbar = scrollbar;
         this.holder    = holder;
         this.content   = content;
+        this.uuid      = UUIDv4();
+        this.uuid2     = UUIDv4();
+        this.uuid3     = UUIDv4();
 
         //
         this.status = {
@@ -55,19 +81,22 @@ class ScrollBar {
         //
         const onChanges = (ev: any | null = null) => {
             //if (!ev?.target || ev?.target == this.content) {
-                const sizePercent = Math.min(
-                    this.content[[borderBoxWidth, borderBoxHeight][axis]] /
-                    this.content[["scrollWidth", "scrollHeight"][axis]],
-                    1
-                );
 
-                //
-                setProperty(this.scrollbar, "--sizeCoef", sizePercent);
-                if (sizePercent >= 0.999) {
-                    setProperty(this.scrollbar, "visibility", "collapse", "important");
-                } else {
-                    setProperty(this.scrollbar, "visibility", "visible", "important");
-                }
+                callByFrame(this.uuid, ()=>{
+                    const sizePercent = Math.min(
+                        this.content[[borderBoxWidth, borderBoxHeight][axis]] /
+                        this.content[["scrollWidth", "scrollHeight"][axis]],
+                        1
+                    );
+
+                    //
+                    setProperty(this.scrollbar, "--sizeCoef", sizePercent);
+                    if (sizePercent >= 0.999) {
+                        setProperty(this.scrollbar, "visibility", "collapse", "important");
+                    } else {
+                        setProperty(this.scrollbar, "visibility", "visible", "important");
+                    }
+                });
             //}
         };
 
@@ -90,25 +119,27 @@ class ScrollBar {
                 ev.stopPropagation();
 
                 //
-                const previous = this.content[["scrollLeft", "scrollTop"][axis]];
-                const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
+                //callByFrame(this.uuid2, ()=>{
+                    const previous = this.content[["scrollLeft", "scrollTop"][axis]];
+                    const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
 
-                //
-                this.status.virtualScroll +=
-                    (coord - this.status.pointerLocation) *
-                    (this.content[["scrollWidth", "scrollHeight"][axis]] / this.content[[borderBoxWidth, borderBoxHeight][axis]]);
-                this.status.pointerLocation = coord;
+                    //
+                    this.status.virtualScroll +=
+                        (coord - this.status.pointerLocation) *
+                        (this.content[["scrollWidth", "scrollHeight"][axis]] / this.content[[borderBoxWidth, borderBoxHeight][axis]]);
+                    this.status.pointerLocation = coord;
 
-                //
-                const realShift = this.status.virtualScroll - previous;
+                    //
+                    const realShift = this.status.virtualScroll - previous;
 
-                //
-                if (Math.abs(realShift) >= 0.001) {
-                    this.content.scrollBy({
-                        [["left", "top"][axis]]: realShift,
-                        behavior: "instant",
-                    });
-                }
+                    //
+                    if (Math.abs(realShift) >= 0.001) {
+                        this.content.scrollBy({
+                            [["left", "top"][axis]]: realShift,
+                            behavior: "instant",
+                        });
+                    }
+                //});
             }
         });
 
@@ -136,30 +167,32 @@ class ScrollBar {
         this.holder.addEventListener("pointerleave", onChanges);
         this.holder.addEventListener("pointerenter", onChanges);
         this.content.addEventListener("scroll", (ev)=>{
-            //
-            setProperty(
-                this.holder,
-                "--scroll-top",
-                (this.content.scrollTop || "0") as string
-            );
+            callByFrame(this.uuid, ()=>{
+                //
+                setProperty(
+                    this.holder,
+                    "--scroll-top",
+                    (this.content.scrollTop || "0") as string
+                );
 
-            //
-            setProperty(
-                this.holder,
-                "--scroll-left",
-                (this.content.scrollLeft || "0") as string
-            );
+                //
+                setProperty(
+                    this.holder,
+                    "--scroll-left",
+                    (this.content.scrollLeft || "0") as string
+                );
 
-            //
-            const event = new CustomEvent("scroll-change", {
-                detail: {
-                    scrollTop: this.content.scrollTop,
-                    scrollLeft: this.content.scrollLeft,
-                },
+                //
+                const event = new CustomEvent("scroll-change", {
+                    detail: {
+                        scrollTop: this.content.scrollTop,
+                        scrollLeft: this.content.scrollLeft,
+                    },
+                });
+
+                //
+                this.holder.dispatchEvent(event);
             });
-
-            //
-            this.holder.dispatchEvent(event);
         });
 
         //
