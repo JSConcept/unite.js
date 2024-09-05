@@ -169,18 +169,20 @@ class ScrollBar {
         this.content.addEventListener("scroll", (ev)=>{
             callByFrame(this.uuid, ()=>{
                 //
-                setProperty(
-                    this.holder,
-                    "--scroll-top",
-                    (this.content.scrollTop || "0") as string
-                );
+                if (!CSS.supports("timeline-scope", "--tm-x, --tm-y")) {
+                    setProperty(
+                        this.holder,
+                        "--scroll-top",
+                        (this.content.scrollTop || "0") as string
+                    );
 
-                //
-                setProperty(
-                    this.holder,
-                    "--scroll-left",
-                    (this.content.scrollLeft || "0") as string
-                );
+                    //
+                    setProperty(
+                        this.holder,
+                        "--scroll-left",
+                        (this.content.scrollLeft || "0") as string
+                    );
+                }
 
                 //
                 const event = new CustomEvent("scroll-change", {
