@@ -44,7 +44,8 @@ const animateHide = async (target)=>{
         ],  {
             fill: "none",
             duration: 100,
-            easing: "linear"
+            easing: "linear",
+            delay: matchMedia("(hover: none)").matches ? (parseFloat(target.getAttribute("data-delay-hide") || "0") || 0) : 0
             //rangeStart: "cover 0%",
             //rangeEnd: "cover 100%",
         }).finished;
@@ -103,7 +104,8 @@ const animateShow = async (target)=>{
         ], {
             fill: "none",
             duration: 100,
-            easing: "linear"
+            easing: "linear",
+            delay: 0
             //rangeStart: "cover 0%",
             //rangeEnd: "cover 100%",
         }).finished;
