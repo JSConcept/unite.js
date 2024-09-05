@@ -64,6 +64,7 @@
         place-items: start;
 
         //
+        timeline-scope: --tm-x, --tm-y;
         display: grid;
 
         //
@@ -127,6 +128,10 @@
 
         //
         & :where(.content-box) {
+            scroll-timeline: --tm-x horizontal, --tm-y vertical;
+            scroll-timeline: --tm-x inline, --tm-y block;
+
+            //
             overflow: scroll;
             display: block;
             scrollbar-gutter: stable both-edges !important;
@@ -145,7 +150,7 @@
             //
             contain: none;
             container-type: normal;
-            position: sticky;
+            position: relative;//sticky;
             display: block;
             inset: 0px;
 
@@ -186,11 +191,23 @@
         & :is(.scrollbar-y) {
             grid-row: 1 / 1 span;
             grid-column: 2 / 2 span;
+            animation-name: scroll-percent-y;
+            animation-timeline: --tm-y;
+            animation-fill-mode: both;
+            animation-duration: 1ms;
+            animation-delay: 0ms;
+            animation-timing-function: linear;
+            //animation-play-state: paused;
 
             & :where(.thumb) {
                 inline-size: 100%;
                 block-size: min(calc(100% * var(--sizeCoef, 1)), 100%);
                 translate: 0px calc(var(--scroll-top) * var(--sizeCoef, 1) * 1px);
+
+                //
+                @supports(timeline-scope: --tm-x, --tm-y) {
+                    translate: 0px calc(var(--percent-y) * (1 - var(--sizeCoef, 1)) * 100cqb);
+                }
             }
         }
 
@@ -198,11 +215,23 @@
         & :is(.scrollbar-x) {
             grid-column: 1 / 1 span;
             grid-row: 2 / 2 span;
+            animation-name: scroll-percent-y;
+            animation-timeline: --tm-x;
+            animation-fill-mode: both;
+            animation-duration: 1ms;
+            animation-delay: 0ms;
+            animation-timing-function: linear;
+            //animation-play-state: paused;
 
             & :where(.thumb) {
                 block-size: 100%;
                 inline-size: min(calc(100% * var(--sizeCoef, 1)), 100%);
                 translate: calc(var(--scroll-left) * var(--sizeCoef, 1) * 1px) 0px;
+
+                //
+                @supports(timeline-scope: --tm-x, --tm-y) {
+                    translate: calc(var(--percent-x) * (1 - var(--sizeCoef, 1)) * 100cqi) 0px;
+                }
             }
         }
 
