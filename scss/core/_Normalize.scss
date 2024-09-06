@@ -1,6 +1,4 @@
-//@use "@idc/Fonts/XO_Caliburn" as dFont;
-@use "./CMixins" as cm;
-@use "./ClassLets" as cl;
+@use "@unite/scss/core/Profile" as ps;
 
 //
 @mixin disableTransform() {
@@ -174,11 +172,11 @@
         max-block-size: 100dvb;
 
         //
-        @include cl.vp-vars();
-
-        //
         grid-template-columns: minmax(0px, 1fr);
         grid-template-rows: minmax(0px, 1fr);
+
+        //
+        @include ps.vp-vars();
 
         //
         & > :where(*) {
@@ -460,6 +458,58 @@
     :where(a, span) {
         text-decoration: none;
         background-color: transparent;
+        place-content: center;
+        place-items: center;
+        justify-content: start;
+    }
+
+
+    // PART II.
+    :where(div, label) {
+        display: inline flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        box-sizing: border-box;
+
+        //
+        min-inline-size: 0px;
+        min-block-size: 0px;
+        inline-size: max-content;
+        block-size: max-content;
+        max-inline-size: none;
+        max-block-size: none;
+
+        //
+        place-items: center;
+        place-content: center;
+
+        //
+        container-type: normal;
+        contain: none;
+
+        //
+        gap: 0px;
+        padding: 0px;
+        margin: 0px;
+        border: none 0px transparent;
+
+        //
+        inset: 0px;
+        inset-inline-end: auto;
+        inset-block-end: auto;
+    }
+
+    //
+    :where(.space, flex-space) {
+        flex-grow: 1;
+        flex-shrink: 0;
+    }
+
+    //
+    :where(.break, flex-break, br) {
+        flex-basis: 100%;
+        flex-grow: 1;
+        flex-shrink: 0;
     }
 
 };

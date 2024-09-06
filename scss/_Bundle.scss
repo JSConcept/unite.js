@@ -3,7 +3,7 @@
 @use "./core/Root";
 @use "./core/Zoom";
 @use "./core/Normalize";
-@use "./core/ClassLets";
+@use "./core/Profile" as ps;
 
 //
 @use "./core/States";

@@ -1,4 +1,4 @@
-@use "../core/CMixins" as cm;
+@use "../core/Profile" as ps;
 @use "../core/LogicFb" as flg;
 @use "../core/LogicSign" as slg;
 
@@ -142,33 +142,33 @@
 
     //
     .ux-grid-layout {
-        //
-        --ox-orient: rem(var(--orient, 0), 2);
-
-        // in rems!
-        --c-gap: 0px;
-        --r-gap: 0px;
+        @include ps.stretch;
 
         //
-        display: block;
-        position: relative;
-        container-name: ux-grid;
-        container-type: size;
-        contain: size layout;
+        & {
+            --ox-orient: rem(var(--orient, 0), 2);
+            --c-gap: 0px;
+            --r-gap: 0px;
+        }
 
         //
-        zoom: 1;
+        & {
+            display: block flow;
+            position: relative;
 
-        //
-        direction: ltr;
+            //
+            container-name: ux-grid;
+            container-type: size;
+            contain: size layout;
 
-        //
-        inline-size: 100%;
-        block-size: 100%;
+            //
+            zoom: 1;
+            direction: ltr;
 
-        //
-        pointer-events: none;
-        background-color: transparent;
+            //
+            pointer-events: none;
+            background-color: transparent;
+        }
 
         //
         @supports (opacity: sign(0.5)) {
@@ -193,45 +193,45 @@
             @include calculateMetric();
 
             //
-            --icon-size: min(calc(100cqmin / min(var(--layout-c), var(--layout-r)) - max(var(--c-gap), var(--r-gap))), 4rem);
-            --grid-c: calc(var(--fc-cell-x) + var(--c-shift-mod, 0));
-            --grid-r: calc(var(--fc-cell-y) + var(--r-shift-mod, 0));
-
-            //
-            zoom: 1;
-
-            //
-            place-self: center;
-            will-change: --translate-x, --translate-y, --grid-c, --grid-r;
-
-            //
-            inline-size: max-content;
-            block-size: max-content;
-
-            //
-            pointer-events: none;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-drag: none;
-            -moz-user-drag: none;
-
-            //
-            overflow: visible;
-
-            //
-            @supports (opacity: sign(0.5)) {
-                --ox-c: calc(#{slg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
-                --ox-r: calc(#{slg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
-                --inline-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 1))};
-                --block-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 3))};
+            & {
+                --icon-size: min(calc(100cqmin / min(var(--layout-c), var(--layout-r)) - max(var(--c-gap), var(--r-gap))), 4rem);
+                --grid-c: calc(var(--fc-cell-x) + var(--c-shift-mod, 0));
+                --grid-r: calc(var(--fc-cell-y) + var(--r-shift-mod, 0));
             }
 
             //
-            @supports not (opacity: sign(0.5)){
-                --ox-c: calc(#{flg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
-                --ox-r: calc(#{flg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
-                --inline-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 1))};
-                --block-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 3))};
+            & {
+                position: absolute;
+                transform:
+                    translate(
+                        calc(var(--translate-x) + var(--inline-offset) + 0.5 * var(--ox-c-span, 1) * var(--ox-c-unit) - 50%),
+                        calc(var(--translate-y) + var(--block-offset ) + 0.5 * var(--ox-r-span, 1) * var(--ox-r-unit) - 50%)
+                    )
+                    scale(var(--scale, 1));
+
+                //
+                inset: 0px;
+                inset-inline-end: auto;
+                inset-block-end: auto;
+
+                //
+                zoom: 1;
+                place-self: center;
+                will-change: --translate-x, --translate-y, --grid-c, --grid-r;
+
+                //
+                inline-size: max-content;
+                block-size: max-content;
+
+                //
+                pointer-events: none;
+                touch-action: none;
+                user-select: none;
+                -webkit-user-drag: none;
+                -moz-user-drag: none;
+
+                //
+                overflow: visible;
             }
 
             //
@@ -247,6 +247,7 @@
                 --inline-offset-ni: var(--ox-c-loc, 1px);
                 --inline-offset-iv: calc(100cqi - var(--ox-c-span, 1) * var(--ox-c-unit, 1px) - var(--ox-c-loc, 1px));
 
+                //
                 --block-offset-ni: var(--ox-r-loc, 1px);
                 --block-offset-iv: calc(100cqb - var(--ox-r-span, 1) * var(--ox-r-unit, 1px) - var(--ox-r-loc, 1px));
 
@@ -263,23 +264,22 @@
                     var(--block-offset-iv, 0px),
                     var(--block-cond, 0)
                 )};
+            }
 
-                //
-                position: absolute;
+            //
+            @supports (opacity: sign(0.5)) {
+                --ox-c: calc(#{slg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
+                --ox-r: calc(#{slg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
+                --inline-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 1))};
+                --block-cond: #{slg.lor(slg.eq(var(--orient, 0), 0), slg.eq(var(--orient, 0), 3))};
+            }
 
-                //
-                inset-inline-start: 0px;//calc(var(--inline-offset, 0px) + var(--ox-col-size) / 2);
-                inset-block-start: 0px;//calc(var(--block-offset, 0px) + var(--ox-row-size) / 2);
-                inset-inline-end: auto;
-                inset-block-end: auto;
-
-                //
-                transform:
-                    translate(
-                        calc(var(--translate-x) + var(--inline-offset) + 0.5 * var(--ox-c-span, 1) * var(--ox-c-unit) - 50%),
-                        calc(var(--translate-y) + var(--block-offset ) + 0.5 * var(--ox-r-span, 1) * var(--ox-r-unit) - 50%)
-                    )
-                    scale(var(--scale, 1));
+            //
+            @supports not (opacity: sign(0.5)){
+                --ox-c: calc(#{flg.mix(var(--grid-r, 0), var(--grid-c, 0), var(--ox-orient, 0))} - 1);
+                --ox-r: calc(#{flg.mix(var(--grid-c, 0), var(--grid-r, 0), var(--ox-orient, 0))} - 1);
+                --inline-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 1))};
+                --block-cond: #{flg.lor(flg.eq(var(--orient, 0), 0), flg.eq(var(--orient, 0), 3))};
             }
         }
     }

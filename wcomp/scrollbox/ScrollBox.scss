@@ -133,7 +133,7 @@
 
             //
             overflow: scroll;
-            display: block;
+            display: block flow;
             scrollbar-gutter: stable both-edges !important;
             scrollbar-width: none !important;
             grid-row: 1 / 2 span !important;
@@ -151,7 +151,7 @@
             contain: none;
             container-type: normal;
             position: relative;//sticky;
-            display: block;
+            display: block flow;
             inset: 0px;
 
             //
@@ -170,7 +170,7 @@
                 pointer-events: auto;
 
                 position: static;
-                display: block;
+                display: block flow;
                 line-height: 0px;
 
                 border-radius: 0.125rem;
