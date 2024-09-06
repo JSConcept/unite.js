@@ -1,3 +1,4 @@
+import { objectAssign } from "./AssignObject.ts";
 import stateMap from "./StateManager.ts";
 
 //
@@ -72,7 +73,24 @@ const register = (what: any, handle: any): any => {
     return handle;
 }
 
+//
+export const bindByKey = (target, reactive, key = ()=>"")=>{
+    subscribe(reactive, (value, id)=>{
+        if (id == key()) { objectAssign(target, value); }
+    });
+}
 
+//
+export const bindWith = (target, reactive, watch?) => {
+    subscribe(reactive, (v,p)=>{ if (target[p] !== v) { objectAssign(target, v, p); }});
+    watch?.(() => target, (newVal, _) => { for (const k in newVal) { if (reactive[k] !== newVal[k]) { objectAssign(reactive, newVal[k], k); } } }, {deep: true});
+    return target;
+}
+
+//
+export const derivate = (from, reactFn, watch?) => {
+    return bindWith(reactFn(from), from, watch);
+}
 
 //
 export const subscribe = (target, cb: (value: any, prop: keyType) => void, prop: keyType | null = null, ctx: any | null = null)=>{

@@ -8,8 +8,8 @@ const isIterable = (obj) => {
 }
 
 //
-export const objectAssign = (target, name: keyType, value)=>{
-    const exists = target[name];
+export const objectAssign = (target, value, name: keyType | null = null)=>{
+    const exists = name != null ? target[name] : target;
     let entries: any = null;
 
     //
@@ -54,7 +54,12 @@ export const objectAssign = (target, name: keyType, value)=>{
     }
 
     //
-    return Reflect.set(target, name, value);
+    if (name != null) {
+        return Reflect.set(target, name, value);
+    } else
+    if (typeof value == "object" || typeof value == "function") {
+        return Object.assign(target, value);
+    }
 }
 
 //
@@ -85,7 +90,7 @@ export class AssignObjectHandler {
 
     //
     set(target, name: keyType, value) {
-        return objectAssign(target, name, value);
+        return objectAssign(target, value, name);
     }
 
     //
