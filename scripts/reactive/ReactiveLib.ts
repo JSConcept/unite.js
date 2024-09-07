@@ -73,28 +73,67 @@ const register = (what: any, handle: any): any => {
     return handle;
 }
 
+
+
+//
+export const safe = (target)=>{
+    const unwrap: any = (typeof target == "object" || typeof target == "function") ? (target?.[extractSymbol] ?? target) : target;
+
+    //
+    if (Array.isArray(unwrap)) {
+        const mapped = (e)=>safe(e);
+        return unwrap?.map?.(mapped) || Array.from(unwrap || []).map(mapped);
+    } else
+
+    //
+    if (unwrap instanceof Map || unwrap instanceof WeakMap) {
+        const map = new Map();
+        for (const E of unwrap?.entries?.()) { map.set(E[0], safe(E[1])); };
+        return map;
+    } else
+
+    //
+    if (unwrap instanceof Set || unwrap instanceof WeakSet) {
+        const set = new Set();
+        for (const E of unwrap?.values?.()) { set.add(safe(E[0])); };
+        return set;
+    } else
+
+    //
+    if (unwrap != null && typeof unwrap == "function" || typeof unwrap == "object") {
+        const obj = {};
+        for (const E of Object.entries(unwrap || {})) {
+            obj[E[0]] = safe(E[1]);
+        };
+        return obj;
+    }
+
+    //
+    return unwrap;
+}
+
 //
 export const bindByKey = (target, reactive, key = ()=>"")=>{
     subscribe(reactive, (value, id)=>{
-        if (id == key()) { objectAssign(target, value); }
+        if (id == key()) { objectAssign(target, value, null, true); }
     });
 }
 
 //
 export const bindWith = (target, reactive, watch?) => {
-    subscribe(reactive, (v,p)=>{ if (target[p] !== v) { objectAssign(target, v, p); }});
-    watch?.(() => target, (newVal, _) => { for (const k in newVal) { if (reactive[k] !== newVal[k]) { objectAssign(reactive, newVal[k], k); } } }, {deep: true});
+    subscribe(reactive, (v,p)=>{ objectAssign(target, v, p, true); });
+    watch?.(() => target, (N) => { for (const k in N) { objectAssign(reactive, N[k], k, true); }}, {deep: true});
     return target;
 }
 
 //
 export const derivate = (from, reactFn, watch?) => {
-    return bindWith(reactFn(from), from, watch);
+    return bindWith(reactFn(safe(from)), from, watch);
 }
 
 //
 export const subscribe = (target, cb: (value: any, prop: keyType) => void, prop: keyType | null = null, ctx: any | null = null)=>{
-    const unwrap = target?.[extractSymbol] ?? target;
+    const unwrap: any = (typeof target == "object" || typeof target == "function") ? (target?.[extractSymbol] ?? target) : target;
 
     //
     if (prop) {
@@ -286,7 +325,8 @@ export const createReactiveSet: <V>(set?: V[]) => Set<V> = <V>(set: V[] = []) =>
 
 //stateMap
 export const makeReactive: any = (target: any, stateName = ""): any => {
-    const unwrap = target?.[extractSymbol] ?? target; let reactive = target;
+    const unwrap: any = (typeof target == "object" || typeof target == "function") ? (target?.[extractSymbol] ?? target) : target;
+    let reactive = target;
 
     //
     if (unwrap instanceof Map || unwrap instanceof WeakMap) {
@@ -312,7 +352,8 @@ export const makeReactive: any = (target: any, stateName = ""): any => {
 
 //
 export const createReactive: any = (target: any, stateName = ""): any => {
-    const unwrap = target?.[extractSymbol] ?? target; let reactive = target;
+    const unwrap: any = (typeof target == "object" || typeof target == "function") ? (target?.[extractSymbol] ?? target) : target;
+    let reactive = target;
 
     // BROKEN!
     if (Array.isArray(target)) {
