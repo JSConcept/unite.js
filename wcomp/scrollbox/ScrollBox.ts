@@ -105,6 +105,10 @@ class ScrollBar {
             ?.querySelector?.(".thumb")
             ?.addEventListener?.("pointerdown", (ev) => {
                 if (this.status.pointerId < 0) {
+                    ev?.stopPropagation?.();
+                    ev?.preventDefault?.();
+
+                    //
                     this.status.pointerId = ev.pointerId;
                     this.status.pointerLocation =
                         ev[["clientX", "clientY"][axis]] / zoomOf();
@@ -116,7 +120,8 @@ class ScrollBar {
         //
         document.documentElement.addEventListener("pointermove", (ev) => {
             if (ev.pointerId == this.status.pointerId) {
-                ev.stopPropagation();
+                ev?.stopPropagation?.();
+                ev?.preventDefault?.();
 
                 //
                 //callByFrame(this.uuid2, ()=>{
@@ -146,6 +151,10 @@ class ScrollBar {
         //
         const stopScroll = (ev) => {
             if (this.status.pointerId == ev.pointerId) {
+                ev?.stopPropagation?.();
+                ev?.preventDefault?.();
+
+                //
                 this.status.virtualScroll =
                     this.content[["scrollLeft", "scrollTop"][axis]];
                 this.status.pointerId = -1;
