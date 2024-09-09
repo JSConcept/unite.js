@@ -207,7 +207,7 @@ const enforceFocus = (ev)=>{
     }
 
     //
-    //if (matchMedia("(hover: none) and (pointer: coarse)").matches)
+    if (matchMedia("(hover: none) and (pointer: coarse)").matches)
     {
         const dedicated = (document.querySelector("x-focustext") as FocusTextElement);
         const dInput = dedicated?.querySelector?.("input");
