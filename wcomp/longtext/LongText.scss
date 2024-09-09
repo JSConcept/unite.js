@@ -158,16 +158,21 @@
             font-stretch: ultra-condensed;
             letter-spacing: -1px;
             font-size: 0.9rem;
-            font-family: ui-monospace,
-                Menlo, Monaco,
-                "Cascadia Mono", "Segoe UI Mono",
+            font-weight: normal;
+            font-family:
+                "Fira Code",
+                "Consolas",
+                "Segoe UI Mono",
+                "Fira Mono",
+                "Droid Sans Mono",
                 "Roboto Mono",
                 "Oxygen Mono",
                 "Ubuntu Mono",
+                "Cascadia Mono",
                 "Source Code Pro",
-                "Fira Mono",
-                "Droid Sans Mono",
-                "Consolas", "Courier New", monospace;
+                "Courier New",
+                Menlo, Monaco,
+                ui-monospace, monospace;
 
             //
             background-color: transparent;
@@ -420,6 +425,7 @@
                 font-size: 1.4rem;
                 overflow-anchor: none;
                 user-select: auto;
+                font-weight: bold;
             }
         }
     }
