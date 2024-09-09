@@ -194,6 +194,23 @@
 }
 
 //
+@mixin HQRendering($importance: null) {
+    -webkit-font-smoothing: subpixel-antialiased #{$importance};
+    -moz-osx-font-smoothing: auto #{$importance};
+    text-rendering: optimizeLegibility #{$importance};
+    text-rendering: geometricPrecision #{$importance};
+    font-smooth: auto #{$importance};
+}
+
+@mixin LQRendering($importance: null) {
+    -webkit-font-smoothing: none #{$importance};
+    -moz-osx-font-smoothing: grayscale#{$importance};
+    text-rendering: optimizeSpeed #{$importance};
+    font-smooth: 0px #{$importance};
+    font-smooth: never #{$importance};
+}
+
+//
 @mixin disable-transform() {
     rotate: none;
     scale: none;

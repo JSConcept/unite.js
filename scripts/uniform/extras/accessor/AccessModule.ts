@@ -1,4 +1,4 @@
-import UUIDMap from "scripts/uniform/utils/UUIDMap.ts";
+import UUIDMap from "@ux-ts/uniform/utils/UUIDMap.ts";
 
 //
 export class AM {

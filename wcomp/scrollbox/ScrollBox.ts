@@ -1,12 +1,14 @@
 //
-import {zoomOf} from "../../scripts/utils/Zoom.ts";
-import {observeBorderBox} from "../../scripts/dom/Observer.ts";
+import {zoomOf} from "@ux-ts/utils/Zoom.ts";
+import {observeBorderBox} from "@ux-ts/dom/Observer.ts";
 
 // @ts-ignore
 import styles from "./ScrollBox.scss?inline";
 import html from "./ScrollBox.html?raw";
-import Timer from "../../scripts/performance/Time.ts";
-import { UUIDv4 } from "../../scripts/crypto/aes-gcm.ts";
+
+//
+import Timer from "@ux-ts/performance/Time.ts";
+import { UUIDv4 } from "@ux-ts/crypto/aes-gcm.ts";
 
 
 

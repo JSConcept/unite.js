@@ -61,12 +61,14 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 
 //
 @mixin contrast($name, $from, $alpha: 1) {
+    //#{$name}: unquote("oklch(from #{$from} calc(#{slg.sign(calc(l - 0.6))} * 0.8 * 0.5 + 0.5) calc(c * 0.4) h / #{$alpha})");
     @supports     (opacity: sign(0.5)) { #{$name}: unquote("oklch(from #{$from} calc(#{slg.sign(calc(l - 0.6))} * 0.8 * 0.5 + 0.5) calc(c * 0.4) h / #{$alpha})"); }
     @supports not (opacity: sign(0.5)) { #{$name}: unquote("oklch(from #{$from} calc(#{flg.sign(calc(l - 0.6))} * 0.8 * 0.5 + 0.5) calc(c * 0.4) h / #{$alpha})"); }
 }
 
 //
 @mixin contrast-inverse($name, $from, $alpha: 1) {
+    //#{$name}: unquote("oklch(from #{$from} calc(#{slg.sign(calc(0.6 - l))} * 0.8 * 0.5 + 0.5) calc(c * 0.4) h / #{$alpha})");
     @supports     (opacity: sign(0.5)) { #{$name}: unquote("oklch(from #{$from} calc(#{slg.sign(calc(0.6 - l))} * 0.8 * 0.5 + 0.5) calc(c * 0.4) h / #{$alpha})"); }
     @supports not (opacity: sign(0.5)) { #{$name}: unquote("oklch(from #{$from} calc(#{flg.sign(calc(0.6 - l))} * 0.8 * 0.5 + 0.5) calc(c * 0.4) h / #{$alpha})"); }
 }
@@ -250,45 +252,39 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
         &, &::before, &::after, &::selection {
 
             //
-            & {
-                --theme-chroma-mod: oklch(from #{$baseColor} l 0.99 h);
-                --theme-black-mod: oklch(from #{$baseColor} 0.01 0.01 h);
-                --theme-white-mod: oklch(from #{$baseColor} 0.99 0.01 h);
-                --theme-accent-color: var(--theme-accent-base-color);
-
-                //
-                --theme-dark-down-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{$baseColor});
-                --theme-dark-up-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{$baseColor});
-
-                //
-                --theme-light-down-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{$baseColor});
-                --theme-light-up-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{$baseColor});
-
-                //
-                --theme-accent-dark : oklch(from var(--theme-base-color) min(min(calc(1.0 - l), l), 0.4) min(c, 0.8) h);
-                --theme-accent-light: oklch(from var(--theme-base-color) max(max(calc(1.0 - l), l), 0.6) min(c, 0.8) h);
-            }
+            --theme-chroma-mod: oklch(from #{$baseColor} l 0.99 h);
+            --theme-black-mod: oklch(from #{$baseColor} 0.01 0.01 h);
+            --theme-white-mod: oklch(from #{$baseColor} 0.99 0.01 h);
+            --theme-accent-color: var(--theme-accent-base-color);
 
             //
-            & {
-                --current-glyph-color: var(--theme-glyph-color);
-                --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), var(--theme-surface-color));
-                --current-accent-color: var(--theme-accent-color);
-                --current-chroma-color: var(--theme-chroma-color);
-                --highlight-coefficient: 0.0;
-                --highlight-transition-duration: 0.2s;
-                --highlight-transition-mode: linear;
-                --highlight-transition-property: --highlight-coefficient;
-            }
+            --theme-dark-down-mod: color-mix(in oklch, var(--theme-white-mod) 90%, #{$baseColor});
+            --theme-dark-up-mod: color-mix(in oklch, var(--theme-black-mod) 98%, #{$baseColor});
 
             //
-            & {
-                transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
-                accent-color: var(--current-glyph-color);
-                color: var(--current-glyph-color);
-                background-color: var(--current-surface-color);
-                stroke: var(--current-glyph-color);
-            }
+            --theme-light-down-mod: color-mix(in oklch, var(--theme-black-mod) 90%, #{$baseColor});
+            --theme-light-up-mod: color-mix(in oklch, var(--theme-white-mod) 98%, #{$baseColor});
+
+            //
+            --theme-accent-dark : oklch(from var(--theme-base-color) min(min(calc(1.0 - l), l), 0.4) min(c, 0.8) h);
+            --theme-accent-light: oklch(from var(--theme-base-color) max(max(calc(1.0 - l), l), 0.6) min(c, 0.8) h);
+
+            //
+            --current-glyph-color: var(--theme-glyph-color);
+            --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), var(--theme-surface-color));
+            --current-accent-color: var(--theme-accent-color);
+            --current-chroma-color: var(--theme-chroma-color);
+            --highlight-coefficient: 0.0;
+            --highlight-transition-duration: 0.2s;
+            --highlight-transition-mode: linear;
+            --highlight-transition-property: --highlight-coefficient;
+
+            //
+            transition: var(--highlight-transition-property) var(--highlight-transition-duration) var(--highlight-transition-mode);
+            accent-color: var(--current-glyph-color);
+            color: var(--current-glyph-color);
+            background-color: var(--current-surface-color);
+            stroke: var(--current-glyph-color);
 
             //
             @include ux-highlight-color;
@@ -296,16 +292,19 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
             @include theme-dependent("--theme-down-mod", "var(--theme-light-down-mod)", "var(--theme-dark-down-mod)");
 
             //
-            &::selection, ::selection {
-                color: var(--current-surface-color);
-                background-color: var(--current-glyph-color);
-            }
-
-            //
             &:where(a, span, svg), :where(a, span, svg) {
                 background-color: transparent;
                 stroke: var(--current-glyph-color);
             }
+        }
+
+        //
+        &::selection, ::selection {
+            //color: white;
+            //color: var(--current-surface-color, white);
+            //background-color: black;
+            background-color: var(--current-glyph-color, black);
+            color: oklch(from var(--current-glyph-color, black) calc(1 - l) c h / 1.0);
         }
     }
 

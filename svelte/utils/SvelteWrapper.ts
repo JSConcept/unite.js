@@ -1,5 +1,5 @@
 import {readable, type Readable} from "svelte/store";
-import {subscribe} from "../../scripts/reactive/ReactiveLib.ts";
+import {subscribe} from "@ux-ts/reactive/ReactiveLib.ts";
 
 //
 export const wrapToStore = (reactive, prop: string = ""): Readable<any> => {

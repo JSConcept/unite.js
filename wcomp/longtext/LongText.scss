@@ -46,22 +46,32 @@
 
     //
     x-focustext, x-longtext {
-            & {
+        & {
             --size-coef-x: clamp(0, calc(var(--offset-width)  / var(--scroll-width) ), 1);
             --size-coef-y: clamp(0, calc(var(--offset-height) / var(--scroll-height)), 1);
         }
 
         // decoration...
-        & { outline: solid 1px gray; };
+        //& { outline: solid 1px gray; };
 
         //
         & {
-            max-inline-size: min(100%, 16rem);
-            min-inline-size: 16rem;
+            transform: none;
+            translate: 0px 0px;
+            scale: 1;
+        }
+
+        //
+        & {
+            inset: 0px;
+
+            //
+            max-inline-size: 100%;
+            inline-size: max-content;
             min-block-size: 1ch;
             max-block-size: 100%;
             block-size: max-content;
-            inline-size: max-content;
+            min-inline-size: 100%;
             box-sizing: border-box;
 
             //
@@ -70,7 +80,7 @@
             overflow: hidden;
 
             //
-            display: grid;
+            display: grid !important;
             grid-template-columns:
                 [input] minmax(0px, 1fr)
                 [button] minmax(0px, max-content);
@@ -114,6 +124,7 @@
 
         //
         input {
+            inset: 0px;
             user-select: auto;
             //user-select: all;
             overflow: hidden;
@@ -195,6 +206,10 @@
 
         //
         .ux-input-box {
+            //place-self: start;
+            inset: 0px;
+
+            //
             scroll-timeline-name: --axis-scroll-x;
             scroll-timeline-axis: inline;
 
@@ -293,6 +308,9 @@
             pointer-events: none;
 
             //
+            inset: 0px;
+
+            //
             button {
                 //
                 outline: none 0px transparent;
@@ -318,10 +336,10 @@
         //
         .ux-scroll-box {
             & {
+                transform: none;
                 container-type: size;
                 contain: content;
                 position: relative;
-                inset: 0px;
 
                 //
                 grid-column: 1 / 1 span;
@@ -332,6 +350,12 @@
                 user-select: none;
                 touch-action: none;
                 pointer-events: none;
+
+                //
+                place-self: start start;
+                place-content: center start;
+                place-items: center start;
+                inset: 0px;
             }
 
             //
@@ -344,6 +368,11 @@
             //
             .ux-scroll-bar {
                 //
+                transform: none;
+                place-self: start start;
+                inset: 0px;
+
+                //
                 animation-name: by-scroll-x;
                 animation-timeline: --axis-scroll-x;
                 animation-timing-function: linear;
@@ -355,7 +384,7 @@
                 //
                 inline-size: calc(100% * var(--size-coef-x));
                 block-size: 100%;
-                background-color: gray;
+                //background-color: gray;
 
                 //
                 user-select: none;
@@ -363,9 +392,9 @@
                 pointer-events: auto;
 
                 //
-                translate: calc(var(--scroll-left) * var(--size-coef-x) * 1px) 0px;
+                translate: calc(var(--scroll-left) * var(--size-coef-x) * 1px) 0px !important;
                 @supports(timeline-scope: --axis-scroll-x) {
-                    translate: calc(var(--percent-x) * (1 - var(--size-coef-x)) * 100cqi) 0px;
+                    translate: calc(var(--percent-x) * (1 - var(--size-coef-x)) * 100cqi) 0px !important;
                 }
             }
         }
@@ -388,7 +417,7 @@
 
             //
             input {
-                font-size: 2rem;
+                font-size: 1.4rem;
                 overflow-anchor: none;
                 user-select: auto;
             }

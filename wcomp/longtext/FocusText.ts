@@ -6,115 +6,120 @@ import html from "./FocusText.html?raw";
 import { doButtonAction, makeInput } from "./Utils.ts";
 import { computeCaretPositionFromClient, measureInputInFocus } from "./Measure.ts";
 
-
-
-//
-const getCaret = (point: [number, number])=>{
-    let range;
-    let node;
-    let offset;
-
-    //
-    if (document?.caretPositionFromPoint) {
-        range = document?.caretPositionFromPoint?.(...point);
-        node = range.offsetNode;
-        offset = range.offset;
-    } else if (document?.caretRangeFromPoint) {
-      // Use WebKit-proprietary fallback method
-        range = document?.caretRangeFromPoint?.(...point);
-        node = range.startContainer;
-        offset = range.startOffset;
-    }
-
-    //
-    return {
-        range,
-        node,
-        offset
-    }
-}
-
 //
 class FocusTextElement extends HTMLElement {
     #input?: HTMLInputElement | null;
     #focus?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
+    #initialized: boolean = false;
+
+    //
+    #initialize() {
+        if (!this.#initialized) {
+            this.#initialized = true;
+
+            //
+            const exists = this.querySelector("input");
+            const parser = new DOMParser();
+            const dom = parser.parseFromString(html, "text/html");
+            if (exists) { this.removeChild(exists); };
+
+            //
+            this.innerHTML = "";
+            dom.querySelector("template")?.content?.childNodes.forEach(cp => {
+                this.appendChild(cp.cloneNode(true));
+            });
+
+            //
+            const style = document.createElement("style");
+            style.innerHTML = styles;
+            this.appendChild(style);
+
+            //
+            this.#selectionRange = [0, 0];
+            this.#focus = null;
+
+            //
+            const next = this.querySelector("input");
+            this.#input = exists ?? next;
+            if (exists) { next?.replaceWith?.(exists); }
+
+            //
+            this.#input?.addEventListener("change", (ev)=>{
+                const input = ev.target as HTMLInputElement;
+                if (!CSS.supports("field-sizing", "content")) {
+                    input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
+                }
+            });
+
+            //
+            this.#input?.addEventListener("input", (ev)=>{
+                const input = ev.target as HTMLInputElement;
+                if (!CSS.supports("field-sizing", "content")) {
+                    input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
+                }
+            });
+
+            //
+            if (!CSS.supports("field-sizing", "content")) {
+                this.#input?.style?.setProperty("inline-size", (this.#input?.value||"").length + "ch");
+            }
+
+            //
+            this.#input?.addEventListener("focus", (ev)=>{
+                requestAnimationFrame(()=>{
+                    this.#focus?.setAttribute?.("disabled", "");
+                });
+            });
+
+            //
+            this.#input?.addEventListener("change", (ev)=>{ this.reflectInput(); });
+            this.#input?.addEventListener("input", (ev)=>{ this.reflectInput(); });
+            this.#input?.addEventListener("blur", (ev)=>{
+                //
+                this.#selectionRange[0] = (ev.target as HTMLInputElement)?.selectionStart || 0;
+                this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
+
+                //
+                requestAnimationFrame(()=>{
+                    this.#focus?.removeAttribute?.("disabled");
+
+                    //
+                    if (document.activeElement != this.#input) {
+                        this.style.setProperty("display", "none", "important");
+                        this.#focus = null;
+                    }
+                });
+            });
+
+            //
+            this.style.setProperty("display", "none", "important");
+            this.#focus = null;
+
+            //
+            makeInput(this);
+        }
+    }
+
+
 
     //
     constructor() {
         super();
 
         //
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(html, "text/html");
+        //this.style.setProperty("display", "none", "important");
+    }
 
-        //
-        dom.querySelector("template")?.content?.childNodes.forEach(cp => {
-            this.appendChild(cp.cloneNode(true));
-        });
-
-        //
-        const style = document.createElement("style");
-        style.innerHTML = styles;
-        this.appendChild(style);
-
-        //
-        this.#selectionRange = [0, 0];
-        this.#focus = null;
-        this.#input = this.querySelector("input");
-
-        //
-        this.#input?.addEventListener("change", (ev)=>{
-            if (!CSS.supports("field-sizing", "content")) {
-                ev.target?.style?.setProperty("inline-size", (ev.target?.value||"").length + "ch");
-            }
-        });
-
-        //
-        this.#input?.addEventListener("input", (ev)=>{
-            if (!CSS.supports("field-sizing", "content")) {
-                ev.target?.style?.setProperty("inline-size", (ev.target?.value||"").length + "ch");
-            }
-        });
+    //
+    connectedCallback() {
+        this.#initialize();
+        this.style.setProperty("display", "none", "important");
 
         //
         if (!CSS.supports("field-sizing", "content")) {
             this.#input?.style?.setProperty("inline-size", (this.#input?.value||"").length + "ch");
         }
-
-        //
-        this.#input?.addEventListener("change", (ev)=>{ this.reflectInput(); });
-        this.#input?.addEventListener("input", (ev)=>{ this.reflectInput(); });
-        this.#input?.addEventListener("blur", (ev)=>{
-            this.#selectionRange[0] = (ev.target as HTMLInputElement)?.selectionStart || 0;
-            this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
-        });
-
-        //
-        this.style.setProperty("display", "none");
-
-        //
-        this.#input?.addEventListener("focus", (ev)=>{
-            requestAnimationFrame(()=>{
-                this.#focus?.setAttribute?.("disabled", "");
-                this.style.removeProperty("display");
-            });
-        });
-
-        //
-        this.#input?.addEventListener("blur", (ev)=>{
-            requestAnimationFrame(()=>{
-                this.#focus?.removeAttribute?.("disabled");
-
-                //
-                if (document.activeElement != this.#input) {
-                    this.style.setProperty("display", "none");
-                }
-            });
-        });
-
-        //
-        makeInput(this);
     }
 
     //
@@ -128,12 +133,12 @@ class FocusTextElement extends HTMLElement {
     //
     setVirtualFocus(where, onClick = false) {
         //
-        if (document.activeElement != this.#input) {
+        /*if (document.activeElement != this.#input) {
             this.style.removeProperty("display");
-        }
+        }*/
 
         //
-        if (this.#input && where != this.#input && (this.#focus = where)) {
+        if (this.#input && where != this.#input && where && where?.parentNode && (this.#focus = where)) {
             const oldValue                = this.#input.value  || "";
             const newVal                  = this.#focus?.value || "";
             const range: [number, number] = [this.#focus?.selectionStart ?? this.#input?.selectionStart ?? 0, this.#focus?.selectionEnd ?? this.#input?.selectionEnd ?? 0];
@@ -142,6 +147,7 @@ class FocusTextElement extends HTMLElement {
             //
             //requestAnimationFrame(()=>{
                 if (oldActive != this.#input) {
+                    this.style.removeProperty("display");
                     this.#input?.focus?.();
                 };
 
@@ -171,7 +177,7 @@ class FocusTextElement extends HTMLElement {
 
     //
     restoreFocus() {
-        if (document.activeElement != this.#input) {
+        if (this.#focus && document.activeElement != this.#input && this.style.getPropertyValue("display") != "none") {
             this.#input?.setSelectionRange?.(...(this.#selectionRange || [0, 0]));
             this.#input?.focus?.();
         }
@@ -179,8 +185,12 @@ class FocusTextElement extends HTMLElement {
 }
 
 //
-export default FocusTextElement;
+//export default FocusTextElement;
 customElements.define("x-focustext", FocusTextElement);
+
+//
+export default () => {};
+export { FocusTextElement };
 
 
 
@@ -201,16 +211,25 @@ const enforceFocus = (ev)=>{
     {
         const dedicated = (document.querySelector("x-focustext") as FocusTextElement);
         const dInput = dedicated?.querySelector?.("input");
+
+        //
+        if (!MOC(element, "x-focustext") && ev?.type == "click") {
+            dInput?.blur?.();
+        }
+
+        //
         if (element?.matches?.("input[type=\"text\"]") && !element?.closest?.("x-focustext")) {
 
             //
-            if (ev && ev?.type == "pointerdown" && dInput) {
-                const cps = computeCaretPositionFromClient(element, [ev?.clientX, ev?.clientY]);
-                dInput?.setSelectionRange(cps, cps);
-            }
+            if (["click", "pointerdown", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
+                if (ev && ev?.type == "pointerdown" && dInput) {
+                    const cps = computeCaretPositionFromClient(element, [ev?.clientX, ev?.clientY]);
+                    dInput?.setSelectionRange(cps, cps);
+                }
 
-            //
-            dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown");
+                //
+                dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown");
+            }
 
             //
             ev?.preventDefault?.();
@@ -218,16 +237,6 @@ const enforceFocus = (ev)=>{
         }
     }
 };
-
-//
-document.addEventListener("focusin", (ev)=>{
-    const input = ev?.target as HTMLElement;
-    if (input?.matches("input[type=\"text\"]") && !input?.closest?.("x-focustext") && input instanceof HTMLInputElement) {
-        requestAnimationFrame(()=>{
-            if (document.activeElement == input) { enforceFocus(ev); }
-        });
-    }
-});
 
 //
 const whenClick = (ev)=>{
@@ -251,6 +260,16 @@ const whenClick = (ev)=>{
 //
 document.documentElement.addEventListener("click", whenClick);
 document.documentElement.addEventListener("pointerdown", whenClick);
+
+//
+document.addEventListener("focusin", (ev)=>{
+    const input = ev?.target as HTMLElement;
+    if (input?.matches("input[type=\"text\"]") && !input?.closest?.("x-focustext") && input instanceof HTMLInputElement) {
+        requestAnimationFrame(()=>{
+            if (document.activeElement == input) { enforceFocus(ev); }
+        });
+    }
+});
 
 //
 document.addEventListener("select", enforceFocus);

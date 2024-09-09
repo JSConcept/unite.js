@@ -1,4 +1,4 @@
-import { observeAttributeBySelector, observeBySelector, observeContentBox } from "../../scripts/dom/Observer.ts";
+import { observeAttributeBySelector, observeBySelector, observeContentBox } from "@ux-ts/dom/Observer.ts";
 
 // this flex-like supports animations
 export class FlexLike extends HTMLDivElement {

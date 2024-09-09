@@ -1,53 +1,7 @@
-@use "@unite/scss/core/Profile" as ps;
-
-//
-@mixin disableTransform() {
-    rotate: none;
-    scale: none;
-    translate: none;
-    transform: none;
-
-    //
-    transform-origin: 50% 50%;
-
-    //
-    backface-visibility: visible;
-
-    //
-    filter: none;
-    backdrop-filter: none;
-
-    //
-    will-change: auto;
-    perspective: none;
-
-    //
-    isolation: auto;
-
-    //
-    //contain: size style;
-    //container-type: normal;
-}
+@use "@ux-ss/core/Profile" as ps;
 
 //
 @layer ux-normalize {
-
-    //
-    @mixin HQRendering($importance: null) {
-        -webkit-font-smoothing: subpixel-antialiased #{$importance};
-        -moz-osx-font-smoothing: auto #{$importance};
-        text-rendering: optimizeLegibility #{$importance};
-        text-rendering: geometricPrecision #{$importance};
-        font-smooth: auto #{$importance};
-    }
-
-    @mixin LQRendering($importance: null) {
-        -webkit-font-smoothing: none #{$importance};
-        -moz-osx-font-smoothing: grayscale#{$importance};
-        text-rendering: optimizeSpeed #{$importance};
-        font-smooth: 0px #{$importance};
-        font-smooth: never #{$importance};
-    }
 
     //
     html::view-transition {
@@ -56,20 +10,18 @@
     }
 
     //
-    /*:where(div, span) {
-        background-color: transparent;
-    }*/
-
-    //
     :where(html, body) {
-        padding: 0px;
-        margin: 0px;
-        inset: 0px;
-        border: none 0px transparent;
-        background-color: transparent;
+        //
+        & {
+            padding: 0px;
+            margin: 0px;
+            inset: 0px;
+            border: none 0px transparent;
+            background-color: transparent;
+        }
 
         //
-        @include HQRendering();
+        & { @include ps.HQRendering(); };
     }
 
     //
@@ -79,19 +31,14 @@
     }
 
     //
-    :where(body) {
-        font-size: 0.9rem;
-    }
-
-    //
-    head {
+    :where(head) {
         user-select: none;
         pointer-events: none;
         display: none;
     }
 
     //
-    html {
+    :where(html) {
         translate: 0px 0px !important;
         transform: none !important;
         margin: 0px !important;
@@ -127,10 +74,13 @@
     }
 
     //
-    body {
+    :where(body) {
         translate: 0px 0px !important;
         transform: none !important;
         margin: 0px !important;
+
+        //
+        font-size: 0.9rem;
 
         //
         overflow: hidden;
@@ -296,7 +246,7 @@
         transition-behavior: allow-discrete;
 
         //
-        @include disableTransform();
+        @include ps.disable-transform();
 
         //
         &:not(x-scrollbox) {
@@ -319,59 +269,72 @@
     }
 
     //
-    :where(.lucide, svg) {//
-        inline-size: 100%;
-        block-size: 100%;
+    :where(.lucide, svg) {
 
         //
-        user-select: none;
-        pointer-events: none;
+        & {
+            inline-size: auto;
+            block-size: 100%;
+
+            //
+            user-select: none;
+            pointer-events: none;
+
+            //
+            display: flex;
+            contain: size;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            will-change: auto;
+
+            //
+            object-fit: contain;
+            object-position: center center;
+
+            //
+            inset: 0px;
+            translate: 0px 0px 0px;
+            visibility: visible;
+            opacity: 1;
+
+            //
+            image-rendering: auto;
+            image-rendering: optimizeQuality;
+            image-rendering: smooth;
+            image-rendering: high-quality;
+
+            //
+            shape-rendering: geometricPrecision;
+
+            //
+            transform: none;
+            filter: none;
+            backdrop-filter: none;
+
+            //
+            place-items: center;
+            place-content: center;
+
+            //
+            stroke: var(--current-glyph-color);
+        }
 
         //
-        display: flex;
-        contain-intrinsic-width: 24px;
-        contain-intrinsic-height: 24px;
-        contain: size;
-        aspect-ratio: 1 / 1;
-        position: relative;
-        will-change: auto;
+        & { @include ps.HQRendering(); };
 
         //
-        object-fit: contain;
-        object-position: center center;
+        & {
+            contain-intrinsic-width: 24px;
+            contain-intrinsic-height: 24px;
+        }
 
         //
-        inset: 0px;
-        translate: 0px 0px 0px;
-        visibility: visible;
-        opacity: 1;
-
-        //
-        //stroke: var(--current-glyph-color);
-
-        //
-        image-rendering: auto;
-        image-rendering: optimizeQuality;
-        image-rendering: smooth;
-        image-rendering: high-quality;
-
-        //
-        shape-rendering: geometricPrecision;
-
-        //
-        @include HQRendering();
-
-        //
-        transform: none;
-        filter: none;
-        backdrop-filter: none;
-
-        //
-        place-items: center;
-        place-content: center;
-
-        //
-        stroke: var(--current-glyph-color);
+        @-moz-document url-prefix() {
+            & {
+                contain-intrinsic-width: calc(24px / var(--zoom, 1));
+                contain-intrinsic-height: calc(24px / var(--zoom, 1));
+            }
+        }
     }
 
     //
@@ -380,37 +343,48 @@
     }
 
     //
-    :where(canvas):is([is="w-canvas"]) {//
-        inline-size: 100cqi;
-        block-size: 100cqb;
+    :where(canvas):is([is="w-canvas"]) {
+        & {
+            min-inline-size: 1px;
+            min-block-size: 1px;
 
-        //
-        pointer-events: none !important;
-        place-content: center;
-        place-items: center;
-        place-self: center;
+            //
+            inline-size: 100%;
+            block-size: 100%;
 
-        //
-        aspect-ratio: auto;
-        display: flex;
+            //
+            max-inline-size: 100%;
+            max-block-size: 100%;
 
-        //
-        image-rendering: auto;
-        image-rendering: optimizeQuality;
-        image-rendering: smooth;
-        image-rendering: high-quality;
+            //
+            pointer-events: none !important;
+            place-content: center;
+            place-items: center;
+            place-self: center;
 
-        //
-        object-fit: cover;
-        object-position: center;
+            //
+            aspect-ratio: auto;
+            display: flex;
 
-        //
-        background-color: var(--theme-base-color, transparent);
-        border-image-source: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+            //
+            image-rendering: auto;
+            image-rendering: optimizeQuality;
+            image-rendering: smooth;
+            image-rendering: high-quality;
 
-        //
-        position: fixed !important;
-        inset: 0px !important;
+            //
+            object-fit: cover;
+            object-position: center;
+
+            //
+            background-color: var(--theme-base-color, transparent);
+            border-image-source: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+
+            //
+            position: fixed !important;
+            inset: 0px !important;
+
+        }
     }
 
     //

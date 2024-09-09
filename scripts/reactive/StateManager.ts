@@ -24,7 +24,7 @@ export class StateManager {
     }
 
     //
-    get(element: HTMLElement) {
+    get(element: HTMLElement | string) {
         return element instanceof HTMLElement ? this.elements.get(element) : this.named.get(element);
     }
 

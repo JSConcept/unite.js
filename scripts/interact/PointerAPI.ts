@@ -2,7 +2,7 @@ import type { ScrollBarStatus } from "@/wcomp/scrollbox/ScrollBox.ts";
 import {zoomOf} from "../utils/Zoom.ts";
 
 //
-import Timer from "../../scripts/performance/Time.ts";
+import Timer from "@ux-ts/performance/Time.ts";
 
 //
 class PointerEdge {

@@ -48,7 +48,7 @@ export const getParent = (e) => {
 };
 
 //
-export const redirectCell = ($preCell: [number, number], gridArgs: GridArgsType) => {
+export const redirectCell = ($preCell: [number, number], gridArgs: GridArgsType): [number, number] => {
     //const items = gridItems;
     const preCell: [number, number] = [...$preCell]; // make non-conflict copy
     const icons =
@@ -147,7 +147,7 @@ const orientationNumberMap = {
 const roundNearest = (number, N = 1)=>(Math.round(number * N) / N)
 
 //
-export const convertPointerPxToOrientPx = ($pointerPx: [number, number], gridArgs: GridArgsType)=>{
+export const convertPointerPxToOrientPx = ($pointerPx: [number, number], gridArgs: GridArgsType): [number, number] => {
     const orientation = getCorrectOrientation();
     const boxInPx = [...gridArgs.page.size];
     const pointerPx: [number, number] = [...$pointerPx];
@@ -162,7 +162,7 @@ export const convertPointerPxToOrientPx = ($pointerPx: [number, number], gridArg
 }
 
 //
-export const convertOrientPxToPointerPx = ($orientPx: [number, number], gridArgs: GridArgsType)=>{
+export const convertOrientPxToPointerPx = ($orientPx: [number, number], gridArgs: GridArgsType): [number, number] => {
     const orientation = getCorrectOrientation();
     const boxInPx = [...gridArgs.page.size];
     const orientPx: [number, number] = [...$orientPx];
@@ -170,7 +170,7 @@ export const convertOrientPxToPointerPx = ($orientPx: [number, number], gridArgs
 
     //
     if (orientIndex%2) { boxInPx.reverse(); }
-    const pointerPx = [
+    const pointerPx: [number, number] = [
         ((orientIndex==0 || orientIndex==3) ? orientPx[0] : boxInPx[0] - orientPx[0]) || 0,
         ((orientIndex==0 || orientIndex==1) ? orientPx[1] : boxInPx[1] - orientPx[1]) || 0
     ];
@@ -180,7 +180,7 @@ export const convertOrientPxToPointerPx = ($orientPx: [number, number], gridArgs
 
 
 //
-export const convertOrientPxToCX = ($orientPx: [number, number], gridArgs: GridArgsType)=>{
+export const convertOrientPxToCX = ($orientPx: [number, number], gridArgs: GridArgsType): [number, number] => {
     const orientation = getCorrectOrientation();
     const boxInPx = [...gridArgs.page.size];
     const orientPx: [number, number] = [...$orientPx];
@@ -196,7 +196,7 @@ export const convertOrientPxToCX = ($orientPx: [number, number], gridArgs: GridA
 
 
 //
-export const relativeToAbsoluteInPx = ($relativePx: [number, number], gridArgs: GridArgsType)=>{
+export const relativeToAbsoluteInPx = ($relativePx: [number, number], gridArgs: GridArgsType): [number, number] => {
     const orientation = getCorrectOrientation();
     const boxInPx = [...gridArgs.page.size];
     const orientIndex = orientationNumberMap[orientation] || 0;
@@ -253,7 +253,7 @@ export const floorInOrientPx = ($orientPx: [number, number], gridArgs: GridArgsT
 };
 
 //
-export const floorInCX = ($CX: [number, number], gridArgs: GridArgsType) => {
+export const floorInCX = ($CX: [number, number], gridArgs: GridArgsType): [number, number] => {
     const layout = gridArgs.page.layout;
     return [
         Math.min(Math.max(roundNearest($CX[0]), 0), layout[0]-1),
