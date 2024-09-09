@@ -413,7 +413,7 @@
             }
 
             //
-            & { inset-block-end: max(env(safe-area-inset-bottom, 0px), env(safe-area-inset-height, 0px)); }
+            & { inset-block-end: max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)); }
 
             //
             input {
