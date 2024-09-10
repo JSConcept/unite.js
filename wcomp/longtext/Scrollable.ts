@@ -1,3 +1,5 @@
+import { observeBorderBox } from "@ux-ts/dom/Observer.ts";
+import { zoomOf } from "@ux-ts/utils/Zoom.ts";
 
 //
 class Scrollable {
@@ -96,15 +98,11 @@ class Scrollable {
         });
 
         //
-        new ResizeObserver((entries) => {
-            for (const entry of entries) {
-                if (entry.borderBoxSize) {
-                    initialValues();
-                    this.#scrollable?.parentElement?.style.setProperty("--offset-width" , "" + entry.borderBoxSize[0].inlineSize, "");
-                    this.#scrollable?.parentElement?.style.setProperty("--offset-height", "" + entry.borderBoxSize[0].blockSize , "");
-                }
-            }
-        })?.observe?.(this.#scrollable);
+        observeBorderBox(this.#scrollable, (box)=>{
+            initialValues();
+            this.#scrollable?.parentElement?.style.setProperty("--offset-width" , "" + box.inlineSize, "");
+            this.#scrollable?.parentElement?.style.setProperty("--offset-height", "" + box.blockSize , "");
+        });
 
         //
         this.#scrollable.parentElement?.querySelector(".ux-scroll-bar")?.
@@ -123,7 +121,7 @@ class Scrollable {
                     //
                     status.pointerId = ev.pointerId;
                     status.pointerLocation =
-                        ev[["clientX", "clientY"][axis]];
+                        ev[["clientX", "clientY"][axis]] / zoomOf();
                     status.virtualScroll = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
                 }
             });
@@ -136,7 +134,7 @@ class Scrollable {
 
                 //
                 const previous = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
-                const coord = ev[["clientX", "clientY"][axis]];
+                const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
 
                 //
                 status.virtualScroll +=

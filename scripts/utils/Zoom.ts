@@ -29,3 +29,8 @@ export const changeZoom = (scale = 1) => {
 export const fixedClientZoom = ()=>{
     return (document.documentElement?.currentCSSZoom != null ? 1 : zoomOf());
 }
+
+//
+export const unfixedClientZoom = ()=>{
+    return (document.documentElement?.currentCSSZoom == null ? 1 : zoomOf());
+}

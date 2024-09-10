@@ -5,6 +5,8 @@ import styles from "./LongText.scss?inline";
 import html from "./FocusText.html?raw";
 import { doButtonAction, makeInput } from "./Utils.ts";
 import { computeCaretPositionFromClient, measureInputInFocus } from "./Measure.ts";
+import { zoomOf } from "@ux-ts/utils/Zoom.ts";
+import { MOC } from "@ux-ts/utils/Utils.ts";
 
 //
 class FocusTextElement extends HTMLElement {
@@ -192,13 +194,6 @@ customElements.define("x-focustext", FocusTextElement);
 export default () => {};
 export { FocusTextElement };
 
-
-
-//
-export const MOC = (element: HTMLElement | null, selector: string): boolean => {
-    return (!!element?.matches?.(selector) || !!element?.closest?.(selector));
-};
-
 //
 const enforceFocus = (ev)=>{
     let element = ev?.target as HTMLInputElement;
@@ -223,7 +218,7 @@ const enforceFocus = (ev)=>{
             //
             if (["click", "pointerdown", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
                 if (ev && ev?.type == "pointerdown" && dInput) {
-                    const cps = computeCaretPositionFromClient(element, [ev?.clientX, ev?.clientY]);
+                    const cps = computeCaretPositionFromClient(element, [ev?.clientX / zoomOf(), ev?.clientY / zoomOf()]);
                     dInput?.setSelectionRange(cps, cps);
                 }
 

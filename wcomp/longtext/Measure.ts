@@ -1,3 +1,6 @@
+import { fixedClientZoom, unfixedClientZoom } from "@ux-ts/utils/Zoom.ts";
+
+//
 const canvas = new OffscreenCanvas(1, 1);
 const ctx = canvas.getContext("2d");
 
@@ -63,6 +66,6 @@ export const computeCaretPosition = (input: HTMLInputElement, point: [number, nu
 //
 export const computeCaretPositionFromClient = (input: HTMLInputElement, client: [number, number])=>{
     const box = input.getBoundingClientRect();
-    const point: [number, number] = [client[0] - box.left, client[1] - box.top];
+    const point: [number, number] = [client[0] - box.left / unfixedClientZoom(), client[1] - box.top / unfixedClientZoom()];
     return computeCaretPosition(input, point);
 }
