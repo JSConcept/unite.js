@@ -19,7 +19,7 @@ class Scrollable {
                 //if (ev.deltaMode == WheelEvent.DOM_DELTA_PIXEL)
                 {
                     this.#scrollable.scrollBy({
-                        left: ev.deltaY || 0, top: 0,
+                        left: ((ev?.deltaY || 0)+(ev?.deltaX || 0)), top: 0,
                         behavior: "smooth"
                     });
                 }
