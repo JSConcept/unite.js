@@ -114,7 +114,7 @@
         .lucide {
             contain-intrinsic-size: 24px 24px;
             aspect-ratio: 1 / 1;
-            inline-size: auto;
+            inline-size: max-content;
             block-size: 100%;
             stroke: currentColor;
             user-select: none;
@@ -325,7 +325,7 @@
                 //
                 padding: 1rem;
                 aspect-ratio: 1 / 1;
-                inline-size: auto;
+                inline-size: max-content;
                 block-size: 100%;
 
                 //

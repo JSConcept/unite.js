@@ -110,7 +110,7 @@
 //
 @mixin fit-by-block($size, $aspect: "1 / 1") {
     aspect-ratio: #{$aspect};
-    inline-size: auto;
+    inline-size: max-content;
     block-size: #{$size};
 }
 
@@ -118,7 +118,7 @@
 @mixin fit-by-inline($size, $aspect: "1 / 1") {
     aspect-ratio: #{$aspect};
     inline-size: #{$size};
-    block-size: auto;
+    block-size: max-content;
 }
 
 //
