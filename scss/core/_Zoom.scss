@@ -22,7 +22,7 @@
 }
 
 //
-.__use_font-size {
+/*.__use_font-size {
     font-size: calc(16px * max(var(--scaling, 1), 0.125));
     zoom: max(var(--zoom, 1), 0.125);
 
@@ -35,3 +35,4 @@
     & body { zoom: 1; };
     & .app-container { zoom: max(var(--zoom, 1), 0.125); }
 }
+*/
