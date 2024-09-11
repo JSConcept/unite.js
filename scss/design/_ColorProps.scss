@@ -4,6 +4,9 @@
 }
 
 //
+@property --theme-chroma-mixed { syntax: "<color>"; initial-value: white; inherits: true; };
+
+//
 @property --theme-black-mod { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-white-mod { syntax: "<color>"; initial-value: black; inherits: true; };
 @property --theme-is-dark { syntax: "<number>"; inherits: true; initial-value: 0; }
@@ -14,6 +17,8 @@
 @property --theme-chroma-mod { syntax: "<color>"; inherits: true; initial-value: red; }
 @property --theme-up-mod { syntax: "<color>"; inherits: true; initial-value: white; }
 @property --theme-down-mod { syntax: "<color>"; inherits: true; initial-value: black; }
+@property --theme-accent-dark { syntax: "<color>"; initial-value: black; inherits: true; };
+@property --theme-accent-light { syntax: "<color>"; initial-value: white; inherits: true; };
 
 //
 @property --theme-highlight-color { syntax: "<color>"; inherits: true; initial-value: transparent; }

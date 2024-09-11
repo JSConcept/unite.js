@@ -6,7 +6,6 @@
 @use "../core/LogicFb" as flg;
 @use "../core/LogicSign" as slg;
 
-
 //
 $upMod: var(--theme-up-mod);
 $downMod: var(--theme-down-mod);
@@ -39,7 +38,6 @@ $glyphColor: theme-mod-down(#{$baseColor}, 98%);
 $accentColor: theme-mod-down(#{$baseColor}, 92%);
 $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 
-
 //
 @mixin theme-dependent($property, $light, $dark, $fb: var(--theme-is-dark)) {
     & { #{$property}: color-mix(in oklch, #{$light} calc(100% * #{var(--theme-is-dark)}), #{$dark}); }
@@ -49,7 +47,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
         #{$property}: light-dark(#{$light}, #{$dark});
     }
 }
-
 
 //
 @mixin accent-mod($effect: 1) {
@@ -88,8 +85,9 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 @mixin ux-solid {
     & { --theme-solid-color      : #{theme-mod-up($baseColor, 96%)}; }
     & { --accent-surface-color   : #{$baseColor}; };
-    & { --theme-surface-color    : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
-    & { --adaptive-surface-color : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
+    & { --theme-chroma-mixed     : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)); }
+    & { --theme-surface-color    : oklch(from var(--theme-chroma-mixed) l c h / var(--theme-surface-alpha)); }
+    & { --adaptive-surface-color : oklch(from var(--theme-chroma-mixed) l c h / var(--theme-surface-alpha)); }
 
     //
     @include theme-dependent("--theme-accent-base-color", "var(--theme-accent-light)", "var(--theme-accent-dark)");
@@ -109,8 +107,9 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 @mixin ux-inverse {
     & { --theme-solid-color      : #{theme-mod-down($baseColor, 80%)}; }
     & { --accent-surface-color   : #{$baseColor}; };
-    & { --theme-surface-color    : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
-    & { --adaptive-surface-color : oklch(from color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)) l c h / var(--theme-surface-alpha)); }
+    & { --theme-chroma-mixed     : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color)); }
+    & { --theme-surface-color    : oklch(from var(--theme-chroma-mixed) l c h / var(--theme-surface-alpha)); }
+    & { --adaptive-surface-color : oklch(from var(--theme-chroma-mixed) l c h / var(--theme-surface-alpha)); }
 
     //
     @include theme-dependent("--theme-accent-base-color", "var(--theme-accent-dark)", "var(--theme-accent-light)");
@@ -252,8 +251,9 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 
         //
         &, &::before, &::after, &::selection {
-            //--current-surface-color: var(--theme-surface-color, white);
+            //
             --current-surface-color: color-mix(in oklch, var(--theme-highlight-color, white) calc(var(--highlight-coefficient, 0) * 1%), var(--theme-surface-color, white));
+            //--current-surface-color: var(--theme-surface-color, white);
             --current-glyph-color: var(--theme-glyph-color, black);
             --current-accent-color: var(--theme-accent-color, white);
             --current-chroma-color: var(--theme-chroma-color, white);
@@ -275,6 +275,9 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
             //
             --theme-accent-dark : oklch(from var(--theme-base-color) min(min(calc(1.0 - l), l), 0.4) min(c, 0.8) h);
             --theme-accent-light: oklch(from var(--theme-base-color) max(max(calc(1.0 - l), l), 0.6) min(c, 0.8) h);
+
+            //
+            --theme-chroma-mixed     : color-mix(in oklch, var(--accent-surface-color) calc(100% * var(--theme-accent-chroma)), var(--theme-solid-color));
 
             //
             --highlight-coefficient: 0.0;
@@ -345,13 +348,13 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
     @function hl-logic($value) { @return "calc(#{$value} * 3)"; };
 
     //
-    @include attr-based("*[data-highlight]", "--highlight-coefficient", "data-highlight", "number", get-function("hl-logic"), 1);
+    @include attr-based("*[data-highlight]", "--highlight-coefficient", "data-highlight", "number", get-function("hl-logic"), 0);
     @include attr-based("*[data-chroma]", "--theme-accent-chroma", "data-chroma", "number", null, 0);
-    @include attr-based("*[data-alpha]", "--theme-surface-alpha", "data-alpha", "number", null, 1);
+    @include attr-based("*[data-alpha]", "--theme-surface-alpha", "data-alpha", "number", null, 0);
 
     //
     @include hover("*[data-highlight-hover]") {
-        @include attr-based("&", "--highlight-coefficient", "data-highlight-hover", "number", get-function("hl-logic"), 1);
+        @include attr-based("&", "--highlight-coefficient", "data-highlight-hover", "number", get-function("hl-logic"), 0);
     }
 
     //

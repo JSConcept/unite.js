@@ -141,7 +141,7 @@ document.addEventListener("ux-theme-change", ()=>{
 
 //
 // PART II by 26.08.2024, but bit horrible solution
-const makeAttrSupport = (selector, attr, type = "number", def = "1")=>{
+const makeAttrSupport = (selector, attr, type = "number", def = "0")=>{
     //
     if (!CSS.supports("opacity", `attr(${attr} ${type}, 1)`)) {
         observeAttributeBySelector(document.documentElement, selector, attr, (mutation)=>{
