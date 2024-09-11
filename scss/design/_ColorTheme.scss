@@ -232,13 +232,15 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
         };
 
         //
-        @include ux-solid;
-        @include ux-highlight-color;
+        &, :where(body) {
+            @include ux-solid;
+            @include ux-highlight-color;
 
-        //
-        @include contrast-inverse("--accent-glyph-color", $baseColor);
-        @include contrast-inverse("--contrast-surface-color", "var(--theme-glyph-color, transparent)");
-        @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
+            //
+            @include contrast-inverse("--accent-glyph-color", $baseColor);
+            @include contrast-inverse("--contrast-surface-color", "var(--theme-glyph-color, transparent)");
+            @include contrast-inverse("--contrast-glyph-color", "var(--theme-surface-color, transparent)");
+        }
 
         //
         @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; }
@@ -250,6 +252,11 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 
         //
         &, &::before, &::after, &::selection {
+            //--current-surface-color: var(--theme-surface-color, white);
+            --current-surface-color: color-mix(in oklch, var(--theme-highlight-color, white) calc(var(--highlight-coefficient, 0) * 1%), var(--theme-surface-color, white));
+            --current-glyph-color: var(--theme-glyph-color, black);
+            --current-accent-color: var(--theme-accent-color, white);
+            --current-chroma-color: var(--theme-chroma-color, white);
 
             //
             --theme-chroma-mod: oklch(from #{$baseColor} l 0.99 h);
@@ -270,10 +277,6 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
             --theme-accent-light: oklch(from var(--theme-base-color) max(max(calc(1.0 - l), l), 0.6) min(c, 0.8) h);
 
             //
-            --current-glyph-color: var(--theme-glyph-color);
-            --current-surface-color: color-mix(in oklch, var(--theme-highlight-color) calc(var(--highlight-coefficient) * 1%), var(--theme-surface-color));
-            --current-accent-color: var(--theme-accent-color);
-            --current-chroma-color: var(--theme-chroma-color);
             --highlight-coefficient: 0.0;
             --highlight-transition-duration: 0.2s;
             --highlight-transition-mode: linear;
@@ -290,12 +293,12 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
             @include ux-highlight-color;
             @include theme-dependent("--theme-up-mod", "var(--theme-light-up-mod)", "var(--theme-dark-up-mod)");
             @include theme-dependent("--theme-down-mod", "var(--theme-light-down-mod)", "var(--theme-dark-down-mod)");
+        }
 
-            //
-            &:where(a, span, svg), :where(a, span, svg) {
-                background-color: transparent;
-                stroke: var(--current-glyph-color);
-            }
+        //
+        &:where(a, span, svg), :where(a, span, svg) {
+            background-color: transparent;
+            stroke: var(--current-glyph-color);
         }
 
         //
@@ -320,6 +323,7 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
 
     //
     :where([data-scheme]) *:not([data-scheme]) {
+        //@include ux-solid;
         @include ux-transparent-mode;
     }
 
