@@ -135,9 +135,10 @@ class FocusTextElement extends HTMLElement {
     //
     setVirtualFocus(where, onClick = false) {
         //
-        /*if (document.activeElement != this.#input) {
-            this.style.removeProperty("display");
-        }*/
+        if (this.#focus) {
+            this.#focus?.removeAttribute?.("disabled");
+            this.#focus = null;
+        }
 
         //
         if (this.#input && where != this.#input && where && where?.parentNode && (this.#focus = where)) {
@@ -175,6 +176,13 @@ class FocusTextElement extends HTMLElement {
                 }
             //});
         }
+
+        //
+        requestAnimationFrame(()=>{
+            if (document.activeElement != this.#input || !this.#focus) {
+                this.style.setProperty("display", "none", "important");
+            }
+        });
     }
 
     //
