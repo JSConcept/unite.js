@@ -216,7 +216,7 @@ export const relativeToAbsoluteInPx = ($relativePx: [number, number], gridArgs: 
 
 
 //
-export const absoluteCXToRelativeCX = ($CX: [number, number], gridArgs: GridArgsType)=>{
+export const absoluteCXToRelativeCX = ($CX: [number, number], gridArgs: GridArgsType): [number, number] =>{
     const $orientPxBasis = [gridArgs.item.cell[0], gridArgs.item.cell[1]];
     return [$CX[0] - $orientPxBasis[0], $CX[1] - $orientPxBasis[1]];
 }
