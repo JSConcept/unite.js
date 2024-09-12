@@ -231,7 +231,9 @@ const enforceFocus = (ev)=>{
                 }
 
                 //
-                dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown");
+                if (["click", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
+                    dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown");
+                }
             }
 
             //
