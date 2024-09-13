@@ -140,6 +140,9 @@
             grid-column: 1 / 2 span !important;
             inline-size: 100% !important;
             block-size: 100% !important;
+
+            //
+            will-change: contents, scroll-position;
         }
 
         //
