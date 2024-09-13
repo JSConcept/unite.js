@@ -59,6 +59,23 @@
     inherits: true;
 }
 
+
+
+//
+@property --border-width {
+    syntax: "<length-percentage>";
+    initial-value: 100%;
+    inherits: true;
+}
+
+//
+@property --border-height {
+    syntax: "<length-percentage>";
+    initial-value: 100%;
+    inherits: true;
+}
+
+
 //
 @property --avail-width {
     syntax: "<length-percentage>";

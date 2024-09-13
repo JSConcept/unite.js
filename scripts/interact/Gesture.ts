@@ -29,11 +29,11 @@ const tpm = (callback: (p0: Function, p1: Function) => {}, timeout = 1000) => {
 };
 
 //
-const borderBoxWidth = Symbol("@border-box-width");
+const borderBoxWidth  = Symbol("@border-box-width");
 const borderBoxHeight = Symbol("@border-box-height");
 
 //
-const contentBoxWidth = Symbol("@content-box-width");
+const contentBoxWidth  = Symbol("@content-box-width");
 const contentBoxHeight = Symbol("@content-box-height");
 
 
@@ -56,12 +56,9 @@ const getPxValue = (element, name)=>{
     return 0;
 }
 
-
 //
 const onBorderObserve = new WeakMap<HTMLElement, ResizeObserver>();
 const onContentObserve = new WeakMap<HTMLElement, ResizeObserver>();
-
-
 
 //
 const doContentObserve = (element) => {
@@ -72,7 +69,7 @@ const doContentObserve = (element) => {
                 if (entry.contentBoxSize) {
                     const contentBoxSize = entry.contentBoxSize[0];
                     if (contentBoxSize) {
-                        element[contentBoxWidth] = contentBoxSize.inlineSize * zoomOf();
+                        element[contentBoxWidth]  = contentBoxSize.inlineSize * zoomOf();
                         element[contentBoxHeight] = contentBoxSize.blockSize * zoomOf();
                     }
                 }
@@ -80,8 +77,8 @@ const doContentObserve = (element) => {
         });
 
         //
-        element[contentBoxWidth] = (element.clientWidth - (getPxValue(element, "padding-left") + getPxValue(element, "padding-right"))) * zoomOf();
-        element[contentBoxHeight] = (element.clientHeight - (getPxValue(element, "padding-top") + getPxValue(element, "padding-bottom"))) * zoomOf();
+        element[contentBoxWidth]  = (element.clientWidth  - (getPxValue(element, "padding-left") + getPxValue(element, "padding-right")))  * zoomOf();
+        element[contentBoxHeight] = (element.clientHeight - (getPxValue(element, "padding-top")  + getPxValue(element, "padding-bottom"))) * zoomOf();
 
         //
         onContentObserve.set(element, observer);
@@ -99,16 +96,24 @@ const doBorderObserve = (element) => {
                 if (entry.borderBoxSize) {
                     const borderBoxSize = entry.borderBoxSize[0];
                     if (borderBoxSize) {
-                        element[borderBoxWidth] = borderBoxSize.inlineSize * zoomOf();
+                        element[borderBoxWidth]  = borderBoxSize.inlineSize * zoomOf();
                         element[borderBoxHeight] = borderBoxSize.blockSize * zoomOf();
+
+                        //
+                        element.style.setProperty("--border-width" , borderBoxSize.inlineSize + "px");
+                        element.style.setProperty("--border-height", borderBoxSize.blockSize  + "px");
                     }
                 }
             }
         });
 
         //
-        element[borderBoxWidth] = element.offsetWidth * zoomOf();
+        element[borderBoxWidth]  = element.offsetWidth  * zoomOf();
         element[borderBoxHeight] = element.offsetHeight * zoomOf();
+
+        //
+        element.style.setProperty("--border-width" , element.offsetWidth  + "px");
+        element.style.setProperty("--border-height", element.offsetHeight + "px");
 
         //
         onBorderObserve.set(element, observer);
@@ -178,10 +183,14 @@ export default class AxGesture {
         this.#holder[borderBoxHeight] = this.#holder.offsetHeight * zoomOf();
 
         //
+        this.#holder.style.setProperty("--border-width" , this.#holder.offsetWidth  + "px");
+        this.#holder.style.setProperty("--border-height", this.#holder.offsetHeight + "px");
+
+        //
         if (this.#holder.parentNode) {
             const parentNode = this.#holder.parentNode as HTMLElement;
-            parentNode[contentBoxWidth] = (parentNode.clientWidth - (getPxValue(parentNode, "padding-left") + getPxValue(parentNode, "padding-right"))) * zoomOf();
-            parentNode[contentBoxHeight] = (parentNode.clientHeight - (getPxValue(parentNode, "padding-top") + getPxValue(parentNode, "padding-bottom"))) * zoomOf();
+            parentNode[contentBoxWidth]  = (parentNode.clientWidth  - (getPxValue(parentNode, "padding-left") + getPxValue(parentNode, "padding-right")))  * zoomOf();
+            parentNode[contentBoxHeight] = (parentNode.clientHeight - (getPxValue(parentNode, "padding-top")  + getPxValue(parentNode, "padding-bottom"))) * zoomOf();
         }
     }
 
@@ -304,9 +313,7 @@ export default class AxGesture {
             document.documentElement.addEventListener(
                 "pointermove",
                 registerMove,
-                {
-                    capture: true,
-                }
+                {capture: true}
             );
             document.documentElement.addEventListener(
                 "pointerup",
@@ -323,8 +330,9 @@ export default class AxGesture {
 
     //
     limitResize(real, virtual, holder, container) {
-        const widthDiff = container[contentBoxWidth] - (holder[borderBoxWidth] - (this.propGet("--resize-x") || 0) + (this.propGet("--drag-x") || 0));
-        const heightDiff = container[contentBoxHeight] - (holder[borderBoxHeight] - (this.propGet("--resize-y") || 0) + (this.propGet("--drag-y") || 0));
+        //const box = this.#holder.getBoundingClientRect();
+        const widthDiff  = container[contentBoxWidth]  - (holder[borderBoxWidth]  - (this.propGet("--resize-x") || 0) + ((this.#holder.offsetLeft || 0) * zoomOf())/*(this.propGet("--drag-x") || 0)*/);
+        const heightDiff = container[contentBoxHeight] - (holder[borderBoxHeight] - (this.propGet("--resize-y") || 0) + ((this.#holder.offsetTop  || 0) * zoomOf())/*(this.propGet("--drag-y") || 0)*/);
 
         // if relative of un-resized to edge corner max-size
         // discount of dragging offset!
@@ -437,7 +445,8 @@ export default class AxGesture {
                 const shiftEv = (evp) => {
                     if (evp.pointerId == ev.pointerId) {
                         unListenShift(evp); this.#updateSize();
-                        const starting = [this.propGet("--drag-x") || 0, this.propGet("--drag-y") || 0];
+                        //const box = this.#holder.getBoundingClientRect();
+                        const starting = [(this.#holder.offsetLeft || 0) * zoomOf(), (this.#holder.offsetTop || 0) * zoomOf()];//[this.propGet("--drag-x") || 0, this.propGet("--drag-y") || 0];
                         grabForDrag(this.#holder, ev, {
                             propertyName: "drag",
                             shifting: this.limitDrag(starting, starting, this.#holder, this.#holder.parentNode),
@@ -448,15 +457,15 @@ export default class AxGesture {
                 //
                 const unListenShift = (evp) => {
                     if (evp.pointerId == ev.pointerId) {
-                        document.removeEventListener("pointermove", shiftEv);
-                        document.removeEventListener("pointerup", unListenShift);
+                        document.removeEventListener("pointermove"  , shiftEv);
+                        document.removeEventListener("pointerup"    , unListenShift);
                         document.removeEventListener("pointercancel", unListenShift);
                     }
                 };
 
                 //
-                document.addEventListener("pointermove", shiftEv);
-                document.addEventListener("pointerup", unListenShift);
+                document.addEventListener("pointermove"  , shiftEv);
+                document.addEventListener("pointerup"    , unListenShift);
                 document.addEventListener("pointercancel", unListenShift);
             }
         });
@@ -541,8 +550,8 @@ export default class AxGesture {
         }
 
         //
-        document.documentElement.addEventListener("pointerout", cancelEv);
-        document.documentElement.addEventListener("pointerup", cancelEv);
+        document.documentElement.addEventListener("pointerout"   , cancelEv);
+        document.documentElement.addEventListener("pointerup"    , cancelEv);
         document.documentElement.addEventListener("pointercancel", cancelEv);
     }
 
@@ -553,9 +562,7 @@ export default class AxGesture {
         fx: any = null
     ) {
         fx ||= (ev) => {
-            this.#holder.dispatchEvent(
-                new CustomEvent("long-press", {detail: ev, bubbles: true})
-            );
+            this.#holder.dispatchEvent(new CustomEvent("long-press", {detail: ev, bubbles: true}));
             //requestAnimationFrame(()=>navigator?.vibrate?.([10]))
         }
 
@@ -614,7 +621,7 @@ export default class AxGesture {
         const registerCoord = [
             (ev) => {
                 if (ev.pointerId == action.pointerId) {
-                    action.lastCoord[0] = ev.client;
+                    action.lastCoord[0] = ev.clientX;
                     action.lastCoord[1] = ev.clientY;
                 }
             },
