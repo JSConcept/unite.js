@@ -55,11 +55,11 @@ export const redirectCell = ($preCell: [number, number], gridArgs: GridArgsType)
         [...gridArgs.page.list]?.map((id) => gridArgs.items.get(id)).filter((m) => !!m) || [];
 
     //
-    const checkBusy = (cell) => {
+    const checkBusy = (cell): boolean => {
         return icons
-            .filter((e) => e != gridArgs.item && e.id != gridArgs.item.id && (e.pointerId < 0 || e.pointerId == null))
-            .find((one) => {
-                return one.cell[0] == cell[0] && one.cell[1] == cell[1];
+            .filter((e) => (!(e == gridArgs.item || e.id == gridArgs.item.id) && (e.pointerId < 0 || e.pointerId == null)))
+            .some((one) => {
+                return (one?.cell?.[0]||0) == (cell[0]||0) && (one?.cell?.[1]||0) == (cell[1]||0);
             });
     };
 
@@ -99,31 +99,25 @@ export const redirectCell = ($preCell: [number, number], gridArgs: GridArgsType)
 
     //
     let exceed = 0;
-    let busy = checkBusy(preCell);
+    let busy = true;
+    let comp = [...preCell];
     while (busy && exceed++ < columns * rows) {
-        if (!busy) {
-            gridArgs.item.cell = makeReactive([...preCell]);
+        //
+        if (!(busy = checkBusy(comp))) {
+            gridArgs.item.cell = makeReactive([...comp]);
             return gridArgs.item.cell;
         }
 
         //
-        preCell[0]++;
-        if (preCell[0] >= columns) {
-            preCell[0] = 0;
-            preCell[1]++;
-
-            //
-            if (preCell[1] >= rows) {
-                preCell[1] = 0;
-            }
+        comp[0]++;
+        if (comp[0] >= columns) {
+            comp[0] = 0; comp[1]++;
+            if (comp[1] >= rows) { comp[1] = 0; }
         }
-
-        //
-        busy = checkBusy(preCell);
     }
 
     //
-    gridArgs.item.cell = makeReactive(preCell);
+    gridArgs.item.cell = makeReactive([...preCell]);
     return gridArgs.item.cell;
 };
 
@@ -133,7 +127,6 @@ export const redirectCell = ($preCell: [number, number], gridArgs: GridArgsType)
 /*
  * NEXT GENERATION!
  */
-
 
 //
 const orientationNumberMap = {
@@ -178,7 +171,6 @@ export const convertOrientPxToPointerPx = ($orientPx: [number, number], gridArgs
     return pointerPx;
 }
 
-
 //
 export const convertOrientPxToCX = ($orientPx: [number, number], gridArgs: GridArgsType): [number, number] => {
     const orientation = getCorrectOrientation();
@@ -192,8 +184,6 @@ export const convertOrientPxToCX = ($orientPx: [number, number], gridArgs: GridA
     const gridPxToCX = [layout[0] / boxInPx[0], layout[1] / boxInPx[1]];
     return [orientPx[0] * gridPxToCX[0], orientPx[1] * gridPxToCX[1]]
 }
-
-
 
 //
 export const relativeToAbsoluteInPx = ($relativePx: [number, number], gridArgs: GridArgsType): [number, number] => {
@@ -213,15 +203,11 @@ export const relativeToAbsoluteInPx = ($relativePx: [number, number], gridArgs: 
     return [pointerPxBasis[0] + $relativePx[0], pointerPxBasis[1] + $relativePx[1]];
 }
 
-
-
 //
 export const absoluteCXToRelativeCX = ($CX: [number, number], gridArgs: GridArgsType): [number, number] =>{
     const $orientPxBasis = [gridArgs.item.cell[0], gridArgs.item.cell[1]];
     return [$CX[0] - $orientPxBasis[0], $CX[1] - $orientPxBasis[1]];
 }
-
-
 
 //
 export const absolutePxToRelativeInOrientPx = ($absolutePx: [number, number], gridArgs: GridArgsType)=>{
