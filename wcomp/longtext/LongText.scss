@@ -425,7 +425,7 @@
             }
 
             //
-            & { inset-block-end: calc(max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
+            & { inset-block-end: calc(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
 
             //
             input {
