@@ -103,6 +103,7 @@
         //zoom: var(--scaling, 1);
 
         // if needs viewport
+        container-name: body;
         container-type: size;
         contain: content;
 
@@ -153,6 +154,7 @@
         inset: 0px;
 
         //
+        container-name: application !important;
         container-type: size !important;
         contain: strict !important;
 
