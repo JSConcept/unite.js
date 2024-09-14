@@ -53,3 +53,8 @@ $cps: 0.00001;
     $diff: "max(#{$a}, #{$b})";
     @return unquote("max(#{sign($diff)}, 0)");
 }
+
+// currently un-used...
+@function lenToNum($l, $d: 1px) {
+    @return "tan(atan2(#{$l}, #{$d}))";
+}
