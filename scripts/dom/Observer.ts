@@ -164,31 +164,36 @@ export const observeBySelector = (element, selector = "*", cb = (mut, obs)=>{}) 
     const observer = new MutationObserver((mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type == "childList") {
-                const addedNodes = Array.from(mutation.addedNodes) || [];
-                const removedNodes = Array.from(mutation.removedNodes) || [];
+                const $addedNodes   = Array.from(mutation.addedNodes)   || [];
+                const $removedNodes = Array.from(mutation.removedNodes) || [];
 
                 //
-                addedNodes.push(...Array.from(mutation.addedNodes || []).flatMap((el)=>{
+                $addedNodes.push(...Array.from(mutation.addedNodes || []).flatMap((el)=>{
                     return Array.from((el as HTMLElement)?.querySelectorAll?.(selector) || []) as Element[];
                 }));
 
                 //
-                removedNodes.push(...Array.from(mutation.removedNodes || []).flatMap((el)=>{
+                $removedNodes.push(...Array.from(mutation.removedNodes || []).flatMap((el)=>{
                     return Array.from((el as HTMLElement)?.querySelectorAll?.(selector) || []) as Element[];
                 }));
 
                 //
-                cb?.({
-                    type: mutation.type,
-                    target: mutation.target,
-                    attributeName: mutation.attributeName,
-                    attributeNamespace: mutation.attributeNamespace,
-                    nextSibling: mutation.nextSibling,
-                    oldValue: mutation.oldValue,
-                    previousSibling: mutation.previousSibling,
-                    addedNodes: [...Array.from((new Set(addedNodes)).values())].filter((el) => (<HTMLElement>el)?.matches?.(selector)),
-                    removedNodes: [...Array.from((new Set(removedNodes)).values())].filter((el) => (<HTMLElement>el)?.matches?.(selector)),
-                }, observer);
+                const addedNodes   = [...Array.from((new Set($addedNodes)).values())].filter((el) => (<HTMLElement>el)?.matches?.(selector));
+                const removedNodes = [...Array.from((new Set($removedNodes)).values())].filter((el) => (<HTMLElement>el)?.matches?.(selector));
+
+                //
+                if (addedNodes.length > 0 || removedNodes.length > 0) {
+                    cb?.({
+                        type: mutation.type,
+                        target: mutation.target,
+                        attributeName: mutation.attributeName,
+                        attributeNamespace: mutation.attributeNamespace,
+                        nextSibling: mutation.nextSibling,
+                        oldValue: mutation.oldValue,
+                        previousSibling: mutation.previousSibling,
+                        addedNodes, removedNodes,
+                    }, observer);
+                }
             }
         }
     });
@@ -200,7 +205,10 @@ export const observeBySelector = (element, selector = "*", cb = (mut, obs)=>{}) 
     });
 
     //
-    cb?.({ addedNodes: Array.from(element.querySelectorAll(selector)) }, observer);
+    const selected = Array.from(element.querySelectorAll(selector));
+    if (selected.length > 0) {
+        cb?.({ addedNodes: selected }, observer);
+    }
 
     //
     return observer;
