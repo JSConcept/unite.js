@@ -152,6 +152,7 @@
         // adguard fix
         & > :where(div) {
             //
+            display: flex;
             transform: none;
             place-self: start !important;
             place-content: start;
@@ -160,7 +161,7 @@
             inset: 0px;
             inset-inline-end: auto;
             inset-block-end: auto;
-            position: fixed;
+            position: fixed !important;
             translate: 0px 0px;
             transform-origin: center;
             contain: layout;
