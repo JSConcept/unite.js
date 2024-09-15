@@ -139,18 +139,28 @@
         }
     }
 
-    //
+    // attempt to fix adguard button...
+    // we are very ethical in case of advert...
     :where(body, html) {
 
         // adguard fix
         & > :where(div) {
+            //
             transform: none;
             place-self: start;
+            place-content: start;
+            place-items: start;
+            text-align: start;
             inset: 0px;
             inset-inline-end: auto;
             inset-block-end: auto;
             position: fixed;
             translate: 0px 0px;
+            transform-origin: center;
+
+            //
+            inline-size: max-content;
+            block-size: max-content;
         }
     }
 
