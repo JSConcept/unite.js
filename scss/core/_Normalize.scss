@@ -48,15 +48,12 @@
         background-color: transparent;
 
         //
-        //inline-size: max-content;
-        //block-size: max-content;
-
-        //
         overflow: visible;
         position: relative;
         display: flex;
         line-height: 0;
         contain: layout;
+        flex-direction: row-reverse;
 
         //
         min-inline-size: 0px;
@@ -150,6 +147,7 @@
     :where(html > div) {
         & { all: initial; };
         * { all: unset  ; };
+        & { z-index: 99 ; };
     }
 
     // attempt to fix adguard button...
