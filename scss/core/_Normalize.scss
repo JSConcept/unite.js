@@ -179,13 +179,6 @@
         }
     }
 
-    // still needs such hack for adguard...
-    :where(html > div) {
-        inset: 0px;
-        inset-inline-start: auto;
-        inset-block-start: auto;
-    }
-
     //
     :where(.app-container) {
         //
@@ -535,6 +528,15 @@
         flex-basis: 100%;
         flex-grow: 1;
         flex-shrink: 0;
+    }
+
+
+    // extensions or externals fixes
+    // still needs such hack for adguard...
+    :where(html > div) {
+        inset: 0px;
+        inset-inline-start: auto;
+        inset-block-start: auto;
     }
 
 };
