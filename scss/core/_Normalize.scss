@@ -541,7 +541,7 @@
         display: block;
         position: fixed;
         inset: 0px;
-        place-self: start;
+        place-self: start end;
         place-content: start;
         place-items: start;
     }
