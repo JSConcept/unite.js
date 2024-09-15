@@ -151,40 +151,6 @@
     }
 
     //
-    :where(html > div) {
-        & { all       : initial; };
-        * { all       : unset  ; };
-        & { z-index   : 99     ; };
-        & { place-self: start  ; };
-        & { overflow  : visible; }
-    }
-
-    // attempt to fix adguard button...
-    // we are very ethical in case of advert...
-    :where(body, html) {
-
-        // adguard fix
-        & > :where(div) {
-            //
-            display: flex;
-            transform: none;
-            place-self: start;
-            place-content: start;
-            place-items: start;
-            text-align: start;
-            inset: 0px;
-            position: fixed;
-            translate: 0px 0px;
-            transform-origin: center;
-            contain: none;
-
-            //
-            inline-size: 0px;
-            block-size: 0px;
-        }
-    }
-
-    //
     :where(.app-container) {
         //
         grid-template-columns: minmax(0px, 1fr);
@@ -264,7 +230,7 @@
     }
 
     //
-    :where(*) {
+    :where(body) :where(*) {
         //
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -532,6 +498,37 @@
         flex-basis: 100%;
         flex-grow: 1;
         flex-shrink: 0;
+    }
+
+
+
+    //
+    :where(html > div) {
+        & { all       : initial; };
+        * { all       : unset  ; };
+        & { z-index   : 99     ; };
+        & { place-self: start  ; };
+        & { overflow  : visible; }
+
+        // adguard fix
+        & {
+            //
+            display: none !important; // BANNED! Unable to fix...
+            transform: none;
+            place-self: start;
+            place-content: start;
+            place-items: start;
+            text-align: start;
+            inset: 0px;
+            position: fixed;
+            translate: 0px 0px;
+            transform-origin: center;
+            contain: none;
+
+            //
+            inline-size: 0px;
+            block-size: 0px;
+        }
     }
 
 };
