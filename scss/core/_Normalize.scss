@@ -50,10 +50,14 @@
         //
         overflow: visible;
         position: relative;
-        display: flex;
+        display: grid;
         line-height: 0;
         contain: layout;
         flex-direction: column;
+
+        //
+        grid-template-columns: minmax(0px, 1fr);
+        grid-auto-rows: minmax(0px, 1fr);
 
         //
         min-inline-size: 0px;
@@ -73,8 +77,10 @@
         place-self: start;
 
         //
-        //inset-block-end: auto;
-        //inset-inline-end: auto;
+        & > :where(div) {
+            grid-column: 1 / 1 span;
+            grid-row: 1 / 1 span;
+        }
     }
 
     //
@@ -538,8 +544,7 @@
         inset: 0px;
         inset-inline-end: auto;
         inset-block-start: auto;
-        place-self: end;
-        justify-self: start !important;
+        place-self: end start;
     }
 
 };
