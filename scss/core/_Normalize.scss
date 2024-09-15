@@ -42,30 +42,37 @@
         translate: 0px 0px !important;
         transform: none !important;
         margin: 0px !important;
+        inset: 0px !important;
 
         //
         background-color: transparent;
 
         //
-        inline-size: max-content;
-        block-size: max-content;
+        //inline-size: max-content;
+        //block-size: max-content;
 
         //
-        overflow: hidden;
+        overflow: visible;
         position: relative;
-        display: contents;
+        display: flex;
+        line-height: 0;
+        contain: layout;
 
         //
         min-inline-size: 0px;
         min-block-size: 0px;
 
         //
+        inline-size: calc(100dvi / max(var(--zoom, 1), 0.125));
+        block-size: calc(100dvb / max(var(--zoom, 1), 0.125));
+
+        //
         max-inline-size: calc(100dvi / max(var(--zoom, 1), 0.125));
         max-block-size: calc(100dvb / max(var(--zoom, 1), 0.125));
 
         //
-        place-content: center;
-        place-items: center;
+        place-content: start;
+        place-items: start;
         place-self: start;
 
         //
