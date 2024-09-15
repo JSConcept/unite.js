@@ -330,9 +330,34 @@ $chromaColor: theme-mod-chroma(#{$baseColor}, 80%);
         @include ux-transparent-mode;
     }
 
-    //
-    *[data-theme="dark"]  { --theme-is-dark: 1; color-scheme: dark; }
-    *[data-theme="light"] { --theme-is-dark: 0; color-scheme: light; }
+    // may be used for fixed theming, without dependency
+    // unused in nested elements, currently
+    *[data-theme="dark"]  {
+        & { --theme-is-dark: 1; color-scheme: dark; };
+        @include theme-dependent("--theme-up-mod", "var(--theme-light-up-mod)", "var(--theme-dark-up-mod)");
+        @include theme-dependent("--theme-down-mod", "var(--theme-light-down-mod)", "var(--theme-dark-down-mod)");
+    }
+
+    // may be used for fixed theming, without dependency
+    // unused in nested elements, currently
+    *[data-theme="light"] {
+        & { --theme-is-dark: 0; color-scheme: light; };
+        @include theme-dependent("--theme-up-mod", "var(--theme-light-up-mod)", "var(--theme-dark-up-mod)");
+        @include theme-dependent("--theme-down-mod", "var(--theme-light-down-mod)", "var(--theme-dark-down-mod)");
+    }
+
+    // may be used for fixed theming, without dependency
+    // unused in nested elements, currently
+    *[data-theme="native"] {
+        //
+        & { color-scheme: normal; };
+        @media (prefers-color-scheme: light) { --theme-is-dark: 0; color-scheme: light; };
+        @media (prefers-color-scheme: dark)  { --theme-is-dark: 1; color-scheme: dark; };
+
+        //
+        @include theme-dependent("--theme-up-mod", "var(--theme-light-up-mod)", "var(--theme-dark-up-mod)");
+        @include theme-dependent("--theme-down-mod", "var(--theme-light-down-mod)", "var(--theme-dark-down-mod)");
+    }
 
     //
     *[data-scheme="dynamic"]             { @include ux-dynamic;        & { --theme-accent-chroma: 1; --theme-surface-alpha: 1; }; }
