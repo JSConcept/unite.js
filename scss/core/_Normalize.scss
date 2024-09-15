@@ -139,6 +139,12 @@
         }
     }
 
+    //
+    :where(html > div) {
+        & { all: initial; };
+        * { all: unset  ; };
+    }
+
     // attempt to fix adguard button...
     // we are very ethical in case of advert...
     :where(body, html) {
