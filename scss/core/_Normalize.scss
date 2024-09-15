@@ -75,65 +75,82 @@
 
     //
     :where(body) {
-        translate: 0px 0px !important;
-        transform: none !important;
-        margin: 0px !important;
-
-        //
-        font-size: 0.9rem;
-
-        //
-        overflow: hidden;
-        position: relative;
-        pointer-events: auto !important;
-        display: grid;
-        inset: 0px;
-
-        //
-        //inset-block-end: auto;
-        //inset-inline-end: auto;
-
-        //
-        place-content: center;
-        place-items: center;
-        place-self: center;
-
-        //
-        background-color: var(--theme-base-color, transparent);
-        //zoom: var(--scaling, 1);
-
-        // if needs viewport
-        container-name: body;
-        container-type: size;
-        contain: content;
-
-        //
-        will-change: --keyboard-inset-bottom, --keyboard-inset-height, inset;
-
-        //
-        min-inline-size: 0px;
-        min-block-size: 0px;
-
-        //
-        inline-size: calc(var(--vp-i-size, 100dvi) * 1);
-        block-size: calc(var(--vp-b-size, 100dvb) * 1);
-
-        //
-        max-inline-size: 100dvi;
-        max-block-size: 100dvb;
-
-        //
-        grid-template-columns: minmax(0px, 1fr);
-        grid-template-rows: minmax(0px, 1fr);
-
-        //
         @include ps.vp-vars();
+
+        //
+        & {
+            translate: 0px 0px !important;
+            transform: none !important;
+            margin: 0px !important;
+
+            //
+            font-size: 0.9rem;
+
+            //
+            overflow: hidden;
+            position: relative;
+            pointer-events: auto !important;
+            display: grid;
+            inset: 0px;
+
+            //
+            //inset-block-end: auto;
+            //inset-inline-end: auto;
+
+            //
+            place-content: center;
+            place-items: center;
+            place-self: center;
+
+            //
+            background-color: var(--theme-base-color, transparent);
+            //zoom: var(--scaling, 1);
+
+            // if needs viewport
+            container-name: body;
+            container-type: size;
+            contain: content;
+
+            //
+            will-change: --keyboard-inset-bottom, --keyboard-inset-height, inset;
+
+            //
+            min-inline-size: 0px;
+            min-block-size: 0px;
+
+            //
+            inline-size: calc(var(--vp-i-size, 100dvi) * 1);
+            block-size: calc(var(--vp-b-size, 100dvb) * 1);
+
+            //
+            max-inline-size: 100dvi;
+            max-block-size: 100dvb;
+
+            //
+            grid-template-columns: minmax(0px, 1fr);
+            grid-template-rows: minmax(0px, 1fr);
+        }
 
         //
         & > :where(*) {
             place-self: center;
             grid-column: 1 / 1 span;
             grid-row: 1 / 1 span;
+        }
+    }
+
+    //
+    :where(body, html) {
+
+        // adguard fix
+        & > :where(div) {
+            transform: none;
+            place-self: start;
+            inset: 0px;
+            inset-inline-end: auto;
+            inset-block-end: auto;
+            position: fixed;
+            translate: 0px 0px;
         }
     }
 
