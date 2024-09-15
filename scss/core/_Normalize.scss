@@ -145,9 +145,11 @@
 
     //
     :where(html > div) {
-        & { all: initial; };
-        * { all: unset  ; };
-        & { z-index: 99 ; };
+        & { all       : initial; };
+        * { all       : unset  ; };
+        & { z-index   : 99     ; };
+        & { place-self: start  ; };
+        & { overflow  : visible; }
     }
 
     // attempt to fix adguard button...
@@ -172,8 +174,8 @@
             contain: layout;
 
             //
-            inline-size: max-content;
-            block-size: max-content;
+            inline-size: 0px;
+            block-size: 0px;
         }
     }
 
