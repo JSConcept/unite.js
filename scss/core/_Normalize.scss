@@ -541,11 +541,12 @@
     // extensions or externals fixes
     // still needs such hack for adguard...
     :where(html > div) {
+        display: block !important;
         position: fixed;
         inset: 0px;
         inset-inline-end: auto;
         inset-block-start: auto;
-        place-self: end;
+        place-self: end start;
     }
 
 };
