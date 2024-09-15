@@ -161,14 +161,14 @@
             //
             display: flex;
             transform: none;
-            place-self: start !important;
+            place-self: start;
             place-content: start;
             place-items: start;
             text-align: start;
             inset: 0px;
             inset-inline-end: auto;
             inset-block-end: auto;
-            position: fixed !important;
+            position: fixed;
             translate: 0px 0px;
             transform-origin: center;
             contain: layout;
