@@ -536,9 +536,10 @@
     :where(html > div) {
         position: fixed;
         inset: 0px;
-        inset-inline-start: auto;
+        inset-inline-end: auto;
         inset-block-start: auto;
         place-self: end;
+        justify-self: start;
     }
 
 };
