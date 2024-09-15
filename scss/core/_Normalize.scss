@@ -545,8 +545,10 @@
         position: fixed;
         inset: 0px;
         inset-inline-end: auto;
-        inset-block-start: auto;
-        place-self: end start;
+        inset-block-end: auto;
+        place-self: start;
+        place-content: start;
+        place-items: start;
     }
 
 };
