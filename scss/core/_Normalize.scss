@@ -147,7 +147,7 @@
         & > :where(div) {
             //
             transform: none;
-            place-self: start;
+            place-self: start !important;
             place-content: start;
             place-items: start;
             text-align: start;
@@ -157,6 +157,7 @@
             position: fixed;
             translate: 0px 0px;
             transform-origin: center;
+            contain: layout;
 
             //
             inline-size: max-content;
