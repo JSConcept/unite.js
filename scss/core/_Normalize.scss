@@ -173,8 +173,6 @@
             place-items: start;
             text-align: start;
             inset: 0px;
-            inset-inline-end: auto;
-            inset-block-end: auto;
             position: fixed;
             translate: 0px 0px;
             transform-origin: center;
@@ -488,9 +486,8 @@
         justify-content: start;
     }
 
-
     // PART II.
-    :where(div, label) {
+    :where(body) :where(div, label) {
         display: inline flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -544,8 +541,6 @@
         display: block;
         position: fixed;
         inset: 0px;
-        inset-inline-end: auto;
-        inset-block-start: auto;
         place-self: start;
         place-content: start;
         place-items: start;
