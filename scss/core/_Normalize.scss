@@ -50,9 +50,9 @@
         //
         overflow: visible;
         position: relative;
-        display: grid;
+        display: block;
         line-height: 0;
-        contain: layout;
+        contain: none;
         flex-direction: column;
 
         //
@@ -532,18 +532,6 @@
         flex-basis: 100%;
         flex-grow: 1;
         flex-shrink: 0;
-    }
-
-
-    // extensions or externals fixes
-    // still needs such hack for adguard...
-    :where(html > div) {
-        display: block;
-        position: fixed;
-        inset: 0px;
-        place-self: start end;
-        place-content: start;
-        place-items: start;
     }
 
 };
