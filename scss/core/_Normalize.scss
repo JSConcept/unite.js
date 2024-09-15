@@ -56,9 +56,9 @@
         flex-direction: column;
 
         //
-        grid-template-columns: minmax(0px, 1fr);
-        grid-template-rows: minmax(0px, 0px);
         grid-auto-rows: minmax(0px, 0px);
+        grid-template-columns: minmax(0px, 1fr);
+        grid-template-rows: minmax(0px, 1fr) minmax(0px, 0px);
 
         //
         min-inline-size: 0px;
