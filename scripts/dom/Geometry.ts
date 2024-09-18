@@ -3,7 +3,7 @@
  */
 
 //
-import { isNearlyIdentity, parseOrigin, getElementZoom, getOffsetParentChain, type Point } from "./Utils.ts";
+import { isNearlyIdentity, parseOrigin, getElementZoom, getOffsetParentChain, type Point, getTransform, getTransformOrigin } from "./Utils.ts";
 
 //
 export const transformationMatrixCache = new WeakMap<Element, DOMMatrix>();
@@ -11,14 +11,9 @@ export function getNodeFullTransform(element: Element): DOMMatrix {
     let matrix = new DOMMatrix();
     let chain = [element, ...getOffsetParentChain(element)];
     for (const el of chain) {
-        const computedStyle = getComputedStyle(el);
-        const transform = computedStyle.transform || computedStyle.webkitTransform || 'none';
-
-        //
-        let elementMatrix = new DOMMatrix(transform);
+        let elementMatrix = getTransform(el);//new DOMMatrix(transform);
         if (!isNearlyIdentity(elementMatrix)) {
-            const origin = computedStyle.transformOrigin || computedStyle.webkitTransformOrigin || `${((el as HTMLElement)?.clientWidth||0)*0.5}px ${((el as HTMLElement)?.clientHeight || 0)*0.5}px`;
-            const originPoint = parseOrigin(origin, el);
+            const originPoint = getTransformOrigin(el);//computedStyle.transformOrigin || computedStyle.webkitTransformOrigin || `${((el as HTMLElement)?.clientWidth||0)*0.5}px ${((el as HTMLElement)?.clientHeight || 0)*0.5}px`;
             const originMatrix = new DOMMatrix().translate(originPoint.x, originPoint.y);
             const inverseOriginMatrix = new DOMMatrix().translate(-originPoint.x, -originPoint.y);
             elementMatrix = originMatrix.multiply(elementMatrix).multiply(inverseOriginMatrix);
@@ -28,10 +23,6 @@ export function getNodeFullTransform(element: Element): DOMMatrix {
         let positionMatrix = new DOMMatrix();
         if (el instanceof HTMLElement) {
             const {offsetLeft, offsetTop} = el;
-            const marginLeft = 0;
-            const marginTop  = 0;
-
-            //
             let parentScrollLeft = 0, parentScrollTop = 0;
             if (el.offsetParent instanceof HTMLElement) {
                 parentScrollLeft = el?.offsetParent?.scrollLeft || 0;
@@ -39,10 +30,8 @@ export function getNodeFullTransform(element: Element): DOMMatrix {
             }
 
             //
-            const diffLeft = (offsetLeft - marginLeft - parentScrollLeft) || 0;
-            const diffTop  = (offsetTop  - marginTop  - parentScrollTop ) || 0;
-
-            //
+            const diffLeft = (offsetLeft - parentScrollLeft) || 0;
+            const diffTop  = (offsetTop  - parentScrollTop ) || 0;
             if (Math.abs(diffTop) >= 0.001 || Math.abs(diffLeft) >= 0.001) {
                 positionMatrix = new DOMMatrix().translate(diffLeft, diffTop);
             }

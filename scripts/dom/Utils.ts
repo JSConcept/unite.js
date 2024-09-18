@@ -23,11 +23,7 @@ export function parseLength(value: string, size: number): number {
 
 //
 export function getOffsetParent(element: Element): Element | null {
-    //const position = getComputedStyle(element, "")?.position || "static";
-    //if (position == "absolute" || position == "fixed") {
-        return (element as HTMLElement)?.offsetParent ?? (element as any)?.host;
-    //}
-    //return (element?.parentElement ?? (element as any)?.host ?? element?.parentNode) as (Element | null);
+    return (element as HTMLElement)?.offsetParent ?? (element as any)?.host;
 }
 
 //
@@ -60,16 +56,14 @@ export function getElementZoom(element: Element): number {
         if ('currentCSSZoom' in (currentElement as any)) {
             const currentCSSZoom = (currentElement as any).currentCSSZoom;
             if (typeof currentCSSZoom === 'number') {
-                zoom *= currentCSSZoom;
-                return zoom; // why not skipped here?!
+                return (zoom *= currentCSSZoom);
             }
         }
 
         //
         const style = getComputedStyle(currentElement);
         if (style.zoom && style.zoom !== 'normal') {
-            zoom *= parseFloat(style.zoom);
-            return zoom;
+            return (zoom *= parseFloat(style.zoom));
         }
 
         //
@@ -78,7 +72,7 @@ export function getElementZoom(element: Element): number {
         }
 
         //
-        currentElement = currentElement.parentElement;
+        currentElement = (currentElement as HTMLElement)?.offsetParent ?? currentElement?.parentElement;
     }
 
     //
@@ -95,4 +89,27 @@ export function isNearlyIdentity(matrix: DOMMatrix, epsilon: number = 1e-6): boo
         Math.abs(matrix.e) < epsilon &&
         Math.abs(matrix.f) < epsilon
     );
+}
+
+
+//
+export const getTransform = (el)=>{
+    if (el?.computedStyleMap) {
+        const styleMap = el.computedStyleMap();
+        const transform = styleMap.get("transform");
+        const matrix = transform?.toMatrix?.();
+        if (matrix) return matrix;
+    } else
+    if (el) {
+        const style = getComputedStyle(el);
+        return new DOMMatrix(style?.getPropertyValue?.("transform"));
+    }
+    return new DOMMatrix();
+}
+
+//
+export const getTransformOrigin = (el)=>{
+    const style = getComputedStyle(el);
+    const cssOrigin = style.getPropertyValue("transform-origin") || `50% 50%`;
+    return parseOrigin(cssOrigin, el);
 }
