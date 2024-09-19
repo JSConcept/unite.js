@@ -8,15 +8,15 @@ export type Point = DOMPoint;
 //
 export function parseOrigin(origin: string, element: Element): Point {
     const values = origin.split(' ');
-    const x = parseLength(values[0], element.clientWidth);
-    const y = parseLength(values[1], element.clientHeight);
+    const x = parseLength(values[0], ()=>element.clientWidth);
+    const y = parseLength(values[1], ()=>element.clientHeight);
     return new DOMPoint(x, y);
 }
 
 //
-export function parseLength(value: string, size: number): number {
+export function parseLength(value: string, size: ()=>number): number {
     if (value.endsWith('%')) {
-        return (parseFloat(value) / 100) * size;
+        return (parseFloat(value) / 100) * size();
     }
     return parseFloat(value);
 }
